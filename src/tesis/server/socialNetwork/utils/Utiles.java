@@ -93,8 +93,7 @@ public class Utiles {
 		try {
 			jsonObject.put("error", false);
 			jsonObject.put("username", voluntario.getUserName());
-			jsonObject.put("nombre", voluntario.getNombre());
-			jsonObject.put("apellido", voluntario.getApellido());
+			jsonObject.put("nombre", voluntario.getNombreReal());
 			//TODO foto de perfil
 			//datos opcionales.
 			if(voluntario.getCi() != null){

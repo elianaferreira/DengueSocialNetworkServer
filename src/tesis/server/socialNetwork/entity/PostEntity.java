@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -35,8 +36,12 @@ public class PostEntity {
 	private String post;
 	private VoluntarioEntity voluntario;
 	private Date fechaPost;
-	//private List<FotografiaEntity> fotografias;
-	//private GeolocalizacionEntity geolocalizacion;
+	//datos de geolocalizacion
+	private Double latitud;
+	private Double longitud;
+	//fotos guardadas como un array de bytes
+	private byte[] fotoAntes;
+	private byte[] fotoDespues;
 	//private List<ComentarioEntity> comentarios;
 	//private List<FavoritoEntity> favoritoDe;
 	//inidca si un caso reportado ha sido solucionado.
@@ -80,48 +85,43 @@ public class PostEntity {
 		this.fechaPost = fechaPost;
 	}
 	
-	/*/mappedBy es el campo que es dueña de la relacion   mappedBy="ID_POST"
-	@OneToMany(cascade=CascadeType.ALL)
-	public List<FotografiaEntity> getFotografias() {
-		return fotografias;
-	}
-	public void setFotografias(List<FotografiaEntity> fotografias) {
-		this.fotografias = fotografias;
-	}/*
-	
-	//en gelocalizacion no es necesario el mapeo
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinColumn(name="GEOLOCALIZACION", nullable=true)
-	public GeolocalizacionEntity getGeolocalizacion() {
-		return geolocalizacion;
-	}
-	public void setGeolocalizacion(GeolocalizacionEntity geolocalizacion) {
-		this.geolocalizacion = geolocalizacion;
-	}*/
-	
-	/*/mappedBy="ID_POST"
-	@OneToMany(cascade=CascadeType.ALL)
-	public List<ComentarioEntity> getComentarios() {
-		return comentarios;
-	}
-	public void setComentarios(List<ComentarioEntity> comentarios) {
-		this.comentarios = comentarios;
-	}
-	
-	//mappedBy="ID_POST"
-	@OneToMany(cascade=CascadeType.ALL)
-	public List<FavoritoEntity> getFavoritoDe() {
-		return favoritoDe;
-	}
-	public void setFavoritoDe(List<FavoritoEntity> favoritoDe) {
-		this.favoritoDe = favoritoDe;
-	}*/
-	
 	@Column(name="SOLUCIONADO", nullable=false)
 	public Boolean getSolucionado() {
 		return solucionado;
 	}
 	public void setSolucionado(Boolean solucionado) {
 		this.solucionado = solucionado;
+	}
+	
+	@Column(name="LATITUD", nullable=true)
+	public Double getLatitud() {
+		return latitud;
+	}
+	public void setLatitud(Double latitud) {
+		this.latitud = latitud;
+	}
+	
+	@Column(name="LONGITUD", nullable=true)
+	public Double getLongitud() {
+		return longitud;
+	}
+	public void setLongitud(Double longitud) {
+		this.longitud = longitud;
+	}
+	
+	@Column(name="FOTO_ANTES_BYTES", nullable=true)
+	public byte[] getFotoAntes() {
+		return fotoAntes;
+	}
+	public void setFotoAntes(byte[] fotoAntes) {
+		this.fotoAntes = fotoAntes;
+	}
+	
+	@Column(name="FOTO_DESPUES_BYTES", nullable=true)
+	public byte[] getFotoDespues() {
+		return fotoDespues;
+	}
+	public void setFotoDespues(byte[] fotoDespues) {
+		this.fotoDespues = fotoDespues;
 	}
 }

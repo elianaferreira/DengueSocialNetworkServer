@@ -32,7 +32,9 @@ public class PostWS {
 	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String newStatus(@FormParam("mensaje") String mensaje,
-							@FormParam("username") String username){
+							@FormParam("username") String username,
+							@FormParam("latitud") Double latitud,
+							@FormParam("longitud") Double longitud){
 		
 		//traemos el usuario de la Base de Datos
 		VoluntarioEntity voluntarioEntity = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
@@ -49,6 +51,12 @@ public class PostWS {
 					PostEntity postEntity = new PostEntity();
 					postEntity.setPost(mensaje);
 					postEntity.setVoluntario(voluntarioEntity);
+					if(latitud != null && longitud != null){
+						System.out.print("latitud: " + String.valueOf(latitud));
+						System.out.print("longitud: " + String.valueOf(longitud));
+						postEntity.setLatitud(latitud);
+						postEntity.setLongitud(longitud);
+					}
 					postDao.guardar(postEntity);
 					return Utiles.retornarSalida(false, "Enviado");
 				} catch(Exception ex){
