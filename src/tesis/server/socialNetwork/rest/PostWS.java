@@ -27,14 +27,25 @@ public class PostWS {
 	@Inject
 	private PostDao postDao;
 	
+	
+	
+	/**
+	 * Metodo que recibe un nuevo reporte.
+	 * 
+	 * @param mensaje
+	 * @param username
+	 * @param latitud
+	 * @param longitud
+	 * @return
+	 */
 	@Path("/new")
 	@POST
 	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String newStatus(@FormParam("mensaje") String mensaje,
 							@FormParam("username") String username,
-							@FormParam("latitud") Double latitud,
-							@FormParam("longitud") Double longitud){
+							@FormParam("latitud") String latitud,
+							@FormParam("longitud") String longitud){
 		
 		//traemos el usuario de la Base de Datos
 		VoluntarioEntity voluntarioEntity = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
@@ -54,8 +65,8 @@ public class PostWS {
 					if(latitud != null && longitud != null){
 						System.out.print("latitud: " + String.valueOf(latitud));
 						System.out.print("longitud: " + String.valueOf(longitud));
-						postEntity.setLatitud(latitud);
-						postEntity.setLongitud(longitud);
+						postEntity.setLatitud(Double.parseDouble(latitud));
+						postEntity.setLongitud(Double.parseDouble(longitud));
 					}
 					postDao.guardar(postEntity);
 					return Utiles.retornarSalida(false, "Enviado");
