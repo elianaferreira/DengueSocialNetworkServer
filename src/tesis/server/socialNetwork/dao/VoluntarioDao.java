@@ -1,5 +1,6 @@
 package tesis.server.socialNetwork.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -124,6 +125,38 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 			}
 		}
 		return false;
+	}
+	
+	
+	//TODO busqueda
+	
+	public JSONObject buscarUsuarios(String username, String nombreReal){
+		List<VoluntarioEntity> listaResultado = new ArrayList<VoluntarioEntity>();
+		JSONObject jsonRestricciones = new JSONObject();
+		Boolean existeCriterio = true;
+		
+		//verificamos si cual de los parametros es vacio o si ambos estan cargados
+		if(username.isEmpty() && nombreReal.isEmpty()){
+			//no hacemos nada si ambos criterios son vacios (no se va a retornar la lista completa de usuarios)
+			existeCriterio= false;  
+		} else if(!username.isEmpty() && nombreReal.isEmpty()){
+			//si el username no es vacio pero el nombre real buscamos por un solo criterio
+			jsonRestricciones.put("userName", username);
+		} else if(username.isEmpty() && !nombreReal.isEmpty()){
+			//buscamos solo por el nombreReal
+			jsonRestricciones.put("nombreReal", nombreReal);
+		} else {
+			//quiere decir que ambos criterios estan cargados
+			jsonRestricciones.put("userName", username);
+			jsonRestricciones.put("nombreReal", nombreReal);
+		}
+		if(existeCriterio){
+			listaResultado = this.getListOfEntitiesWithRestrictionsLike(VoluntarioEntity.class, jsonRestricciones);
+			//TODO parsear el resultado y pasar al WS
+		}
+		
+		
+		return null;
 	}
 }
 

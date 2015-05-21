@@ -498,4 +498,25 @@ public class VoluntarioWS {
 		}
 		return "";
 	}
+	
+	
+	@GET
+	@Path("/user/search/{searchParam}")
+	@ResponseBody
+	public String buscarUsuario(@PathParam("searchParam") String criterioBusqueda){
+		String criterioSinPrefijo = "";
+		String criterioConPrefijo = "";
+		
+		//verificamos que no este vacio
+		if(criterioBusqueda == null || criterioBusqueda.isEmpty()){
+			//no hacemos nada
+		} else {
+			//verificamos si tiene el prefijo utilizado para el nombre de usuario
+			if(criterioBusqueda.startsWith("&")){
+				criterioConPrefijo = criterioBusqueda;
+				
+			}
+		}
+		return "";
+	}
 }

@@ -59,17 +59,19 @@ public abstract class GenericDao<T, ID extends Serializable> {
     }
 
     @SuppressWarnings("unchecked")
-	public List<T> getListOfEntitiesWithRestrictions(Class<T> clase, JSONObject jsonRestrictions){
+	public List<T> getListOfEntitiesWithRestrictionsLike(Class<T> clase, JSONObject jsonRestrictions){
     	Criteria criteria = getSession().createCriteria(clase);
     	Iterator<String> keys = jsonRestrictions.keys();
     	while (keys.hasNext()) {
 			String entityAttribute = keys.next();
 			Object attributeValue = jsonRestrictions.get(entityAttribute);
+			//TODO validar si el metodo add agrega las restricciones como AND o como OR.
 			criteria.add(Restrictions.like(entityAttribute, attributeValue));
 		}
     	
     	return criteria.list();
     }
+    
     
     /**
      * permite obtener un objeto de tipo T en funcion a su valor de ID
