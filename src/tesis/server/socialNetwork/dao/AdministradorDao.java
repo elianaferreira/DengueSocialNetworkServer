@@ -25,7 +25,7 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 		//creamos el JSON de restricciones que sera en base al username
 		JSONObject restriccion = new JSONObject();
 		restriccion.put("adminName", adminName);
-		List<AdminEntity> lista = this.getListOfEntitiesWithRestrictions(AdminEntity.class, restriccion);
+		List<AdminEntity> lista = this.getListOfEntitiesWithRestrictionsLike(AdminEntity.class, restriccion);
 		//la lista en teoria seria de un solo elemento
 		if(lista == null){
 			return null;

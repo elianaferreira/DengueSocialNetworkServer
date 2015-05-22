@@ -2,11 +2,16 @@ package tesis.server.socialNetwork.dao;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 
@@ -128,35 +133,34 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 	}
 	
 	
-	//TODO busqueda
-	
-	public JSONObject buscarUsuarios(String username, String nombreReal){
+	//Busqueda
+	public JSONArray buscarUsuarios(String criterio){
 		List<VoluntarioEntity> listaResultado = new ArrayList<VoluntarioEntity>();
 		JSONObject jsonRestricciones = new JSONObject();
 		Boolean existeCriterio = true;
+		JSONArray retorno = new JSONArray();
 		
 		//verificamos si cual de los parametros es vacio o si ambos estan cargados
-		if(username.isEmpty() && nombreReal.isEmpty()){
-			//no hacemos nada si ambos criterios son vacios (no se va a retornar la lista completa de usuarios)
-			existeCriterio= false;  
-		} else if(!username.isEmpty() && nombreReal.isEmpty()){
-			//si el username no es vacio pero el nombre real buscamos por un solo criterio
-			jsonRestricciones.put("userName", username);
-		} else if(username.isEmpty() && !nombreReal.isEmpty()){
-			//buscamos solo por el nombreReal
-			jsonRestricciones.put("nombreReal", nombreReal);
+		if(criterio.isEmpty() && criterio.isEmpty()){
+			//no hacemos nada si el criterio es vacio (NO se va a retornar la lista completa de usuarios!)
+			existeCriterio= false;
 		} else {
-			//quiere decir que ambos criterios estan cargados
-			jsonRestricciones.put("userName", username);
-			jsonRestricciones.put("nombreReal", nombreReal);
+			//quiere decir el criterio esta cargado
+			Criteria criteria = getSession().createCriteria(VoluntarioEntity.class);
+	    	//Iterator<String> keys = jsonRestrictions.keys();
+			//TODO agregar otra columna o buscar de otra forma. El 'like' es caseSensitive.
+			criteria.add(Restrictions.or(Restrictions.like("userName", "%"+criterio+"%"), Restrictions.like("nombreReal", "%"+criterio+"%")));
+			listaResultado = criteria.list();
 		}
-		if(existeCriterio){
-			listaResultado = this.getListOfEntitiesWithRestrictionsLike(VoluntarioEntity.class, jsonRestricciones);
-			//TODO parsear el resultado y pasar al WS
+		if(listaResultado == null || listaResultado.isEmpty()){
+			return null;
+		} else {
+			//cada elemento de la lista lo transformamos a un JSON
+			for (int i = 0; i < listaResultado.size(); i++) {
+				retorno.put(this.getJSONFromVoluntario(listaResultado.get(i)));
+			}
+			return retorno;
 		}
-		
-		
-		return null;
 	}
 }
 

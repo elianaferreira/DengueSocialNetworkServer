@@ -14,6 +14,7 @@ import javax.ws.rs.PathParam;
 import org.hibernate.Criteria;
 import org.hibernate.annotations.Generated;
 import org.hibernate.criterion.Restrictions;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -504,18 +505,19 @@ public class VoluntarioWS {
 	@Path("/user/search/{searchParam}")
 	@ResponseBody
 	public String buscarUsuario(@PathParam("searchParam") String criterioBusqueda){
-		String criterioSinPrefijo = "";
-		String criterioConPrefijo = "";
 		
 		//verificamos que no este vacio
 		if(criterioBusqueda == null || criterioBusqueda.isEmpty()){
 			//no hacemos nada
 		} else {
-			//verificamos si tiene el prefijo utilizado para el nombre de usuario
-			if(criterioBusqueda.startsWith("&")){
-				criterioConPrefijo = criterioBusqueda;
-				
+			//llamamos al dao que se encarga de la busqueda
+			JSONArray jsonArray = voluntarioDao.buscarUsuarios(criterioBusqueda);
+			if(jsonArray == null){
+				return Utiles.retornarSalida(true, "No hay usuario con ese nombre");
+			} else {
+				return Utiles.retornarSalida(false, jsonArray.toString());
 			}
+			
 		}
 		return "";
 	}
