@@ -65,8 +65,8 @@ public abstract class GenericDao<T, ID extends Serializable> {
     	while (keys.hasNext()) {
 			String entityAttribute = keys.next();
 			Object attributeValue = jsonRestrictions.get(entityAttribute);
-			//TODO validar si el metodo add agrega las restricciones como AND o como OR.
-			criteria.add(Restrictions.like(entityAttribute, attributeValue));
+			//add agrega las restricciones como un AND
+			criteria.add(Restrictions.like(entityAttribute, "%"+attributeValue+"%").ignoreCase());
 		}
     	
     	return criteria.list();

@@ -147,9 +147,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		} else {
 			//quiere decir el criterio esta cargado
 			Criteria criteria = getSession().createCriteria(VoluntarioEntity.class);
-	    	//Iterator<String> keys = jsonRestrictions.keys();
-			//TODO agregar otra columna o buscar de otra forma. El 'like' es caseSensitive.
-			criteria.add(Restrictions.or(Restrictions.like("userName", "%"+criterio+"%"), Restrictions.like("nombreReal", "%"+criterio+"%")));
+			criteria.add(Restrictions.or(Restrictions.like("userName", "%"+criterio+"%").ignoreCase(), Restrictions.like("nombreReal", "%"+criterio+"%").ignoreCase()));
 			listaResultado = criteria.list();
 		}
 		if(listaResultado == null || listaResultado.isEmpty()){
