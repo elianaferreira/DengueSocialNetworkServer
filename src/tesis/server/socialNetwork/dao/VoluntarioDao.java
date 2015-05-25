@@ -134,7 +134,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 	
 	
 	//Busqueda
-	public JSONArray buscarUsuarios(String criterio){
+	public List<VoluntarioEntity> buscarUsuarios(String criterio){
 		List<VoluntarioEntity> listaResultado = new ArrayList<VoluntarioEntity>();
 		JSONObject jsonRestricciones = new JSONObject();
 		Boolean existeCriterio = true;
@@ -154,10 +154,10 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 			return null;
 		} else {
 			//cada elemento de la lista lo transformamos a un JSON
-			for (int i = 0; i < listaResultado.size(); i++) {
+			/*for (int i = 0; i < listaResultado.size(); i++) {
 				retorno.put(this.getJSONFromVoluntario(listaResultado.get(i)));
-			}
-			return retorno;
+			}*/
+			return listaResultado;
 		}
 	}
 }

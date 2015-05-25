@@ -10,6 +10,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 
 import org.hibernate.Criteria;
 import org.hibernate.annotations.Generated;
@@ -504,20 +505,44 @@ public class VoluntarioWS {
 	@GET
 	@Path("/user/search/{searchParam}")
 	@ResponseBody
-	public String buscarUsuario(@PathParam("searchParam") String criterioBusqueda){
+	public String buscarUsuario(@PathParam("searchParam") String criterioBusqueda,
+			@QueryParam("username") String username,
+			@QueryParam("password") String password){
 		
 		//verificamos que no este vacio
 		if(criterioBusqueda == null || criterioBusqueda.isEmpty()){
 			//no hacemos nada
 		} else {
-			//llamamos al dao que se encarga de la busqueda
-			JSONArray jsonArray = voluntarioDao.buscarUsuarios(criterioBusqueda);
-			if(jsonArray == null){
-				return Utiles.retornarSalida(true, "No hay usuario con ese nombre");
+			VoluntarioEntity voluntarioQueSolicita = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+			if(voluntarioQueSolicita == null){
+				return Utiles.retornarSalida(true, "El usuario no existe");
 			} else {
-				return Utiles.retornarSalida(false, jsonArray.toString());
+				//verificamos que el usuario que solicita haya iniciado sesion
+				if(!Utiles.haIniciadoSesion(voluntarioQueSolicita)){
+					return Utiles.retornarSalida(true, "No has iniciado sesión");
+				} else {
+					//llamamos al dao que se encarga de la busqueda
+					List<VoluntarioEntity> listaResultado = voluntarioDao.buscarUsuarios(criterioBusqueda);
+					if(listaResultado == null){
+						return Utiles.retornarSalida(true, "No hay usuario con ese nombre");
+					} else {
+						JSONArray retorno = new JSONArray();
+						//a cada usuario le agregamos la cantidad de amigos que tiene y un boolean de si son amigos
+						for(int j=0; j<listaResultado.size(); j++){
+							//verificamos si ambos voluntarios ya son amigos, luego lo pasamos a JSON y agregamos los nuevos campos
+							JSONObject jsonFromVoluntario = voluntarioDao.getJSONFromVoluntario(listaResultado.get(j));
+							if(voluntarioDao.yaEsContacto(voluntarioQueSolicita, listaResultado.get(j))){
+								jsonFromVoluntario.put("yaEsAmigo", true);
+							} else {
+								jsonFromVoluntario.put("yaEsAmigo", false);
+							}
+							jsonFromVoluntario.put("cantidadAmigos", listaResultado.get(j).getContactos().size());
+							retorno.put(jsonFromVoluntario);
+						}
+						return Utiles.retornarSalida(false, retorno.toString());
+					}
+				}
 			}
-			
 		}
 		return "";
 	}
