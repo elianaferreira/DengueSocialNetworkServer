@@ -529,14 +529,13 @@ public class VoluntarioWS {
 						JSONArray retorno = new JSONArray();
 						//a cada usuario le agregamos la cantidad de amigos que tiene y un boolean de si son amigos
 						for(int j=0; j<listaResultado.size(); j++){
-							//verificamos si ambos voluntarios ya son amigos, luego lo pasamos a JSON y agregamos los nuevos campos
+							//verificamos si ambos voluntarios ya son amigos, luego lo pasamos a JSON y agregamos el nuevo campo
 							JSONObject jsonFromVoluntario = voluntarioDao.getJSONFromVoluntario(listaResultado.get(j));
 							if(voluntarioDao.yaEsContacto(voluntarioQueSolicita, listaResultado.get(j))){
 								jsonFromVoluntario.put("yaEsAmigo", true);
 							} else {
 								jsonFromVoluntario.put("yaEsAmigo", false);
 							}
-							jsonFromVoluntario.put("cantidadAmigos", listaResultado.get(j).getContactos().size());
 							retorno.put(jsonFromVoluntario);
 						}
 						return Utiles.retornarSalida(false, retorno.toString());
