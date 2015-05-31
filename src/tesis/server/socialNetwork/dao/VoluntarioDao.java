@@ -124,7 +124,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		if(listaContactos.isEmpty()){
 			return false;
 		} else {
-			//por cada uno de los contactos vemos si el solicitante o el solicitado coincide con coluntario2
+			//por cada uno de los contactos vemos si el solicitante o el solicitado coincide con voluntario2
 			for(ContactoEntity contacto : listaContactos){
 				if((contacto.getVoluntario().equals(voluntario2)) || contacto.getContacto().equals(voluntario2)){
 					//ya son amigos
@@ -139,14 +139,10 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 	//Busqueda
 	public List<VoluntarioEntity> buscarUsuarios(String criterio){
 		List<VoluntarioEntity> listaResultado = new ArrayList<VoluntarioEntity>();
-		JSONObject jsonRestricciones = new JSONObject();
-		Boolean existeCriterio = true;
-		JSONArray retorno = new JSONArray();
 		
 		//verificamos si cual de los parametros es vacio o si ambos estan cargados
 		if(criterio.isEmpty() && criterio.isEmpty()){
 			//no hacemos nada si el criterio es vacio (NO se va a retornar la lista completa de usuarios!)
-			existeCriterio= false;
 		} else {
 			//quiere decir el criterio esta cargado
 			Criteria criteria = getSession().createCriteria(VoluntarioEntity.class);
