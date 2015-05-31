@@ -506,8 +506,7 @@ public class VoluntarioWS {
 	@Path("/user/search/{searchParam}")
 	@ResponseBody
 	public String buscarUsuario(@PathParam("searchParam") String criterioBusqueda,
-			@QueryParam("username") String username,
-			@QueryParam("password") String password){
+			@QueryParam("username") String username){
 		
 		//verificamos que no este vacio
 		if(criterioBusqueda == null || criterioBusqueda.isEmpty()){
