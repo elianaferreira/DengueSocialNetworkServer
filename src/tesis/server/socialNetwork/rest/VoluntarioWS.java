@@ -242,128 +242,7 @@ public class VoluntarioWS {
 			}
 		}
 	}
-	
-	/*
-	public String changeUsername(@PathParam("username") String username,
-									@FormParam("newUsername") String newUsername){
 		
-	}*/
-	
-	/**
-	 * Metodo que agrega un nuevo contacto a la lista de amigos de un usuario.
-	 * El metodo es bidireccional
-	 * 
-	 * @param username
-	 * @param contact
-	 * @return
-	 */
-	/*@POST
-	@Path("/user/{username}/newcontact")
-	@Produces("application/json")
-	public HashMap<String, Object> usersAddContact(@PathParam("username") String username,
-													@QueryParam("password") String password,
-													@QueryParam("contact") String contactname){		
-		//verificamos la validez del usuario
-		VoluntarioEntity voluntarioEntity = Utiles.verificarUsuario(username, password);
-		if(voluntarioEntity == null){
-			return Utiles.retornarSalida(true, "El usuario o el password no es válido");
-		} else{
-			//verificamos que haya iniciado sesion
-			if(Utiles.haIniciadoSesion(voluntarioEntity)){
-				//buscamos a "contact"
-				VoluntarioEntity contacto = voluntarioDao.getById(contactname);
-				if(contacto == null){
-					return Utiles.retornarSalida(true, "El contacto no existe");
-				} else{
-					voluntarioEntity.addContacto(contacto);
-					voluntarioDao.modificar(voluntarioEntity);
-					//tambien agregamos a la lista de contactos del otro usuario
-					contacto.addContacto(voluntarioEntity);
-					voluntarioDao.modificar(contacto);
-					return Utiles.retornarSalida(false, "Contacto agregado");
-				}
-			} else{
-				return Utiles.retornarSalida(true, "No has iniciado sesión");
-			}
-		}
-	}*/
-	
-	
-	/**
-	 * Metodo que elimina un contato de la lista de amistades de un usuario.
-	 * El metodo es bidireccional.
-	 * 
-	 * @param username
-	 * @param password
-	 * @param contactname
-	 * @return
-	 */
-	/*@POST
-	@Path("/user/{username}/deletecontact")
-	@Produces("application/json")
-	public HashMap<String, Object> deleteContact(@PathParam("username") String username,
-												 @QueryParam("password") String password,
-												 @QueryParam("contact") String contactname){
-		//verificamos el username
-		VoluntarioEntity voluntario = Utiles.verificarUsuario(username, password);
-		if(voluntario == null){
-			return Utiles.retornarSalida(true, "El usuario o password no es válido");
-		} else{
-			//verificamos que haya iniciado sesion
-			if(Utiles.haIniciadoSesion(voluntario)){
-				//verificamos la exitencia del contacto
-				VoluntarioEntity contacto = voluntarioDao.getById(contactname);
-				if(contacto == null){
-					return Utiles.retornarSalida(true, "El contacto no existe");
-				} else{
-					voluntario.getContactos().remove(contacto);
-					voluntarioDao.modificar(voluntario);
-					contacto.getContactos().remove(voluntario);
-					voluntarioDao.modificar(contacto);
-					return Utiles.retornarSalida(false, "Contacto eliminado");
-				}
-			} else{
-				return Utiles.retornarSalida(true, "No has iniciado sesión");
-			}
-		}
-	}*/
-	
-	
-	/**
-	 * Metodo que retorna el perfil de un usuario en base a su username,
-	 * o error en todo caso.
-	 *  
-	 * @param username
-	 * @return
-	 */
-	/*@GET
-	@Path("/user/profile/{username}")
-	@ResponseBody
-	public String getUsuario(@PathParam("username") String username,
-											  @QueryParam("usuario") String usuario,
-											  @QueryParam("password") String password){
-		
-		//verificamos la validez del usuario que solicita el perfil
-		VoluntarioEntity voluntario = voluntarioDao.verificarUsuario(usuario, password);
-		if(voluntario == null){
-			return Utiles.retornarSalida(true, "El usuario o password no es válido");
-		} else{
-			//buscamos el voluntrario por el username
-			VoluntarioEntity perfilBuscado = voluntarioDao.getById(username);
-			if(perfilBuscado == null){
-				return Utiles.retornarSalida(true, "El usuario no existe");
-			} else{
-				//llamamos al metodo que escribe los datos del voluntario
-				String jsonStringFromVoluntario = Utiles.voluntarioToStringJsonStile(voluntario);
-				if(jsonStringFromVoluntario == null){
-					return Utiles.retornarSalida(true, "No se ha podido retornar los datos del voluntario");
-				} else{
-					return Utiles.retornarSalida(false, jsonStringFromVoluntario);
-				}
-			}
-		}
-	}*/	
-	
 	
 	/**
 	 * Servicio que permite a un usuario enviar una solicitud de amistad a otro usuario
@@ -380,7 +259,7 @@ public class VoluntarioWS {
 										 @FormParam("solicitado") String usuarioSolicitado){
 		
 		//verificamos que el usuario que ha solicitado exista
-		VoluntarioEntity voluntarioQueSolicita = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioQueEnvia);
+		VoluntarioEntity voluntarioQueSolicita = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioQueEnvia.toLowerCase());
 		if(voluntarioQueSolicita == null){
 			return Utiles.retornarSalida(true, "El usuario no existe");
 		} else {
@@ -389,7 +268,7 @@ public class VoluntarioWS {
 				return Utiles.retornarSalida(true, "No has iniciado sesión");
 			} else {
 				//verificamos que el contacto exista
-				VoluntarioEntity contactoSolicitado = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioSolicitado);
+				VoluntarioEntity contactoSolicitado = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioSolicitado.toLowerCase());
 				if(contactoSolicitado == null){
 					return Utiles.retornarSalida(true, "El contacto no existe");
 				} else {
@@ -512,7 +391,7 @@ public class VoluntarioWS {
 		if(criterioBusqueda == null || criterioBusqueda.isEmpty()){
 			//no hacemos nada
 		} else {
-			VoluntarioEntity voluntarioQueSolicita = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+			VoluntarioEntity voluntarioQueSolicita = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 			if(voluntarioQueSolicita == null){
 				return Utiles.retornarSalida(true, "El usuario no existe");
 			} else {

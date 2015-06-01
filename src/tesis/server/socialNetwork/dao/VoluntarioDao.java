@@ -79,7 +79,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 	 */
 	public Boolean verificarUsernameRepetido(String newUsername){
 		//traemos de la Base de Datos
-		VoluntarioEntity entity = this.findByClassAndID(VoluntarioEntity.class, newUsername);
+		VoluntarioEntity entity = this.findByClassAndID(VoluntarioEntity.class, newUsername.toLowerCase());
 		if(entity == null){
 			//quiere decir que no existe todavia en la BD, por ende NO es repetido
 			return false;

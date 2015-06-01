@@ -68,7 +68,6 @@ public class SolicitudAmistadDao extends GenericDao<SolicitudAmistadEntity, Inte
 		JSONObject retorno = new JSONObject();
 		
 		retorno.put("id", solicitudAmistadEntity.getIdSolicitudAmistad());
-		retorno.put("voluntariosolicitado", voluntarioDao.getJSONFromVoluntario(solicitudAmistadEntity.getUsuarioSolicitado()));
 		retorno.put("voluntariosolicitante", voluntarioDao.getJSONFromVoluntario(solicitudAmistadEntity.getUsuarioSolicitante()));
 		retorno.put("aceptada", solicitudAmistadEntity.getAceptada());
 		
@@ -80,6 +79,7 @@ public class SolicitudAmistadDao extends GenericDao<SolicitudAmistadEntity, Inte
 	/**
 	 * Metodo que retorna la lista de solicitudes como un string.
 	 * Cada solicitud es un objeto JSON.
+	 * Es necesario quitar la informacion del solicitado del JSON, no es necesaria esta informacion
 	 * 
 	 * @param listaSolicitudes
 	 * @return
