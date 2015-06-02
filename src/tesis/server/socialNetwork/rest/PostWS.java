@@ -4,8 +4,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -106,6 +109,29 @@ public class PostWS {
 				return Utiles.retornarSalida(true, "No tienes permiso para resolver el caso");
 			}
 		}
+	}
+	
+	@GET
+	@Path("/homeTimeline/{username}")
+	@ResponseBody
+	public String actualizarTimeline(@PathParam("username") String username,
+									 @QueryParam("ultimorequest") String timestamp,
+									 @QueryParam("rango") Integer rango){
+		
+		//verificaciones del usuario
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		if(voluntario == null){
+			//el usuario no existe, no hacemos nada
+		} else {
+			//verificamos si ha iniciado sesion
+			if(voluntario.getLogged() == false){
+				//no ha iniciado sesion
+				return Utiles.retornarSalida(true, "No has iniciado sesión");
+			} else {
+				//TODO terminar
+			}
+		}
+		return "";
 	}
 
 }
