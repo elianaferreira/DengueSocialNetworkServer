@@ -1,5 +1,6 @@
 package tesis.server.socialNetwork.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -311,7 +312,8 @@ public class VoluntarioWS {
 			} else{
 				List<SolicitudAmistadEntity> listaPendientes = solicitudAmistadDao.getListaSolicitudesPendientes(username);				
 				if(listaPendientes.isEmpty()){
-					return Utiles.retornarSalida(false, "No tenés solicitudes pendientes");
+					List<SolicitudAmistadEntity> listaVacia = new ArrayList<SolicitudAmistadEntity>();
+					return Utiles.retornarSalida(false, solicitudAmistadDao.getListParsedFromSolicitudes(listaVacia));
 				} else {
 					return Utiles.retornarSalida(false, solicitudAmistadDao.getListParsedFromSolicitudes(listaPendientes));
 				}
