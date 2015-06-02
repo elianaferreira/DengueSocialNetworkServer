@@ -369,6 +369,8 @@ public class VoluntarioWS {
 					//se elimina la solicitud de amistad cuando esta es rechazada
 					try{
 						solicitudAmistadDao.delete(solicitud);
+						//solicitud.setAceptada(false);
+						//solicitudAmistadDao.modificar(solicitud);
 						return Utiles.retornarSalida(false, "Se ha eliminado la solicitud de amistad");
 					}catch(Exception ex){
 						ex.printStackTrace();

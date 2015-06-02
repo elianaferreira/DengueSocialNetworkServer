@@ -50,7 +50,7 @@ public class SolicitudAmistadEntity {
 		this.idSolicitudAmistad = idSolicitudAmistad;
 	}
 	
-	@ManyToOne(cascade=CascadeType.REMOVE)
+	@ManyToOne()
 	@JoinColumn(name="USUARIO_SOLICITANTE")
 	public VoluntarioEntity getUsuarioSolicitante() {
 		return usuarioSolicitante;
@@ -59,7 +59,7 @@ public class SolicitudAmistadEntity {
 		this.usuarioSolicitante = usuarioSolicitante;
 	}
 	
-	@ManyToOne(cascade=CascadeType.REMOVE)
+	@ManyToOne()
 	@JoinColumn(name="USUARIO_SOLICITADO")
 	public VoluntarioEntity getUsuarioSolicitado() {
 		return usuarioSolicitado;
