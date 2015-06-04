@@ -1,5 +1,7 @@
 package tesis.server.socialNetwork.rest;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -111,27 +113,36 @@ public class PostWS {
 		}
 	}
 	
+	/**
+	 * Servicio que retorna una actualizacion del timeline principal del usuario
+	 * (posts de sus amigos y de el)
+	 * 
+	 * @param username
+	 * @param timestamp
+	 * @param rango: es la cantidad de posts que se quiere recuperar, tendra un valor por defecto en el servidor
+	 * @return
+	 */
 	@GET
 	@Path("/homeTimeline/{username}")
 	@ResponseBody
-	public String actualizarTimeline(@PathParam("username") String username,
-									 @QueryParam("ultimorequest") String timestamp,
-									 @QueryParam("rango") Integer rango){
+	public String actualizarTimeline(@PathParam("username") String username){
 		
-		//verificaciones del usuario
+		/*/verificaciones del usuario
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
 		if(voluntario == null){
-			//el usuario no existe, no hacemos nada
+			return Utiles.retornarSalida(true, "No existe el usuario");
 		} else {
 			//verificamos si ha iniciado sesion
 			if(voluntario.getLogged() == false){
 				//no ha iniciado sesion
 				return Utiles.retornarSalida(true, "No has iniciado sesión");
 			} else {
-				//TODO terminar
+				//existe el usuario y ha iniciado sesion
+				
 			}
-		}
-		return "";
+		}*/
+		List<PostEntity> timeline = postDao.getHomeTimeline("abstract");
+		return Utiles.retornarSalida(false, timeline.toString());
 	}
 
 }
