@@ -1,5 +1,6 @@
 package tesis.server.socialNetwork.rest;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -12,6 +13,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import tesis.server.socialNetwork.dao.PostDao;
@@ -125,7 +128,8 @@ public class PostWS {
 	@GET
 	@Path("/homeTimeline/{username}")
 	@ResponseBody
-	public String actualizarTimeline(@PathParam("username") String username){
+	public String actualizarTimeline(@PathParam("username") String username,
+									@QueryParam("ultimaactualizacion") Date ultimaActualizacion){
 		
 		/*/verificaciones del usuario
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
@@ -141,8 +145,13 @@ public class PostWS {
 				
 			}
 		}*/
-		List<PostEntity> timeline = postDao.getHomeTimeline("abstract");
-		return Utiles.retornarSalida(false, timeline.toString());
+		JSONArray retornoArray = new JSONArray();
+		List<PostEntity> timeline = postDao.getHomeTimeline(username, ultimaActualizacion);
+		for(int i=0; i<timeline.size(); i++){
+			JSONObject postJSON = postDao.getJSONFromPost(timeline.get(i));
+			retornoArray.put(postJSON);
+		}
+		return Utiles.retornarSalida(false, retornoArray.toString());
 	}
 
 }
