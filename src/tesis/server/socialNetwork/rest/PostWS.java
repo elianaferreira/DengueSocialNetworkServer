@@ -1,5 +1,8 @@
 package tesis.server.socialNetwork.rest;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -129,9 +132,9 @@ public class PostWS {
 	@Path("/homeTimeline/{username}")
 	@ResponseBody
 	public String actualizarTimeline(@PathParam("username") String username,
-									@QueryParam("ultimaactualizacion") Date ultimaActualizacion){
+									@QueryParam("ultimaactualizacion") String ultimaActualizacionString){
 		
-		/*/verificaciones del usuario
+		//verificaciones del usuario
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "No existe el usuario");
@@ -142,16 +145,27 @@ public class PostWS {
 				return Utiles.retornarSalida(true, "No has iniciado sesión");
 			} else {
 				//existe el usuario y ha iniciado sesion
-				
+				Timestamp timestamp;
+				try{
+				    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+				    Date parsedDate = dateFormat.parse(ultimaActualizacionString);
+				    timestamp = new java.sql.Timestamp(parsedDate.getTime());
+				    
+				    JSONArray retornoArray = new JSONArray();
+					List<PostEntity> timeline = postDao.getHomeTimeline(username, timestamp);
+					for(int i=0; i<timeline.size(); i++){
+						JSONObject postJSON = postDao.getJSONFromPost(timeline.get(i));
+						retornoArray.put(postJSON);
+					}
+					return Utiles.retornarSalida(false, retornoArray.toString());
+				}catch(Exception e){//this generic but you can control another types of exception
+					//look the origin of exception 
+					e.printStackTrace();
+				}
+				return "";
 			}
-		}*/
-		JSONArray retornoArray = new JSONArray();
-		List<PostEntity> timeline = postDao.getHomeTimeline(username, ultimaActualizacion);
-		for(int i=0; i<timeline.size(); i++){
-			JSONObject postJSON = postDao.getJSONFromPost(timeline.get(i));
-			retornoArray.put(postJSON);
 		}
-		return Utiles.retornarSalida(false, retornoArray.toString());
+		
 	}
 
 }

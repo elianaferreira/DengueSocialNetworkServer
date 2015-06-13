@@ -50,7 +50,8 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 	 * @param username
 	 * @return
 	 */
-	public List<PostEntity> getHomeTimeline(String username, Date ultimaActualizacion){
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<PostEntity> getHomeTimeline(String username, Timestamp ultimaActualizacion){
 		/* este seria el query ideal pero Hibernate no soporta UNION.
 		 "from PostEntity p where p.voluntario in ("
 				+ "select c.voluntario from ContactoEntity c where c.contacto='abstract' "
@@ -62,13 +63,14 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		//TODO cambiar la condicio de que sea fechaPost mayor a un timestamp
 		String consulta = "from PostEntity p "
 				+ "where p.voluntario in "
-				+ "(select c.voluntario from ContactoEntity c where c.contacto='abstract' )"
+				+ "(select c.voluntario from ContactoEntity c where c.contacto.userName= :username )"
 				+ "or p.voluntario in "
-				+ "(select c1.contacto from ContactoEntity c1 where c1.voluntario='abstract') "
+				+ "(select c1.contacto from ContactoEntity c1 where c1.voluntario.userName= :username) "
 				+ "or p.voluntario in "
-				+ "(select v.userName from VoluntarioEntity v where v.userName='abstract')"
-				+ "and p.fechaPost> :ultimaactualizacion";
+				+ "(select v.userName from VoluntarioEntity v where v.userName= :username)"
+				+ "and p.fechaPost> :ultimaactualizacion order by p.fechaPost desc";
 		Query query = this.getSession().createQuery(consulta);
+		query.setParameter("username", username);
 		query.setParameter("ultimaactualizacion", ultimaActualizacion);
 		List lista = query.list();
 		
