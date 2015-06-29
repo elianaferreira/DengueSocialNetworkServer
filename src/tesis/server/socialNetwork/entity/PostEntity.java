@@ -42,7 +42,7 @@ public class PostEntity {
 	//fotos guardadas como un array de bytes
 	private byte[] fotoAntes;
 	private byte[] fotoDespues;
-	//private List<ComentarioEntity> comentarios;
+	private List<ComentarioEntity> comentarios;
 	//private List<FavoritoEntity> favoritoDe;
 	//inidca si un caso reportado ha sido solucionado.
 	private Boolean solucionado;
@@ -123,5 +123,14 @@ public class PostEntity {
 	}
 	public void setFotoDespues(byte[] fotoDespues) {
 		this.fotoDespues = fotoDespues;
+	}
+	
+	@OneToMany
+	@JoinColumn(name="COMENTARIO")
+	public List<ComentarioEntity> getComentarios() {
+		return comentarios;
+	}
+	public void setComentarios(List<ComentarioEntity> comentarios) {
+		this.comentarios = comentarios;
 	}
 }

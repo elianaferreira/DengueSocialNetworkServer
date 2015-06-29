@@ -20,8 +20,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import tesis.server.socialNetwork.dao.ComentarioDao;
 import tesis.server.socialNetwork.dao.PostDao;
 import tesis.server.socialNetwork.dao.VoluntarioDao;
+import tesis.server.socialNetwork.entity.ComentarioEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
 import tesis.server.socialNetwork.utils.Utiles;
@@ -37,6 +39,10 @@ public class PostWS {
 	
 	@Inject
 	private PostDao postDao;
+	
+	
+	@Inject
+	private ComentarioDao comentarioDao;
 	
 	
 	
@@ -165,7 +171,46 @@ public class PostWS {
 				return "";
 			}
 		}
+	}
+	
+	
+	@Path("/reply/{idPost}")
+	@POST
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String responderPost(@PathParam("idPost") Integer idPostToReply,
+								@FormParam("respuesta") String respuesta,
+								@FormParam("username") String usernameQuienResponde){
 		
+		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameQuienResponde);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "No existe el usuario");
+		} else {//verificamos si ha iniciado sesion
+			if(voluntario.getLogged() == false){
+				//no ha iniciado sesion
+				return Utiles.retornarSalida(true, "No has iniciado sesión");
+			} else {
+				//buscamos el post
+				PostEntity postARepsonder = postDao.findByClassAndID(PostEntity.class, idPostToReply);
+				if(postARepsonder == null){
+					return Utiles.retornarSalida(true, "El reporte no existe");
+				} else {
+					//verificamos que la respuesta no sea un cadena vacia
+					if(!respuesta.isEmpty()){
+						//creamos el comentario
+						ComentarioEntity comentario = new ComentarioEntity();
+						comentario.setAutor(voluntario);
+						comentario.setPost(postARepsonder);
+						comentario.setCuerpoDelComentario(respuesta);
+						comentarioDao.guardar(comentario);
+						return Utiles.retornarSalida(false, "Comentario agregado");
+					}
+				}
+			}
+		}
+		
+		return "";
 	}
 
 }

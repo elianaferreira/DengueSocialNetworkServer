@@ -9,6 +9,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.json.JSONArray;
@@ -106,6 +107,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		retorno.put("ci", voluntarioEntity.getCi());
 		retorno.put("direccion", voluntarioEntity.getDireccion());
 		retorno.put("cantAmigos", voluntarioEntity.getContactos().size());
+		//TODO agregar cantidad de posts y reputacion
 		
 		return retorno;
 	}
@@ -158,6 +160,22 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 			}*/
 			return listaResultado;
 		}
+	}
+	
+	
+	/**
+	 * Metodo que retorna la cantidad de posts hechos por un usuario
+	 * @param voluntario
+	 * @return
+	 */
+	public Integer cantidadPosts(VoluntarioEntity voluntario){
+		String consulta = "select count(*) from PostEntity p "
+				+ "where p.voluntario = voluntario";
+		Query query = this.getSession().createQuery(consulta);
+		query.setEntity("voluntario", voluntario);
+		Integer cantidad = (Integer) query.uniqueResult();
+		
+		return cantidad;
 	}
 }
 

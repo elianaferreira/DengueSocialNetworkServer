@@ -12,6 +12,7 @@ import org.hibernate.Query;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 
+import tesis.server.socialNetwork.entity.ComentarioEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
 
 
@@ -86,6 +87,8 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 	 */
 	public JSONObject getJSONFromPost(PostEntity postEntity){
 		JSONObject retorno = new JSONObject();
+		//es necesario enviar el ID del post para poder identificarlo luego
+		retorno.put("id", postEntity.getIdPost());
 		retorno.put("mensaje", postEntity.getPost());
 		retorno.put("latitud", postEntity.getLatitud());
 		retorno.put("longitud", postEntity.getLongitud());
@@ -95,6 +98,5 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		
 		return retorno;
 	}
-	
 	
 }
