@@ -174,8 +174,8 @@ public class PostWS {
 	}
 	
 	
-	@Path("/reply/{idPost}")
 	@POST
+	@Path("/reply/{idPost}")
 	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String responderPost(@PathParam("idPost") Integer idPostToReply,
@@ -209,8 +209,39 @@ public class PostWS {
 				}
 			}
 		}
-		
 		return "";
+	}
+	
+	@GET
+	@Path("/answers/{idPost}")
+	public String getComentarios(@PathParam("idPost") Integer idPost,
+								@QueryParam("username") String usernameSolicitante){
+		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "No existe el usuario");
+		} else {//verificamos si ha iniciado sesion
+			if(voluntario.getLogged() == false){
+				//no ha iniciado sesion
+				return Utiles.retornarSalida(true, "No has iniciado sesión");
+			} else {
+				//buscamos el post
+				PostEntity postSolicitadp = postDao.findByClassAndID(PostEntity.class, idPost);
+				if(postSolicitadp == null){
+					return Utiles.retornarSalida(true, "El reporte no existe");
+				} else {
+					//retornamos la lista de JSON de los comentarios
+					JSONArray listaRetorno = new JSONArray();
+					List<ComentarioEntity> listaComentarios = comentarioDao.listarComentariosDePost(idPost);
+					//si esta vacia se envia asi mismo
+					for(int i=0; i< listaComentarios.size(); i++){
+						JSONObject comentarioJSON = comentarioDao.getJSONFromComment(listaComentarios.get(i));
+						listaRetorno.put(comentarioJSON);
+					}
+					return Utiles.retornarSalida(false, listaRetorno.toString());
+				}
+			}
+		}
 	}
 
 }
