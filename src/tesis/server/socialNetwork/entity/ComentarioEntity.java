@@ -33,7 +33,6 @@ public class ComentarioEntity {
 	private VoluntarioEntity autor;
 	private String cuerpoDelComentario;
 	private Date fecha;
-	//private List<FavoritoEntity> favoritoDe;
 	/*
 	 * debería estar presente uno u otro
 	 */
@@ -96,13 +95,4 @@ public class ComentarioEntity {
 	public void setCampanha(CampanhaEntity campanha) {
 		this.campanha = campanha;
 	}
-	
-	/*/REF: en.wikibooks.org/wiki/Java_Persistence/OneToMany
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="COMENTARIO")
-	public List<FavoritoEntity> getFavoritoDe() {
-		return favoritoDe;
-	}
-	public void setFavoritoDe(List<FavoritoEntity> favoritoDe) {
-		this.favoritoDe = favoritoDe;
-	}*/
 }

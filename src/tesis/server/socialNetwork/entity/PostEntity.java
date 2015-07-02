@@ -43,8 +43,9 @@ public class PostEntity {
 	private byte[] fotoAntes;
 	private byte[] fotoDespues;
 	private List<ComentarioEntity> comentarios;
-	//private List<FavoritoEntity> favoritoDe;
-	//inidca si un caso reportado ha sido solucionado.
+	private List<FavoritoEntity> likeList;
+	private List<NoFavorito> noLikeList;
+	//indica si un caso reportado ha sido solucionado.
 	private Boolean solucionado;
 	
 	//getters y setters
@@ -133,4 +134,23 @@ public class PostEntity {
 	public void setComentarios(List<ComentarioEntity> comentarios) {
 		this.comentarios = comentarios;
 	}
+	
+	@OneToMany
+	@JoinColumn(name="LIKE")
+	public List<FavoritoEntity> getLikeList() {
+		return likeList;
+	}
+	public void setLikeList(List<FavoritoEntity> likeList) {
+		this.likeList = likeList;
+	}
+	
+	@OneToMany
+	@JoinColumn(name="NO_LIKE")
+	public List<NoFavorito> getNoLikeList() {
+		return noLikeList;
+	}
+	public void setNoLikeList(List<NoFavorito> noLikeList) {
+		this.noLikeList = noLikeList;
+	}
+	
 }

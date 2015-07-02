@@ -12,8 +12,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+
 /**
- * Clase que representa una marcación de favorito, ya sea de un post
+ * Clase que representa una marcación de no favorito o mal, ya sea de un post
  * o de una campanha
  * 
  * @author eFerreira
@@ -21,10 +22,10 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name="FAVORITO")
-public class FavoritoEntity {
+@Table(name="NO_FAVORITO")
+public class NoFavorito {
 
-	private Integer idFavorito;
+	private Integer idNoFavorito;
 	private VoluntarioEntity autor;
 	
 	//no se puede marcar como fav un comentario, al estilo Instagram
@@ -35,14 +36,14 @@ public class FavoritoEntity {
 	
 	//getters y setters
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SN_FAVORITO_SEQ")
-    @SequenceGenerator(name="SN_FAVORITO_SEQ",sequenceName="SN_FAVORITO_SEQ")
-	@Column(name="ID_FAVORITO", nullable=false)
-	public Integer getIdFavorito() {
-		return idFavorito;
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SN_NO_FAVORITO_SEQ")
+    @SequenceGenerator(name="SN_NO_FAVORITO_SEQ",sequenceName="SN_NO_FAVORITO_SEQ")
+	@Column(name="ID_NO_FAVORITO", nullable=false)
+	public Integer getIdNoFavorito() {
+		return idNoFavorito;
 	}
-	public void setIdFavorito(Integer idFavorito) {
-		this.idFavorito = idFavorito;
+	public void setIdNoFavorito(Integer idNoFavorito) {
+		this.idNoFavorito = idNoFavorito;
 	}
 	
 	@ManyToOne(optional=false, cascade=CascadeType.REMOVE)
@@ -71,5 +72,4 @@ public class FavoritoEntity {
 	public void setCampanha(CampanhaEntity campanha) {
 		this.campanha = campanha;
 	}
-		
 }

@@ -43,6 +43,7 @@ public class VoluntarioEntity {
 	 */
 	private boolean logged;
 	private List<ContactoEntity> contactos;
+	private Integer reputacion;
 	
 	//TODO foto de perfil
 	
@@ -144,4 +145,15 @@ public class VoluntarioEntity {
 	public void setContactos(List<ContactoEntity> contactos) {
 		this.contactos = contactos;
 	}
+
+	@Column(name="REPUTACION", columnDefinition="int default 1")
+	public Integer getReputacion() {
+		return reputacion;
+	}
+
+	public void setReputacion(Integer reputacion) {
+		this.reputacion = reputacion;
+	}
+	
+	
 }
