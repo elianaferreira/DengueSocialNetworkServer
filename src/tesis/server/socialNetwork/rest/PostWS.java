@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import tesis.server.socialNetwork.dao.ComentarioDao;
 import tesis.server.socialNetwork.dao.FavoritoDao;
+import tesis.server.socialNetwork.dao.NoFavoritoDao;
 import tesis.server.socialNetwork.dao.PostDao;
 import tesis.server.socialNetwork.dao.VoluntarioDao;
 import tesis.server.socialNetwork.entity.ComentarioEntity;
 import tesis.server.socialNetwork.entity.FavoritoEntity;
+import tesis.server.socialNetwork.entity.NoFavoritoEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
 import tesis.server.socialNetwork.utils.Utiles;
@@ -47,6 +49,9 @@ public class PostWS {
 	
 	@Inject
 	private FavoritoDao favoritoDao;
+	
+	@Inject
+	private NoFavoritoDao noFavoritoDao;
 	
 	
 	
@@ -283,16 +288,66 @@ public class PostWS {
 						return Utiles.retornarSalida(false, "Marcacion agregada");
 					} else {
 						//buscamos la entidad y la eliminamos
-						
+						FavoritoEntity favoritoEliminar = favoritoDao.buscarMarcacion(idPost, usuarioQueMarca);
+						if(favoritoEliminar == null){
+							//no hacer nada
+							return Utiles.retornarSalida(true, "La marcacion no existe");
+						} else {
+							//lo eliminamos
+							favoritoDao.eliminar(favoritoEliminar);
+							return Utiles.retornarSalida(false, "Marcacion eliminada");
+						}
 					}
-					
-					
-					
 				}
 			}
 		}
 	}
 	
+	@POST
+	@Path("/noFavorito/{idPost}")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String marcarComoNoFavorito(@PathParam("idPost") Integer idPost,
+									   @FormParam("username") String usuarioQueMarca,
+									   @FormParam("marcar") Boolean marcar){
+		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioQueMarca);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "No existe el usuario");
+		} else {//verificamos si ha iniciado sesion
+			if(voluntario.getLogged() == false){
+				//no ha iniciado sesion
+				return Utiles.retornarSalida(true, "No has iniciado sesión");
+			} else {
+				//buscamos el post
+				PostEntity postSolicitado = postDao.findByClassAndID(PostEntity.class, idPost);
+				if(postSolicitado == null){
+					return Utiles.retornarSalida(true, "El reporte no existe");
+				} else {
+					//verificamos si es de marcado o desmarcado
+					if(marcar){
+						//creamos la entidad correspondiente al marcado como Nofavorito
+						NoFavoritoEntity noFavoritoEntity = new NoFavoritoEntity();
+						noFavoritoEntity.setAutor(voluntario);
+						noFavoritoEntity.setPost(postSolicitado);
+						noFavoritoDao.guardar(noFavoritoEntity);
+						return Utiles.retornarSalida(false, "Marcacion agregada");
+					} else {
+						//buscamos la entidad y la eliminamos
+						NoFavoritoEntity noFavoritoEliminar = noFavoritoDao.buscarMarcacion(idPost, usuarioQueMarca);
+						if(noFavoritoEliminar == null){
+							//no hacer nada
+							return Utiles.retornarSalida(true, "La marcacion no existe");
+						} else {
+							//lo eliminamos
+							noFavoritoDao.eliminar(noFavoritoEliminar);
+							return Utiles.retornarSalida(false, "Marcacion eliminada");
+						}
+					}
+				}
+			}
+		}
+	}	
 	
 
 }
