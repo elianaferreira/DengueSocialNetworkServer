@@ -21,9 +21,11 @@ import org.json.JSONObject;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import tesis.server.socialNetwork.dao.ComentarioDao;
+import tesis.server.socialNetwork.dao.FavoritoDao;
 import tesis.server.socialNetwork.dao.PostDao;
 import tesis.server.socialNetwork.dao.VoluntarioDao;
 import tesis.server.socialNetwork.entity.ComentarioEntity;
+import tesis.server.socialNetwork.entity.FavoritoEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
 import tesis.server.socialNetwork.utils.Utiles;
@@ -40,9 +42,11 @@ public class PostWS {
 	@Inject
 	private PostDao postDao;
 	
-	
 	@Inject
 	private ComentarioDao comentarioDao;
+	
+	@Inject
+	private FavoritoDao favoritoDao;
 	
 	
 	
@@ -214,6 +218,7 @@ public class PostWS {
 	
 	@GET
 	@Path("/answers/{idPost}")
+	@ResponseBody
 	public String getComentarios(@PathParam("idPost") Integer idPost,
 								@QueryParam("username") String usernameSolicitante){
 		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
@@ -243,5 +248,51 @@ public class PostWS {
 			}
 		}
 	}
+	
+	
+	@POST
+	@Path("/favorito/{idPost}")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String marcarComoFavorito(@PathParam("idPost") Integer idPost,
+									 @FormParam("username") String usuarioQueMarca,
+									 @FormParam("marcar") Boolean marcar){
+		
+		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioQueMarca);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "No existe el usuario");
+		} else {//verificamos si ha iniciado sesion
+			if(voluntario.getLogged() == false){
+				//no ha iniciado sesion
+				return Utiles.retornarSalida(true, "No has iniciado sesión");
+			} else {
+				//buscamos el post
+				PostEntity postSolicitado = postDao.findByClassAndID(PostEntity.class, idPost);
+				if(postSolicitado == null){
+					return Utiles.retornarSalida(true, "El reporte no existe");
+				} else {
+					//verificamos si es de marcado o desmarcado
+					if(marcar){
+						//creamos la entidad correspondiente al marcado como favorito
+						FavoritoEntity favoritoEntity = new FavoritoEntity();
+						favoritoEntity.setAutor(voluntario);
+						favoritoEntity.setPost(postSolicitado);
+						//lo guardamos
+						favoritoDao.guardar(favoritoEntity);
+						return Utiles.retornarSalida(false, "Marcacion agregada");
+					} else {
+						//buscamos la entidad y la eliminamos
+						
+					}
+					
+					
+					
+				}
+			}
+		}
+	}
+	
+	
 
 }

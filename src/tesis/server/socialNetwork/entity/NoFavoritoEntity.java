@@ -23,7 +23,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="NO_FAVORITO")
-public class NoFavorito {
+public class NoFavoritoEntity {
 
 	private Integer idNoFavorito;
 	private VoluntarioEntity autor;

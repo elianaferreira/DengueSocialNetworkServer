@@ -1,6 +1,5 @@
 package tesis.server.socialNetwork.entity;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -44,7 +42,7 @@ public class PostEntity {
 	private byte[] fotoDespues;
 	private List<ComentarioEntity> comentarios;
 	private List<FavoritoEntity> likeList;
-	private List<NoFavorito> noLikeList;
+	private List<NoFavoritoEntity> noLikeList;
 	//indica si un caso reportado ha sido solucionado.
 	private Boolean solucionado;
 	
@@ -146,10 +144,10 @@ public class PostEntity {
 	
 	@OneToMany
 	@JoinColumn(name="NO_LIKE")
-	public List<NoFavorito> getNoLikeList() {
+	public List<NoFavoritoEntity> getNoLikeList() {
 		return noLikeList;
 	}
-	public void setNoLikeList(List<NoFavorito> noLikeList) {
+	public void setNoLikeList(List<NoFavoritoEntity> noLikeList) {
 		this.noLikeList = noLikeList;
 	}
 	
