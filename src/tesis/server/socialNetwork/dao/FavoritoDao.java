@@ -1,8 +1,12 @@
 package tesis.server.socialNetwork.dao;
 
+import java.util.List;
+
 import org.hibernate.Query;
+import org.json.JSONObject;
 
 import tesis.server.socialNetwork.entity.FavoritoEntity;
+import tesis.server.socialNetwork.entity.PostEntity;
 
 public class FavoritoDao extends GenericDao<FavoritoEntity, Integer> {
 
@@ -39,6 +43,22 @@ public class FavoritoDao extends GenericDao<FavoritoEntity, Integer> {
 		query.setString("autorUsername", usernameAutorMarcacion);
 		FavoritoEntity fav = (FavoritoEntity) query.uniqueResult();
 		return fav;  
+	}
+	
+	
+	/**
+	 * Metodo que obtiene la lista de favoritos para un post dado.
+	 * 
+	 * @param postEntity
+	 * @return
+	 */
+	public List<FavoritoEntity> listaFavoritosByPost(PostEntity postEntity){
+		JSONObject restriccion = new JSONObject();
+		restriccion.put("post", postEntity.getIdPost());
+		
+		List<FavoritoEntity> listaRetorno = this.getListOfEntitiesWithRestrictionsLike(FavoritoEntity.class, restriccion);
+		
+		return listaRetorno;
 	}
 
 }

@@ -1,8 +1,13 @@
 package tesis.server.socialNetwork.dao;
 
-import org.hibernate.Query;
+import java.util.List;
 
+import org.hibernate.Query;
+import org.json.JSONObject;
+
+import tesis.server.socialNetwork.entity.FavoritoEntity;
 import tesis.server.socialNetwork.entity.NoFavoritoEntity;
+import tesis.server.socialNetwork.entity.PostEntity;
 
 public class NoFavoritoDao extends GenericDao<NoFavoritoEntity, Integer> {
 
@@ -38,6 +43,22 @@ public class NoFavoritoDao extends GenericDao<NoFavoritoEntity, Integer> {
 		query.setString("autorUsername", usernameAutorMarcacion);
 		NoFavoritoEntity noFav = (NoFavoritoEntity) query.uniqueResult();
 		return noFav;  
+	}
+	
+	
+	/**
+	 * Metodo que retorna la lista de no favoritos para un post dado.
+	 * 
+	 * @param postEntity
+	 * @return
+	 */
+	public List<NoFavoritoEntity> listaNoFavoritosByPost(PostEntity postEntity){
+		JSONObject restriccion = new JSONObject();
+		restriccion.put("post", postEntity.getIdPost());
+		
+		List<NoFavoritoEntity> listaRetorno = this.getListOfEntitiesWithRestrictionsLike(NoFavoritoEntity.class, restriccion);
+		
+		return listaRetorno;
 	}
 
 }

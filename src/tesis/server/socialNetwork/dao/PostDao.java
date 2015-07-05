@@ -12,7 +12,11 @@ import org.hibernate.Query;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 
+import com.sun.xml.wss.impl.misc.HANonceManager.nonceCleanupTask;
+
 import tesis.server.socialNetwork.entity.ComentarioEntity;
+import tesis.server.socialNetwork.entity.FavoritoEntity;
+import tesis.server.socialNetwork.entity.NoFavoritoEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
 
 
@@ -21,6 +25,12 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 
 	@Inject
 	private VoluntarioDao voluntarioDao;
+	
+	@Inject
+	private FavoritoDao favoritoDao;
+	
+	@Inject
+	private NoFavoritoDao noFavoritoDao;
 	
 	@Override
 	protected Class<PostEntity> getEntityBeanType() {
@@ -61,7 +71,6 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 				+ "union "
 				+ "select 'abstract') "
 				+ "and p.fechaPost<current_timestamp";*/
-		//TODO cambiar la condicio de que sea fechaPost mayor a un timestamp
 		String consulta = "from PostEntity p "
 				+ "where p.voluntario in "
 				+ "(select c.voluntario from ContactoEntity c where c.contacto.userName= :username )"
@@ -86,6 +95,10 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 	 * @return
 	 */
 	public JSONObject getJSONFromPost(PostEntity postEntity){
+		//buscamos la cantidad de marcaciones de fav y noFav para el post
+		List<FavoritoEntity> listaFV = favoritoDao.listaFavoritosByPost(postEntity);
+		List<NoFavoritoEntity> listaNFV = noFavoritoDao.listaNoFavoritosByPost(postEntity);
+		
 		JSONObject retorno = new JSONObject();
 		//es necesario enviar el ID del post para poder identificarlo luego
 		retorno.put("id", postEntity.getIdPost());
@@ -95,6 +108,17 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		retorno.put("fecha", postEntity.getFechaPost());
 		retorno.put("solucionado", postEntity.getSolucionado());
 		retorno.put("voluntario", voluntarioDao.getJSONFromVoluntario(postEntity.getVoluntario()));
+		if(listaFV == null || listaFV.size() == 0){
+			retorno.put("buenos", 0);
+		} else {
+			retorno.put("buenos", listaFV.size());
+		}
+		if(listaNFV == null || listaNFV.size() == 0){
+			retorno.put("malos", 0);
+		} else {
+			retorno.put("malos", listaNFV.size());
+		}
+		
 		
 		return retorno;
 	}

@@ -46,6 +46,7 @@ public class PostEntity {
 	//indica si un caso reportado ha sido solucionado.
 	private Boolean solucionado;
 	
+	
 	//getters y setters
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SN_POST_SEQ")
@@ -150,5 +151,7 @@ public class PostEntity {
 	public void setNoLikeList(List<NoFavoritoEntity> noLikeList) {
 		this.noLikeList = noLikeList;
 	}
+	
+	
 	
 }
