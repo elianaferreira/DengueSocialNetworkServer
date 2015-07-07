@@ -53,12 +53,12 @@ public class FavoritoDao extends GenericDao<FavoritoEntity, Integer> {
 	 * @return
 	 */
 	public List<FavoritoEntity> listaFavoritosByPost(PostEntity postEntity){
-		JSONObject restriccion = new JSONObject();
-		restriccion.put("post", postEntity.getIdPost());
-		
-		List<FavoritoEntity> listaRetorno = this.getListOfEntitiesWithRestrictionsLike(FavoritoEntity.class, restriccion);
-		
-		return listaRetorno;
+		String consulta = "from FavoritoEntity f "
+				+ "where f.post.idPost = :idPost";
+		Query query = this.getSession().createQuery(consulta);
+		query.setInteger("idPost", postEntity.getIdPost());
+		List<FavoritoEntity> listaRetorno = query.list();
+		return listaRetorno; 
 	}
 
 }

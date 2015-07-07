@@ -53,11 +53,11 @@ public class NoFavoritoDao extends GenericDao<NoFavoritoEntity, Integer> {
 	 * @return
 	 */
 	public List<NoFavoritoEntity> listaNoFavoritosByPost(PostEntity postEntity){
-		JSONObject restriccion = new JSONObject();
-		restriccion.put("post", postEntity.getIdPost());
-		
-		List<NoFavoritoEntity> listaRetorno = this.getListOfEntitiesWithRestrictionsLike(NoFavoritoEntity.class, restriccion);
-		
+		String consulta = "from NoFavoritoEntity f "
+				+ "where f.post.idPost = :idPost ";
+		Query query = this.getSession().createQuery(consulta);
+		query.setInteger("idPost", postEntity.getIdPost());
+		List<NoFavoritoEntity> listaRetorno = query.list();
 		return listaRetorno;
 	}
 
