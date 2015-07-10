@@ -169,7 +169,7 @@ public class PostWS {
 				    JSONArray retornoArray = new JSONArray();
 					List<PostEntity> timeline = postDao.getHomeTimeline(username, timestamp);
 					for(int i=0; i<timeline.size(); i++){
-						JSONObject postJSON = postDao.getJSONFromPost(timeline.get(i));
+						JSONObject postJSON = postDao.getJSONFromPost(username, timeline.get(i));
 						retornoArray.put(postJSON);
 					}
 					return Utiles.retornarSalida(false, retornoArray.toString());

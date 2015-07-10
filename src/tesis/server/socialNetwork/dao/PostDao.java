@@ -94,7 +94,7 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 	 * @param postEntity
 	 * @return
 	 */
-	public JSONObject getJSONFromPost(PostEntity postEntity){
+	public JSONObject getJSONFromPost(String usernameSolicitante, PostEntity postEntity){
 		//buscamos la cantidad de marcaciones de fav y noFav para el post
 		List<FavoritoEntity> listaFV = favoritoDao.listaFavoritosByPost(postEntity);
 		List<NoFavoritoEntity> listaNFV = noFavoritoDao.listaNoFavoritosByPost(postEntity);
@@ -118,9 +118,37 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		} else {
 			retorno.put("malos", listaNFV.size());
 		}
-		
+		//se debe indicar si es usuario que solicita marco como bueno o malo
+		retorno.put("marcoComoBueno", marcoComoBueno(usernameSolicitante, listaFV));
+		retorno.put("marcoComoMalo", marcoComoMalo(usernameSolicitante, listaNFV));
 		
 		return retorno;
 	}
 	
+	
+	private boolean marcoComoBueno(String usernameSolicitante, List<FavoritoEntity> listaFavs){
+		if(listaFavs == null || listaFavs.size() == 0){
+			return false;
+		} else {
+			for(int i=0; i<listaFavs.size(); i++){
+				if(listaFavs.get(i).getAutor().getUserName() == usernameSolicitante){
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+	
+	private boolean marcoComoMalo(String usernameSolicitante, List<NoFavoritoEntity> listaNoFavs){
+		if(listaNoFavs == null || listaNoFavs.size() == 0){
+			return false;
+		} else {
+			for(int i=0; i<listaNoFavs.size(); i++){
+				if(listaNoFavs.get(i).getAutor().getUserName() == usernameSolicitante){
+					return true;
+				}
+			}
+			return false;
+		}
+	}
 }
