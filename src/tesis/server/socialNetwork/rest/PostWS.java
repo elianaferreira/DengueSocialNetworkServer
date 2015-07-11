@@ -285,7 +285,9 @@ public class PostWS {
 						favoritoEntity.setPost(postSolicitado);
 						//lo guardamos
 						favoritoDao.guardar(favoritoEntity);
-						return Utiles.retornarSalida(false, "Marcacion agregada");
+						//obtenemos la cantidad actual de favs
+						Integer cantidad = favoritoDao.cantidadFavoritosByPost(postSolicitado);
+						return Utiles.retornarSalida(false, cantidad.toString());
 					} else {
 						//buscamos la entidad y la eliminamos
 						FavoritoEntity favoritoEliminar = favoritoDao.buscarMarcacion(idPost, usuarioQueMarca);

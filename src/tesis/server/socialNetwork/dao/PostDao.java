@@ -126,6 +126,13 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 	}
 	
 	
+	/**
+	 * Metodo que verifica si un usuario ya marco como FAV un post
+	 * 
+	 * @param usernameSolicitante
+	 * @param listaFavs
+	 * @return
+	 */
 	private boolean marcoComoBueno(String usernameSolicitante, List<FavoritoEntity> listaFavs){
 		if(listaFavs == null || listaFavs.size() == 0){
 			return false;
@@ -139,6 +146,14 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		}
 	}
 	
+	
+	/**
+	 * Metodo que verifica si un usuario ya marco como NoFav un post
+	 * 
+	 * @param usernameSolicitante
+	 * @param listaNoFavs
+	 * @return
+	 */
 	private boolean marcoComoMalo(String usernameSolicitante, List<NoFavoritoEntity> listaNoFavs){
 		if(listaNoFavs == null || listaNoFavs.size() == 0){
 			return false;

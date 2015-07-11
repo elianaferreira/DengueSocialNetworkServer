@@ -170,7 +170,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 	 */
 	public Integer cantidadPosts(VoluntarioEntity voluntario){
 		String consulta = "select count(*) from PostEntity p "
-				+ "where p.voluntario = voluntario";
+				+ "where p.voluntario = :voluntario";
 		Query query = this.getSession().createQuery(consulta);
 		query.setEntity("voluntario", voluntario);
 		Integer cantidad = (Integer) query.uniqueResult();

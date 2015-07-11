@@ -60,5 +60,23 @@ public class FavoritoDao extends GenericDao<FavoritoEntity, Integer> {
 		List<FavoritoEntity> listaRetorno = query.list();
 		return listaRetorno; 
 	}
+	
+	
+	/**
+	 * Metodo que retorna la cantidad de favs que recibio un post dado
+	 * 
+	 * @param postEntity
+	 * @return
+	 */
+	public Integer cantidadFavoritosByPost(PostEntity postEntity){
+		//hacemos el calculo de cuantos favs tiene un post dado
+		String consulta = "select count(*) from FavoritoEntity f "
+				+ "where f.post.idPost = :idPost";
+		Query query = this.getSession().createQuery(consulta);
+		query.setInteger("idPost", postEntity.getIdPost());
+		Long cantidadLong = (Long) query.uniqueResult();
+		Integer cantidad = cantidadLong.intValue();
+		return cantidad;
+	}
 
 }
