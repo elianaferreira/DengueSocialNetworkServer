@@ -46,7 +46,7 @@ public class NoFavoritoEntity {
 		this.idNoFavorito = idNoFavorito;
 	}
 	
-	@ManyToOne(optional=false, cascade=CascadeType.REMOVE)
+	@ManyToOne(optional=false)
 	@JoinColumn(name="AUTOR", nullable=false)
 	public VoluntarioEntity getAutor() {
 		return autor;
@@ -55,7 +55,7 @@ public class NoFavoritoEntity {
 		this.autor = autor;
 	}
 	
-	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+	@ManyToOne()
 	@JoinColumn(name="POST", nullable=true)
 	public PostEntity getPost() {
 		return post;
@@ -64,7 +64,7 @@ public class NoFavoritoEntity {
 		this.post = post;
 	}
 	
-	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+	@ManyToOne()
 	@JoinColumn(name="CAMPANHA", nullable=true)
 	public CampanhaEntity getCampanha() {
 		return campanha;

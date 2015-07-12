@@ -322,8 +322,7 @@ public class PostWS {
 	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String marcarComoNoFavorito(@PathParam("idPost") Integer idPost,
-									   @FormParam("username") String usuarioQueMarca,
-									   @FormParam("marcar") Boolean marcar){
+									   @FormParam("username") String usuarioQueMarca){
 		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioQueMarca);
 		if(voluntario == null){
@@ -339,24 +338,39 @@ public class PostWS {
 					return Utiles.retornarSalida(true, "El reporte no existe");
 				} else {
 					//verificamos si es de marcado o desmarcado
-					if(marcar){
-						//creamos la entidad correspondiente al marcado como Nofavorito
+					//buscamos la entidad FAV perteneciente al usuario y al post
+					NoFavoritoEntity noFav = noFavoritoDao.buscarMarcacion(idPost, usuarioQueMarca);
+					if(noFav == null){
+						Boolean previoBueno = false;
+						//creamos la entidad correspondiente al marcado como noFavorito
 						NoFavoritoEntity noFavoritoEntity = new NoFavoritoEntity();
 						noFavoritoEntity.setAutor(voluntario);
 						noFavoritoEntity.setPost(postSolicitado);
+						//lo guardamos
 						noFavoritoDao.guardar(noFavoritoEntity);
-						return Utiles.retornarSalida(false, "Marcacion agregada");
-					} else {
-						//buscamos la entidad y la eliminamos
-						NoFavoritoEntity noFavoritoEliminar = noFavoritoDao.buscarMarcacion(idPost, usuarioQueMarca);
-						if(noFavoritoEliminar == null){
+						//buscamos el fav si existe y lo eliminamos
+						FavoritoEntity favEliminar = favoritoDao.buscarMarcacion(idPost, usuarioQueMarca);
+						if(favEliminar == null){
 							//no hacer nada
-							return Utiles.retornarSalida(true, "La marcacion no existe");
 						} else {
 							//lo eliminamos
-							noFavoritoDao.eliminar(noFavoritoEliminar);
-							return Utiles.retornarSalida(false, "Marcacion eliminada");
+							favoritoDao.eliminar(favEliminar);
+							previoBueno = true;
 						}
+						//enviamos la cantidad de marcaciones buenas y malas
+						Integer cantidadBuenos = favoritoDao.cantidadFavoritosByPost(postSolicitado);
+						Integer cantidadMalos = noFavoritoDao.cantidadNoFavoritosByPost(postSolicitado);
+						String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, false, previoBueno, true, false);
+						return Utiles.retornarSalida(false, retorno);
+					} else {
+						//lo eliminamos
+						noFavoritoDao.eliminar(noFav);
+						//enviamos la cantidad de marcaciones buenas y malas
+						Integer cantidadBuenos = favoritoDao.cantidadFavoritosByPost(postSolicitado);
+						Integer cantidadMalos = noFavoritoDao.cantidadNoFavoritosByPost(postSolicitado);
+						
+						String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, false, false, false, true);
+						return Utiles.retornarSalida(false, retorno);
 					}
 				}
 			}
