@@ -46,6 +46,7 @@ public class FavoritoDao extends GenericDao<FavoritoEntity, Integer> {
 	}
 	
 	
+	
 	/**
 	 * Metodo que obtiene la lista de favoritos para un post dado.
 	 * 
@@ -54,9 +55,9 @@ public class FavoritoDao extends GenericDao<FavoritoEntity, Integer> {
 	 */
 	public List<FavoritoEntity> listaFavoritosByPost(PostEntity postEntity){
 		String consulta = "from FavoritoEntity f "
-				+ "where f.post.idPost = :idPost";
+				+ "where f.post = :postEntity";
 		Query query = this.getSession().createQuery(consulta);
-		query.setInteger("idPost", postEntity.getIdPost());
+		query.setEntity("postEntity", postEntity);
 		List<FavoritoEntity> listaRetorno = query.list();
 		return listaRetorno; 
 	}

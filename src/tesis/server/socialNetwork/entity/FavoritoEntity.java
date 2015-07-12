@@ -28,10 +28,10 @@ public class FavoritoEntity {
 	private VoluntarioEntity autor;
 	
 	//no se puede marcar como fav un comentario, al estilo Instagram
-	//private ComentarioEntity comentario;
 	private PostEntity post;
 	private CampanhaEntity campanha;
 	
+
 	
 	//getters y setters
 	@Id
@@ -45,7 +45,7 @@ public class FavoritoEntity {
 		this.idFavorito = idFavorito;
 	}
 	
-	@ManyToOne(optional=false, cascade=CascadeType.REMOVE)
+	@ManyToOne(optional=false)
 	@JoinColumn(name="AUTOR", nullable=false)
 	public VoluntarioEntity getAutor() {
 		return autor;
@@ -54,7 +54,7 @@ public class FavoritoEntity {
 		this.autor = autor;
 	}
 	
-	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+	@ManyToOne()
 	@JoinColumn(name="POST", nullable=true)
 	public PostEntity getPost() {
 		return post;
@@ -63,7 +63,7 @@ public class FavoritoEntity {
 		this.post = post;
 	}
 	
-	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+	@ManyToOne()
 	@JoinColumn(name="CAMPANHA", nullable=true)
 	public CampanhaEntity getCampanha() {
 		return campanha;
@@ -71,5 +71,6 @@ public class FavoritoEntity {
 	public void setCampanha(CampanhaEntity campanha) {
 		this.campanha = campanha;
 	}
+
 		
 }

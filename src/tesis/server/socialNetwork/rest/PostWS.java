@@ -303,10 +303,11 @@ public class PostWS {
 						return Utiles.retornarSalida(false, retorno);
 					} else {
 						//lo eliminamos
-						favoritoDao.eliminar(fav);
+						favoritoDao.delete(fav);
 						//enviamos la cantidad de marcaciones buenas y malas
 						Integer cantidadBuenos = favoritoDao.cantidadFavoritosByPost(postSolicitado);
 						Integer cantidadMalos = noFavoritoDao.cantidadNoFavoritosByPost(postSolicitado);
+						
 						String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, false, true, false, false);
 						return Utiles.retornarSalida(false, retorno);
 					
