@@ -260,8 +260,7 @@ public class PostWS {
 	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String marcarComoFavorito(@PathParam("idPost") Integer idPost,
-									 @FormParam("username") String usuarioQueMarca,
-									 @FormParam("marcar") Boolean marcar){
+									 @FormParam("username") String usuarioQueMarca){
 		
 		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioQueMarca);
@@ -278,7 +277,9 @@ public class PostWS {
 					return Utiles.retornarSalida(true, "El reporte no existe");
 				} else {
 					//verificamos si es de marcado o desmarcado
-					if(marcar){
+					//buscamos la entidad FAV perteneciente al usuario y al post
+					FavoritoEntity fav = favoritoDao.buscarMarcacion(idPost, usuarioQueMarca);
+					if(fav == null){
 						Boolean previoMalo = false;
 						//creamos la entidad correspondiente al marcado como favorito
 						FavoritoEntity favoritoEntity = new FavoritoEntity();
@@ -301,20 +302,14 @@ public class PostWS {
 						String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, true, false, false, previoMalo);
 						return Utiles.retornarSalida(false, retorno);
 					} else {
-						//buscamos la entidad y la eliminamos
-						FavoritoEntity favoritoEliminar = favoritoDao.buscarMarcacion(idPost, usuarioQueMarca);
-						if(favoritoEliminar == null){
-							//no hacer nada
-							return Utiles.retornarSalida(true, "La marcacion no existe");
-						} else {
-							//lo eliminamos
-							favoritoDao.eliminar(favoritoEliminar);
-							//enviamos la cantidad de marcaciones buenas y malas
-							Integer cantidadBuenos = favoritoDao.cantidadFavoritosByPost(postSolicitado);
-							Integer cantidadMalos = noFavoritoDao.cantidadNoFavoritosByPost(postSolicitado);
-							String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, false, true, false, false);
-							return Utiles.retornarSalida(false, retorno);
-						}
+						//lo eliminamos
+						favoritoDao.eliminar(fav);
+						//enviamos la cantidad de marcaciones buenas y malas
+						Integer cantidadBuenos = favoritoDao.cantidadFavoritosByPost(postSolicitado);
+						Integer cantidadMalos = noFavoritoDao.cantidadNoFavoritosByPost(postSolicitado);
+						String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, false, true, false, false);
+						return Utiles.retornarSalida(false, retorno);
+					
 					}
 				}
 			}
