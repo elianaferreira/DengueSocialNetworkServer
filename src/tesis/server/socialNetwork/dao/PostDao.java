@@ -166,4 +166,26 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 			return false;
 		}
 	}
+	
+	
+	/**
+	 * Metodo que retorna la lista de un JSONString de las marcaciones del post
+	 * 
+	 * @param buenos
+	 * @param malos
+	 * @return
+	 */
+	public String getJSONFromMarcaciones(Integer buenos, Integer malos, Boolean marcoBueno, Boolean desmarcoBueno, Boolean marcoMalo, Boolean desmarcoMalo){
+		JSONObject jsonRetorno = new JSONObject();
+		jsonRetorno.put("buenos", buenos);
+		jsonRetorno.put("malos", malos);
+		jsonRetorno.put("marcoBueno", marcoBueno);
+		jsonRetorno.put("desmarcoBueno", desmarcoBueno);
+		jsonRetorno.put("marcoMalo", marcoMalo);
+		jsonRetorno.put("desmarcoMalo", desmarcoMalo);
+		
+		return jsonRetorno.toString();
+		
+		
+	}
 }

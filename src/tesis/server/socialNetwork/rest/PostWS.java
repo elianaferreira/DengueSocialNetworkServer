@@ -279,15 +279,27 @@ public class PostWS {
 				} else {
 					//verificamos si es de marcado o desmarcado
 					if(marcar){
+						Boolean previoMalo = false;
 						//creamos la entidad correspondiente al marcado como favorito
 						FavoritoEntity favoritoEntity = new FavoritoEntity();
 						favoritoEntity.setAutor(voluntario);
 						favoritoEntity.setPost(postSolicitado);
 						//lo guardamos
 						favoritoDao.guardar(favoritoEntity);
-						//obtenemos la cantidad actual de favs
-						Integer cantidad = favoritoDao.cantidadFavoritosByPost(postSolicitado);
-						return Utiles.retornarSalida(false, cantidad.toString());
+						//buscamos el noFav si existe y lo eliminamos
+						NoFavoritoEntity noFavEliminar = noFavoritoDao.buscarMarcacion(idPost, usuarioQueMarca);
+						if(noFavEliminar == null){
+							//no hacer nada
+						} else {
+							//lo eliminamos
+							noFavoritoDao.eliminar(noFavEliminar);
+							previoMalo = true;
+						}
+						//enviamos la cantidad de marcaciones buenas y malas
+						Integer cantidadBuenos = favoritoDao.cantidadFavoritosByPost(postSolicitado);
+						Integer cantidadMalos = noFavoritoDao.cantidadNoFavoritosByPost(postSolicitado);
+						String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, true, false, false, previoMalo);
+						return Utiles.retornarSalida(false, retorno);
 					} else {
 						//buscamos la entidad y la eliminamos
 						FavoritoEntity favoritoEliminar = favoritoDao.buscarMarcacion(idPost, usuarioQueMarca);
@@ -297,7 +309,11 @@ public class PostWS {
 						} else {
 							//lo eliminamos
 							favoritoDao.eliminar(favoritoEliminar);
-							return Utiles.retornarSalida(false, "Marcacion eliminada");
+							//enviamos la cantidad de marcaciones buenas y malas
+							Integer cantidadBuenos = favoritoDao.cantidadFavoritosByPost(postSolicitado);
+							Integer cantidadMalos = noFavoritoDao.cantidadNoFavoritosByPost(postSolicitado);
+							String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, false, true, false, false);
+							return Utiles.retornarSalida(false, retorno);
 						}
 					}
 				}
@@ -349,7 +365,56 @@ public class PostWS {
 				}
 			}
 		}
-	}	
+	}
+	
+	
+	/**
+	 * En este metodo se devolvera el post junto con sus comentarios
+	 * @param idPost
+	 * @param usernameSolicitante
+	 * @return
+	 */
+	@GET
+	@Path("/post/{idPost}")
+	@ResponseBody
+	public String getPost(@PathParam("idPost") Integer idPost,
+						  @QueryParam("username") String usernameSolicitante){
+		
+		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "No existe el usuario");
+		} else {//verificamos si ha iniciado sesion
+			if(voluntario.getLogged() == false){
+				//no ha iniciado sesion
+				return Utiles.retornarSalida(true, "No has iniciado sesión");
+			} else {
+				//buscamos el post
+				PostEntity postSolicitado = postDao.findByClassAndID(PostEntity.class, idPost);
+				if(postSolicitado == null){
+					return Utiles.retornarSalida(true, "El reporte no existe");
+				} else {
+					//lo pasamos a JSON
+					JSONObject jsonPost = postDao.getJSONFromPost(usernameSolicitante, postSolicitado);
+					//ahora obtenemos los comentarios
+					//retornamos la lista de JSON de los comentarios
+					JSONArray jsonArrayComentarios = new JSONArray();
+					List<ComentarioEntity> listaComentarios = comentarioDao.listarComentariosDePost(idPost);
+					//si esta vacia se envia asi mismo
+					for(int i=0; i< listaComentarios.size(); i++){
+						JSONObject comentarioJSON = comentarioDao.getJSONFromComment(listaComentarios.get(i));
+						jsonArrayComentarios.put(comentarioJSON);
+					}
+					//juntamos en un solo JSON
+					JSONObject jsonRetorno = new JSONObject();
+					jsonRetorno.put("post", jsonPost);
+					jsonRetorno.put("comentarios", jsonArrayComentarios);
+					//lo enviamos
+					return Utiles.retornarSalida(false, jsonRetorno.toString());
+				}
+			}
+		}
+	}
 	
 
 }

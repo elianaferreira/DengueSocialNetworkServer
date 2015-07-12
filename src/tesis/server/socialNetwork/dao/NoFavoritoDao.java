@@ -60,5 +60,23 @@ public class NoFavoritoDao extends GenericDao<NoFavoritoEntity, Integer> {
 		List<NoFavoritoEntity> listaRetorno = query.list();
 		return listaRetorno;
 	}
+	
+	
+	/**
+	 * Metodo que retorna la cantidad de noFavs que recibio un post dado
+	 * 
+	 * @param postEntity
+	 * @return
+	 */
+	public Integer cantidadNoFavoritosByPost(PostEntity postEntity){
+		//hacemos el calculo de cuantos noFavs tiene un post dado
+		String consulta = "select count(*) from NoFavoritoEntity f "
+				+ "where f.post.idPost = :idPost";
+		Query query = this.getSession().createQuery(consulta);
+		query.setInteger("idPost", postEntity.getIdPost());
+		Long cantidadLong = (Long) query.uniqueResult();
+		Integer cantidad = cantidadLong.intValue();
+		return cantidad;
+	}
 
 }
