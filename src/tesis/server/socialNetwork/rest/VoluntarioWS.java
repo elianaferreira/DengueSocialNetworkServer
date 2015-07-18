@@ -431,4 +431,38 @@ public class VoluntarioWS {
 		}
 		return "";
 	}
+	
+	
+	
+	@GET
+	@Path("/contacts/{username}")
+	@ResponseBody
+	public String getContacts(@PathParam("username") String username){
+		//verificaciones del usuario
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "No existe el usuario");
+		} else {
+			//verificamos si ha iniciado sesion
+			if(voluntario.getLogged() == false){
+				//no ha iniciado sesion
+				return Utiles.retornarSalida(true, "No has iniciado sesión");
+			} else {
+				//obtenemos la lista de contactos
+				List<VoluntarioEntity> listaContactos = voluntarioDao.getListaContactos(voluntario);
+				if(listaContactos == null){
+					List<VoluntarioEntity> listaVacia = new ArrayList<VoluntarioEntity>();
+					return Utiles.retornarSalida(false, listaVacia.toString());
+				} else {
+					List<JSONObject> listaRetorno = new ArrayList<JSONObject>();
+					for(VoluntarioEntity contacto: listaContactos){
+						JSONObject contactoJSON = voluntarioDao.getJSONFromVoluntario(contacto);
+						listaRetorno.add(contactoJSON);
+					}
+					return Utiles.retornarSalida(false, listaRetorno.toString());
+				}
+				
+			}
+		}
+	}
 }

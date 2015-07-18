@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -16,6 +17,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 
+import com.sun.xml.rpc.processor.modeler.j2ee.xml.constructorParameterOrderType;
+
 import tesis.server.socialNetwork.entity.ContactoEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
 
@@ -24,6 +27,11 @@ import tesis.server.socialNetwork.entity.VoluntarioEntity;
 @Controller
 public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 
+	@Inject
+	private ContactoDao contactoDao;
+	
+	
+	
 	@Override
 	protected Class<VoluntarioEntity> getEntityBeanType() {
 		return VoluntarioEntity.class;
@@ -176,6 +184,30 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		Integer cantidad = (Integer) query.uniqueResult();
 		
 		return cantidad;
+	}
+	
+	
+	/**
+	 * Metodo que retorna la lista de contactos de un voluntarios
+	 * @param voluntarioSolicitante
+	 * @return
+	 */
+	public List<VoluntarioEntity> getListaContactos(VoluntarioEntity voluntarioSolicitante){
+		//llamamos al metodo que obtiene la lista contactosEntity correspondientes
+		List<ContactoEntity> listaEntities = contactoDao.getListaContactsEntity(voluntarioSolicitante);
+		if(listaEntities == null || listaEntities.size() == 0){
+			return null;
+		} else {
+			List<VoluntarioEntity> listaRetorno = new ArrayList<VoluntarioEntity>();
+			for(ContactoEntity contacto: listaEntities){
+				if(contacto.getVoluntario().getUserName() != voluntarioSolicitante.getUserName()){
+					listaRetorno.add(contacto.getVoluntario());
+				} else if(contacto.getContacto().getUserName() != voluntarioSolicitante.getUserName()){
+					listaRetorno.add(contacto.getContacto());
+				}
+			}
+			return listaRetorno;
+		}
 	}
 }
 
