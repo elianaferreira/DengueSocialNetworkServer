@@ -30,6 +30,7 @@ import tesis.server.socialNetwork.entity.FavoritoEntity;
 import tesis.server.socialNetwork.entity.NoFavoritoEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
+import tesis.server.socialNetwork.utils.Base64;
 import tesis.server.socialNetwork.utils.Utiles;
 
 
@@ -71,7 +72,9 @@ public class PostWS {
 	public String newStatus(@FormParam("mensaje") String mensaje,
 							@FormParam("username") String username,
 							@FormParam("latitud") String latitud,
-							@FormParam("longitud") String longitud){
+							@FormParam("longitud") String longitud,
+							@FormParam("fotoAntes") String fotoAntes,
+							@FormParam("fotoDespues") String fotoDespues){
 		
 		//traemos el usuario de la Base de Datos
 		VoluntarioEntity voluntarioEntity = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
@@ -88,6 +91,12 @@ public class PostWS {
 					PostEntity postEntity = new PostEntity();
 					postEntity.setPost(mensaje);
 					postEntity.setVoluntario(voluntarioEntity);
+					if(fotoAntes != null && fotoAntes != ""){
+						postEntity.setFotoAntes(Base64.decode(fotoAntes, Base64.DEFAULT));
+					}
+					if(fotoDespues != null && fotoDespues != ""){
+						postEntity.setFotoDespues(Base64.decode(fotoDespues, Base64.DEFAULT));
+					}
 					if(latitud != null && longitud != null){
 						System.out.print("latitud: " + String.valueOf(latitud));
 						System.out.print("longitud: " + String.valueOf(longitud));
