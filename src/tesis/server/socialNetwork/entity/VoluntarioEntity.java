@@ -45,8 +45,7 @@ public class VoluntarioEntity {
 	private List<ContactoEntity> contactos;
 	private Integer reputacion;
 	
-	//TODO foto de perfil
-	
+	private byte[] fotoDePerfil;
 	
 	//constructor
 	public VoluntarioEntity(){
@@ -153,6 +152,16 @@ public class VoluntarioEntity {
 
 	public void setReputacion(Integer reputacion) {
 		this.reputacion = reputacion;
+	}
+
+	
+	@Column(name="FOTO_PERFIL_BYTES", nullable=true)
+	public byte[] getFotoDePerfil() {
+		return fotoDePerfil;
+	}
+
+	public void setFotoDePerfil(byte[] fotoDePerfil) {
+		this.fotoDePerfil = fotoDePerfil;
 	}
 	
 	

@@ -29,6 +29,7 @@ import tesis.server.socialNetwork.dao.VoluntarioDao;
 import tesis.server.socialNetwork.entity.ContactoEntity;
 import tesis.server.socialNetwork.entity.SolicitudAmistadEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
+import tesis.server.socialNetwork.utils.Base64;
 import tesis.server.socialNetwork.utils.Utiles;
 
 /**
@@ -75,7 +76,8 @@ public class VoluntarioWS {
 							   @FormParam("ci") Integer ci,
 							   @FormParam("direccion") String direccion,
 							   @FormParam("telefono") String telefono,
-							   @FormParam("email") String email){
+							   @FormParam("email") String email,
+							   @FormParam("fotoPerfil") String fotoDePerfil){
 		//verificar que ese nombre de usuario no exista ya en la Base de Datos
 		//generamos un ejemplo
 		VoluntarioEntity voluntario = new VoluntarioEntity();
@@ -95,6 +97,9 @@ public class VoluntarioWS {
 		}
 		if(email != null){
 			voluntario.setEmail(email);
+		}
+		if(fotoDePerfil != null){
+			voluntario.setFotoDePerfil(Base64.decode(fotoDePerfil, Base64.DEFAULT));
 		}
 		// lo pasamos a minuscula y verificamos si no existe ya
 		String usernameLower = username.toLowerCase();
@@ -462,6 +467,28 @@ public class VoluntarioWS {
 					return Utiles.retornarSalida(false, listaRetorno.toString());
 				}
 				
+			}
+		}
+	}
+	
+	
+	@GET
+	@Path("/user/profilePhoto/{username}")
+	@ResponseBody
+	public String photoProfile(@PathParam("username") String usernameFoto){
+		
+		//no verificamos el usuario solicitante
+		//verificamos si existe un usuario con ese username
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameFoto);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "El usuario no existe");
+		} else {
+			//verificamos si tiene foto de perfil
+			if(voluntario.getFotoDePerfil() == null){
+				//enviamos un array vacio
+				return Utiles.retornarSalida(true, "No tiene foto de perfil");
+			} else {
+				return Utiles.retornarSalida(false,Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
 			}
 		}
 	}

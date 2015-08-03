@@ -9,6 +9,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -24,11 +25,13 @@ import tesis.server.socialNetwork.dao.ComentarioDao;
 import tesis.server.socialNetwork.dao.FavoritoDao;
 import tesis.server.socialNetwork.dao.NoFavoritoDao;
 import tesis.server.socialNetwork.dao.PostDao;
+import tesis.server.socialNetwork.dao.RepostDao;
 import tesis.server.socialNetwork.dao.VoluntarioDao;
 import tesis.server.socialNetwork.entity.ComentarioEntity;
 import tesis.server.socialNetwork.entity.FavoritoEntity;
 import tesis.server.socialNetwork.entity.NoFavoritoEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
+import tesis.server.socialNetwork.entity.RepostEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
 import tesis.server.socialNetwork.utils.Base64;
 import tesis.server.socialNetwork.utils.Utiles;
@@ -53,6 +56,9 @@ public class PostWS {
 	
 	@Inject
 	private NoFavoritoDao noFavoritoDao;
+	
+	@Inject
+	private RepostDao repostDao;
 	
 	
 	
@@ -434,6 +440,68 @@ public class PostWS {
 			}
 		}
 	}
+	
+	
+	@POST
+	@Path("/repost/{idPost}")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String repost(@PathParam("idPost") Integer idPost,
+						 @FormParam("username") String usernameRepost){
+		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameRepost);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "No existe el usuario");
+		} else {//verificamos si ha iniciado sesion
+			if(voluntario.getLogged() == false){
+				return Utiles.retornarSalida(true, "No has iniciado sesión");
+			} else {
+				PostEntity postSolicitado = postDao.findByClassAndID(PostEntity.class, idPost);
+				if(postSolicitado == null){
+					return Utiles.retornarSalida(true, "El reporte no existe");
+				} else {
+					RepostEntity repost = new RepostEntity();
+					repost.setPost(postSolicitado);
+					repost.setAutorRepost(voluntario);
+					repostDao.guardar(repost);
+					return Utiles.retornarSalida(false, "Repost realizado");
+				}
+			}
+		}
+	}
+	
+	
+	//TODO @DELETE???
+	@POST
+	@Path("/repost/{idRepost}")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String eliminarRepost(@PathParam("idRepost") Integer idRepost,
+						 @FormParam("username") String usernameRepost){
+		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameRepost);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "No existe el usuario");
+		} else {//verificamos si ha iniciado sesion
+			if(voluntario.getLogged() == false){
+				return Utiles.retornarSalida(true, "No has iniciado sesión");
+			} else {
+				RepostEntity repost = repostDao.findByClassAndID(RepostEntity.class, idRepost);
+				if(repost == null){
+					return Utiles.retornarSalida(true, "No has hecho un repost de este post o el post ha sido eliminado");
+				} else {
+					//verificamos que solo el autor lo intente eliminar
+					if(repost.getAutorRepost().getUserName() != usernameRepost){
+						return Utiles.retornarSalida(true, "No puedes deshacer un repost que no has hecho");
+					} else {
+						repostDao.eliminar(repost);
+						return Utiles.retornarSalida(false, "Repost deshecho");
+					}
+				}
+			}
+		}
+	}
+	
 	
 
 }
