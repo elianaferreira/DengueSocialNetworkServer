@@ -115,7 +115,8 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		retorno.put("ci", voluntarioEntity.getCi());
 		retorno.put("direccion", voluntarioEntity.getDireccion());
 		retorno.put("cantAmigos", voluntarioEntity.getContactos().size());
-		//TODO agregar cantidad de posts y reputacion
+		retorno.put("reputacion", voluntarioEntity.getReputacion());
+		retorno.put("cantReportes", this.cantidadPosts(voluntarioEntity));
 		
 		return retorno;
 	}
@@ -181,7 +182,8 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 				+ "where p.voluntario = :voluntario";
 		Query query = this.getSession().createQuery(consulta);
 		query.setEntity("voluntario", voluntario);
-		Integer cantidad = (Integer) query.uniqueResult();
+		Long cantidadL = (Long) query.uniqueResult();
+		Integer cantidad = cantidadL.intValue();
 		
 		return cantidad;
 	}

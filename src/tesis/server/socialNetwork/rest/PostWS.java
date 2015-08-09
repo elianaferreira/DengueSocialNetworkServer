@@ -472,7 +472,7 @@ public class PostWS {
 	
 	
 	//TODO @DELETE???
-	@POST
+	/*@POST
 	@Path("/repost/{idRepost}")
 	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
@@ -500,8 +500,12 @@ public class PostWS {
 				}
 			}
 		}
-	}
+	}*/
 	
+	
+	//TODO enviar los posts mas recientes en segmentos.
+	//TODO multipart para las fotos
+	//TODO agregar un mapa en la app para que el usuario localice posts a su alrededor: rango puede ser variable, iconos del maker distintos para post resueltos y no resueltos
 	
 
 }

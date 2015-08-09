@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
+import com.sun.jersey.json.impl.writer.JsonEncoder;
 import com.sun.xml.rpc.processor.modeler.j2ee.xml.exceptionMappingType;
 
 import tesis.server.socialNetwork.dao.ContactoDao;
@@ -216,7 +217,8 @@ public class VoluntarioWS {
 			//se inicia sesion para el usuario
 			voluntario.setLogged(true);
 			voluntarioDao.modificar(voluntario);
-			return Utiles.retornarSalida(false, "Sesión iniciada");
+			JSONObject retorno = voluntarioDao.getJSONFromVoluntario(voluntario);
+			return Utiles.retornarSalida(false, retorno.toString());
 		}
 	}
 	
