@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.swing.text.html.ListView;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -182,11 +183,18 @@ public class PostWS {
 				    timestamp = new java.sql.Timestamp(parsedDate.getTime());
 				    
 				    JSONArray retornoArray = new JSONArray();
-					List<PostEntity> timeline = postDao.getHomeTimeline(username, timestamp);
-					for(int i=0; i<timeline.size(); i++){
-						JSONObject postJSON = postDao.getJSONFromPost(username, timeline.get(i));
+					List<PostEntity> posts = postDao.getPosts(username, timestamp);
+					for(int i=0; i<posts.size(); i++){
+						JSONObject postJSON = postDao.getJSONFromPost(username, posts.get(i));
 						retornoArray.put(postJSON);
 					}
+					List<RepostEntity> reposts = repostDao.getReposts(username, timestamp);
+					for(int j=0; j<reposts.size(); j++){
+						JSONObject repostJSON = repostDao.getJSONFromRepost(reposts.get(j));
+						retornoArray.put(repostJSON);
+					}
+					
+					
 					return Utiles.retornarSalida(false, retornoArray.toString());
 				}catch(Exception e){//this generic but you can control another types of exception
 					//look the origin of exception 

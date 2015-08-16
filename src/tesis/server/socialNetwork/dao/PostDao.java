@@ -12,9 +12,6 @@ import org.hibernate.Query;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 
-import com.sun.xml.wss.impl.misc.HANonceManager.nonceCleanupTask;
-
-import tesis.server.socialNetwork.entity.ComentarioEntity;
 import tesis.server.socialNetwork.entity.FavoritoEntity;
 import tesis.server.socialNetwork.entity.NoFavoritoEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
@@ -62,7 +59,7 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<PostEntity> getHomeTimeline(String username, Timestamp ultimaActualizacion){
+	public List<PostEntity> getPosts(String username, Timestamp ultimaActualizacion){
 		/* este seria el query ideal pero Hibernate no soporta UNION.
 		 "from PostEntity p where p.voluntario in ("
 				+ "select c.voluntario from ContactoEntity c where c.contacto='abstract' "

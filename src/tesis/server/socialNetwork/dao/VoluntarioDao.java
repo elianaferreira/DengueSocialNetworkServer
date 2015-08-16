@@ -23,7 +23,6 @@ import tesis.server.socialNetwork.entity.ContactoEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
 
 
-//@Repository
 @Controller
 public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 
@@ -44,6 +43,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		voluntarioEntity.setUserName(voluntarioEntity.getUserName().toLowerCase());
 		//agregamos la fecha de inscripcion del objeto
 		voluntarioEntity.setFechaIns(new Date());
+		voluntarioEntity.setReputacion(1);
 		this.save(voluntarioEntity);
 	}
 	
