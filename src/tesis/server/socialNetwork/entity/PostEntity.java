@@ -76,7 +76,7 @@ public class PostEntity {
 		this.voluntario = voluntario;
 	}
 	
-	@Column(name="FECHA_POST", nullable=false, columnDefinition="TIMESTAMP WITH TIME ZONE")
+	@Column(name="FECHA_POST", nullable=false, columnDefinition="TIMESTAMP WITHOUT TIME ZONE")
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getFechaPost() {
 		return fechaPost;

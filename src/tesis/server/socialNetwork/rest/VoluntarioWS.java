@@ -1,6 +1,9 @@
 package tesis.server.socialNetwork.rest;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -21,13 +24,18 @@ import org.json.JSONObject;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
+import com.sun.el.parser.ParseException;
 import com.sun.jersey.json.impl.writer.JsonEncoder;
 import com.sun.xml.rpc.processor.modeler.j2ee.xml.exceptionMappingType;
 
 import tesis.server.socialNetwork.dao.ContactoDao;
+import tesis.server.socialNetwork.dao.PostDao;
+import tesis.server.socialNetwork.dao.RepostDao;
 import tesis.server.socialNetwork.dao.SolicitudAmistadDao;
 import tesis.server.socialNetwork.dao.VoluntarioDao;
 import tesis.server.socialNetwork.entity.ContactoEntity;
+import tesis.server.socialNetwork.entity.PostEntity;
+import tesis.server.socialNetwork.entity.RepostEntity;
 import tesis.server.socialNetwork.entity.SolicitudAmistadEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
 import tesis.server.socialNetwork.utils.Base64;
@@ -54,6 +62,12 @@ public class VoluntarioWS {
 	
 	@Inject
 	private SolicitudAmistadDao solicitudAmistadDao;
+	
+	@Inject
+	private PostDao postDao;
+
+	@Inject
+	private RepostDao repostDao;
 	
 	/**
 	 * Metodo que  agrega un nuevo usuario a la BD
@@ -492,6 +506,41 @@ public class VoluntarioWS {
 			} else {
 				return Utiles.retornarSalida(false,Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
 			}
+		}
+	}
+	
+	
+	@GET
+	@Path("/user/homeTimeline/{username}")
+	@ResponseBody
+	public String homeTimeline(@PathParam("username") String username,
+							@QueryParam("ultimaactualizacion") String ultimaActualizacionString){
+		//no verificamos el usuario solicitante
+		//verificamos si existe un usuario con ese username
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "El usuario no existe");
+		} else {
+			JSONArray arrayRetorno = new JSONArray();
+			List<PostEntity> postsPropios = postDao.getHomeTimeline(voluntario);
+			for(int i=0; i<postsPropios.size(); i++){
+				JSONObject postJSON = postDao.getJSONFromPost(username, postsPropios.get(i));
+				arrayRetorno.put(postJSON);
+			}
+			try{
+				Timestamp timestamp;
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+			    Date parsedDate = dateFormat.parse(ultimaActualizacionString);
+			    timestamp = new java.sql.Timestamp(parsedDate.getTime());
+				List<RepostEntity> reposts = repostDao.getReposts(username, timestamp);
+				for(int j=0; j<reposts.size(); j++){
+					JSONObject repostJSON = repostDao.getJSONFromRepost(reposts.get(j));
+					arrayRetorno.put(repostJSON);
+				}
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+			return Utiles.retornarSalida(false, arrayRetorno.toString());
 		}
 	}
 }

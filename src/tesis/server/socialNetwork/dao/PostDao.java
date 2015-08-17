@@ -1,6 +1,7 @@
 package tesis.server.socialNetwork.dao;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import tesis.server.socialNetwork.entity.FavoritoEntity;
 import tesis.server.socialNetwork.entity.NoFavoritoEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
+import tesis.server.socialNetwork.entity.VoluntarioEntity;
 
 
 @Controller
@@ -42,6 +44,8 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		//agregamos la fecha en formato timestamp
 		Date date = new Date();
 		postEntity.setFechaPost(new Timestamp(date.getTime()));
+		
+		
 		this.save(postEntity);
 	}
 	
@@ -182,7 +186,21 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		jsonRetorno.put("desmarcoMalo", desmarcoMalo);
 		
 		return jsonRetorno.toString();
+	}
+	
+	
+	/**
+	 * Metodo que retorna la lista de posts del usuario
+	 * @param voluntario
+	 * @return
+	 */
+	public List<PostEntity> getHomeTimeline(VoluntarioEntity voluntario){
 		
+		String consulta = "from PostEntity p where p.voluntario = :usuario";
+		Query query = this.getSession().createQuery(consulta);
+		query.setEntity("usuario", voluntario);
+		List lista = query.list();
 		
+		return lista;
 	}
 }

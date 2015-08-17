@@ -160,7 +160,7 @@ public class PostWS {
 	 * @return
 	 */
 	@GET
-	@Path("/homeTimeline/{username}")
+	@Path("/timeline/{username}")
 	@ResponseBody
 	public String actualizarTimeline(@PathParam("username") String username,
 									@QueryParam("ultimaactualizacion") String ultimaActualizacionString){

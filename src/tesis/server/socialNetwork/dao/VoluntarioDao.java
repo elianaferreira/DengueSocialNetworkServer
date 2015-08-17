@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import com.sun.xml.rpc.processor.modeler.j2ee.xml.constructorParameterOrderType;
 
 import tesis.server.socialNetwork.entity.ContactoEntity;
+import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
 
 
@@ -211,6 +212,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 			return listaRetorno;
 		}
 	}
+		
 }
 
 
