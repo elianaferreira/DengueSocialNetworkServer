@@ -73,13 +73,13 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 				+ "select 'abstract') "
 				+ "and p.fechaPost<current_timestamp";*/
 		String consulta = "from PostEntity p "
-				+ "where p.voluntario in "
+				+ "where (p.voluntario in "
 				+ "(select c.voluntario from ContactoEntity c where c.contacto.userName= :username )"
 				+ "or p.voluntario in "
 				+ "(select c1.contacto from ContactoEntity c1 where c1.voluntario.userName= :username) "
 				+ "or p.voluntario in "
-				+ "(select v.userName from VoluntarioEntity v where v.userName= :username)"
-				+ "and p.fechaPost> :ultimaactualizacion order by p.fechaPost desc";
+				+ "(select v.userName from VoluntarioEntity v where v.userName= :username))"
+				+ "and p.fechaPost> :ultimaactualizacion order by p.fechaPost asc";
 		Query query = this.getSession().createQuery(consulta);
 		query.setParameter("username", username);
 		query.setParameter("ultimaactualizacion", ultimaActualizacion);
