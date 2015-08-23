@@ -63,7 +63,7 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<PostEntity> getPosts(String username, Timestamp ultimaActualizacion){
+	public List<PostEntity> getPosts(String username, Timestamp ultimaActualizacion, Boolean nuevos){
 		/* este seria el query ideal pero Hibernate no soporta UNION.
 		 "from PostEntity p where p.voluntario in ("
 				+ "select c.voluntario from ContactoEntity c where c.contacto='abstract' "
@@ -72,6 +72,15 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 				+ "union "
 				+ "select 'abstract') "
 				+ "and p.fechaPost<current_timestamp";*/
+		String condicionActualizacion = "";
+		String condicionNuevos = " and p.fechaPost> :ultimaactualizacion order by p.fechaPost asc";
+		String condicionViejos = " and p.fechaPost< :ultimaactualizacion order by p.fechaPost asc";
+		if(nuevos){
+			condicionActualizacion = condicionNuevos;
+		} else {
+			condicionActualizacion = condicionViejos;
+		}
+		
 		String consulta = "from PostEntity p "
 				+ "where (p.voluntario in "
 				+ "(select c.voluntario from ContactoEntity c where c.contacto.userName= :username )"
@@ -79,11 +88,14 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 				+ "(select c1.contacto from ContactoEntity c1 where c1.voluntario.userName= :username) "
 				+ "or p.voluntario in "
 				+ "(select v.userName from VoluntarioEntity v where v.userName= :username))"
-				+ "and p.fechaPost> :ultimaactualizacion order by p.fechaPost asc";
+				+ condicionActualizacion;
 		Query query = this.getSession().createQuery(consulta);
 		query.setParameter("username", username);
 		query.setParameter("ultimaactualizacion", ultimaActualizacion);
+		//limitar la cantidad de registros
+		query.setMaxResults(3);
 		List lista = query.list();
+		
 		
 		return lista;
 	}

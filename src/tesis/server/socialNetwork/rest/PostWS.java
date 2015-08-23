@@ -163,7 +163,8 @@ public class PostWS {
 	@Path("/timeline/{username}")
 	@ResponseBody
 	public String actualizarTimeline(@PathParam("username") String username,
-									@QueryParam("ultimaactualizacion") String ultimaActualizacionString){
+									@QueryParam("ultimaactualizacion") String ultimaActualizacionString,
+									@QueryParam("top") Boolean top){
 		
 		//verificaciones del usuario
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
@@ -183,7 +184,7 @@ public class PostWS {
 				    timestamp = new java.sql.Timestamp(parsedDate.getTime());
 				    
 				    JSONArray retornoArray = new JSONArray();
-					List<PostEntity> posts = postDao.getPosts(username, timestamp);
+					List<PostEntity> posts = postDao.getPosts(username, timestamp, top);
 					for(int i=0; i<posts.size(); i++){
 						JSONObject postJSON = postDao.getJSONFromPost(username, posts.get(i));
 						retornoArray.put(postJSON);
