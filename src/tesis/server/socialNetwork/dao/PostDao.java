@@ -64,6 +64,7 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List<PostEntity> getPosts(String username, Timestamp ultimaActualizacion, Boolean nuevos){
+		System.out.println("Uusario " + username + "; timestamp: " + ultimaActualizacion.toString() + "; son nuevos?: " + nuevos.toString());
 		/* este seria el query ideal pero Hibernate no soporta UNION.
 		 "from PostEntity p where p.voluntario in ("
 				+ "select c.voluntario from ContactoEntity c where c.contacto='abstract' "
@@ -74,7 +75,7 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 				+ "and p.fechaPost<current_timestamp";*/
 		String condicionActualizacion = "";
 		String condicionNuevos = " and p.fechaPost> :ultimaactualizacion order by p.fechaPost asc";
-		String condicionViejos = " and p.fechaPost< :ultimaactualizacion order by p.fechaPost asc";
+		String condicionViejos = " and p.fechaPost< :ultimaactualizacion order by p.fechaPost desc";
 		if(nuevos){
 			condicionActualizacion = condicionNuevos;
 		} else {
