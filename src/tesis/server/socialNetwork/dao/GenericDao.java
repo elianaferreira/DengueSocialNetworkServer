@@ -16,6 +16,8 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.json.JSONObject;
 
+import tesis.server.socialNetwork.entity.PostEntity;
+
 
 /**
  * Clase que implementa las operaciones CRUD y de listado básicas
@@ -108,6 +110,17 @@ public abstract class GenericDao<T, ID extends Serializable> {
      */
     protected void save(T entity) {
         this.getEm().persist(entity);
+    }
+    
+    /**
+     * Metodo que permite guardar un post y retornar su ID generado
+     * @param entity
+     * @return
+     */
+    protected Integer saveAndReturnPost(PostEntity entity){
+    	this.getEm().persist(entity);
+    	this.getEm().flush();
+    	return entity.getIdPost();
     }
 
     /**

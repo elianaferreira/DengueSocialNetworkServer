@@ -1,5 +1,6 @@
 package tesis.server.socialNetwork.rest;
 
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,7 +26,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
 import com.sun.el.parser.ParseException;
+import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.json.impl.writer.JsonEncoder;
+import com.sun.jersey.multipart.FormDataParam;
 import com.sun.xml.rpc.processor.modeler.j2ee.xml.exceptionMappingType;
 
 import tesis.server.socialNetwork.dao.ContactoDao;
@@ -91,8 +94,10 @@ public class VoluntarioWS {
 							   @FormParam("ci") Integer ci,
 							   @FormParam("direccion") String direccion,
 							   @FormParam("telefono") String telefono,
-							   @FormParam("email") String email,
-							   @FormParam("fotoPerfil") String fotoDePerfil){
+							   @FormParam("email") String email){
+		/*
+		 * @FormDataParam("fotoPerfil") InputStream fileInputStream
+		 */
 		//verificar que ese nombre de usuario no exista ya en la Base de Datos
 		//generamos un ejemplo
 		VoluntarioEntity voluntario = new VoluntarioEntity();
@@ -113,9 +118,7 @@ public class VoluntarioWS {
 		if(email != null){
 			voluntario.setEmail(email);
 		}
-		if(fotoDePerfil != null){
-			voluntario.setFotoDePerfil(Base64.decode(fotoDePerfil, Base64.DEFAULT));
-		}
+		
 		// lo pasamos a minuscula y verificamos si no existe ya
 		String usernameLower = username.toLowerCase();
 		if(voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameLower) != null){

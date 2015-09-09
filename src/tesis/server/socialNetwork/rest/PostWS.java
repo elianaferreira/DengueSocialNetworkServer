@@ -1,5 +1,9 @@
 package tesis.server.socialNetwork.rest;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -7,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.swing.text.html.ListView;
 import javax.ws.rs.Consumes;
@@ -17,10 +22,15 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.sun.jersey.multipart.BodyPartEntity;
+import com.sun.jersey.multipart.FormDataParam;
+import com.sun.jersey.multipart.MultiPart;
 
 import tesis.server.socialNetwork.dao.ComentarioDao;
 import tesis.server.socialNetwork.dao.FavoritoDao;
@@ -83,6 +93,12 @@ public class PostWS {
 							@FormParam("fotoAntes") String fotoAntes,
 							@FormParam("fotoDespues") String fotoDespues){
 		
+		/*
+		 * ,
+							@FormDataParam("fotoAntes") InputStream fotoAntes,
+							@FormDataParam("fotoDespues") InputStream fotoDespues
+		 * */
+		
 		//traemos el usuario de la Base de Datos
 		VoluntarioEntity voluntarioEntity = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		//verificamos que el usuario exista
@@ -97,20 +113,39 @@ public class PostWS {
 				try {
 					PostEntity postEntity = new PostEntity();
 					postEntity.setPost(mensaje);
-					postEntity.setVoluntario(voluntarioEntity);
-					if(fotoAntes != null && fotoAntes != ""){
+					postEntity.setVoluntario(voluntarioEntity);					
+					/*if(fotoAntes != null && fotoAntes != ""){
 						postEntity.setFotoAntes(Base64.decode(fotoAntes, Base64.DEFAULT));
 					}
 					if(fotoDespues != null && fotoDespues != ""){
 						postEntity.setFotoDespues(Base64.decode(fotoDespues, Base64.DEFAULT));
-					}
+					}*/
 					if(latitud != null && longitud != null){
 						System.out.print("latitud: " + String.valueOf(latitud));
 						System.out.print("longitud: " + String.valueOf(longitud));
 						postEntity.setLatitud(Double.parseDouble(latitud));
 						postEntity.setLongitud(Double.parseDouble(longitud));
 					}
-					postDao.guardar(postEntity);
+					Integer idGen = postDao.guardar(postEntity);
+					//una vez que se ha guardado se asocian las fotos con le ID del post en la BD
+					if(fotoAntes != null){
+						//Utiles.savePhoto(fotoAntes, "antes_" + String.valueOf(idGen));
+						byte[] aByteArray = Base64.decode(fotoAntes, Base64.DEFAULT);
+						//int width = 1;
+						//int height = 2;
+
+						//DataBuffer buffer = new DataBufferByte(aByteArray, aByteArray.length);
+
+						//3 bytes per pixel: red, green, blue
+						//WritableRaster raster = Raster.createInterleavedRaster(buffer, width, height, 3 * width, 3, new int[] {0, 1, 2}, (Point)null);
+						//ColorModel cm = new ComponentColorModel(ColorModel.getRGBdefault().getColorSpace(), false, true, Transparency.OPAQUE, DataBuffer.TYPE_BYTE); 
+						BufferedImage img = ImageIO.read(new ByteArrayInputStream(aByteArray));
+
+						ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + "image.png"));
+					}
+					/*if(fotoDespues != null){
+						Utiles.savePhoto(fotoDespues, "despues_" + String.valueOf(idGen));
+					}*/
 					return Utiles.retornarSalida(false, "Enviado");
 				} catch(Exception ex){
 					ex.printStackTrace();
@@ -512,9 +547,39 @@ public class PostWS {
 	}*/
 	
 	
-	//TODO enviar los posts mas recientes en segmentos.
+	
+	
 	//TODO multipart para las fotos
 	//TODO agregar un mapa en la app para que el usuario localice posts a su alrededor: rango puede ser variable, iconos del maker distintos para post resueltos y no resueltos
 	
+	
+	/*@POST
+	@Path("/nuevoPost")
+	@Consumes("multipart/mixed")
+	public String nuevoReporte(MultiPart multipart){
+		//la primera parte es un JSON
+		JSONObject jsonParte1 = multipart.getBodyParts().get(0).getEntityAs(JSONObject.class);
+		System.out.println(jsonParte1.get("username"));
+		System.out.println(jsonParte1.get("mensaje"));
+		
+		//la segunda parte es la foto
+		BodyPartEntity bpe = (BodyPartEntity) multipart.getBodyParts().get(1).getEntity();
+		try{
+			InputStream source = bpe.getInputStream();
+			BufferedImage bi = ImageIO.read(source);
+			File file = new File(Utiles.PHOTOS_FOLDER + "antes_foto" + ".png");
+			//verificamos si el directorio existe
+			if(file.isDirectory()){
+				ImageIO.write(bi, "png", file);
+			} else {
+				file.mkdir();
+				ImageIO.write(bi, "png", file);
+			}
+		} catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
+		return Utiles.retornarSalida(false, "nuevo post agregado");
+	}*/
 
 }
