@@ -1,5 +1,9 @@
 package tesis.server.socialNetwork.rest;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -8,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -94,7 +99,8 @@ public class VoluntarioWS {
 							   @FormParam("ci") Integer ci,
 							   @FormParam("direccion") String direccion,
 							   @FormParam("telefono") String telefono,
-							   @FormParam("email") String email){
+							   @FormParam("email") String email,
+							   @FormParam("fotoPerfil") String fotoPerfil){
 		/*
 		 * @FormDataParam("fotoPerfil") InputStream fileInputStream
 		 */
@@ -125,6 +131,12 @@ public class VoluntarioWS {
 			return Utiles.retornarSalida(true, "El usuario ya existe");
 		} else{
 			try{
+				if(fotoPerfil != null){
+					byte[] aByteArray = Base64.decode(fotoPerfil, Base64.DEFAULT);
+					BufferedImage img = ImageIO.read(new ByteArrayInputStream(aByteArray));
+
+					ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + usernameLower + "_profile.png"));
+				}
 				voluntarioDao.guardar(voluntario);
 				return Utiles.retornarSalida(false, "Voluntario registrado con éxito");
 			}catch(Exception ex){
@@ -159,7 +171,8 @@ public class VoluntarioWS {
 							 @FormParam("ci") Integer ci,
 							 @FormParam("direccion") String direccion,
 							 @FormParam("telefono") String telefono,
-							 @FormParam("email") String email){
+							 @FormParam("email") String email,
+							 @FormParam("fotoPerfil") String fotoPerfil){
 		
 		//verificar que ese nombre de usuario exista ya en la Base de Datos
 		String usernameLower = username.toLowerCase();
@@ -197,6 +210,16 @@ public class VoluntarioWS {
 				}
 				if(email != null){
 					voluntario.setEmail(email);
+				}
+				if(fotoPerfil != null){
+					byte[] aByteArray = Base64.decode(fotoPerfil, Base64.DEFAULT);
+					BufferedImage img;
+					try {
+						img = ImageIO.read(new ByteArrayInputStream(aByteArray));
+						ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + usernameLower + "_profile.png"));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 				try{
 					voluntarioDao.modificar(voluntario);

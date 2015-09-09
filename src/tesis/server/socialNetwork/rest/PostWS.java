@@ -129,23 +129,18 @@ public class PostWS {
 					Integer idGen = postDao.guardar(postEntity);
 					//una vez que se ha guardado se asocian las fotos con le ID del post en la BD
 					if(fotoAntes != null){
-						//Utiles.savePhoto(fotoAntes, "antes_" + String.valueOf(idGen));
 						byte[] aByteArray = Base64.decode(fotoAntes, Base64.DEFAULT);
-						//int width = 1;
-						//int height = 2;
-
-						//DataBuffer buffer = new DataBufferByte(aByteArray, aByteArray.length);
-
-						//3 bytes per pixel: red, green, blue
-						//WritableRaster raster = Raster.createInterleavedRaster(buffer, width, height, 3 * width, 3, new int[] {0, 1, 2}, (Point)null);
-						//ColorModel cm = new ComponentColorModel(ColorModel.getRGBdefault().getColorSpace(), false, true, Transparency.OPAQUE, DataBuffer.TYPE_BYTE); 
 						BufferedImage img = ImageIO.read(new ByteArrayInputStream(aByteArray));
 
-						ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + "image.png"));
+						ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + String.valueOf(idGen) + "antes_image.png"));
 					}
-					/*if(fotoDespues != null){
-						Utiles.savePhoto(fotoDespues, "despues_" + String.valueOf(idGen));
-					}*/
+					if(fotoDespues != null){
+						//Utiles.savePhoto(fotoDespues, "despues_" + String.valueOf(idGen));
+						byte[] aByteArray = Base64.decode(fotoDespues, Base64.DEFAULT);
+						BufferedImage img = ImageIO.read(new ByteArrayInputStream(aByteArray));
+
+						ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + String.valueOf(idGen) + "despues_image.png"));
+					}
 					return Utiles.retornarSalida(false, "Enviado");
 				} catch(Exception ex){
 					ex.printStackTrace();
