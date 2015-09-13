@@ -4,6 +4,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -17,6 +20,7 @@ import tesis.server.socialNetwork.entity.ComentarioEntity;
 
 
 @Controller
+@LocalBean
 public class ComentarioDao extends GenericDao {
 	
 	@Inject

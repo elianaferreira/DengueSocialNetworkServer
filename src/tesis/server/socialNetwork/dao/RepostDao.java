@@ -4,13 +4,19 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.hibernate.Query;
 import org.json.JSONObject;
+import org.springframework.stereotype.Controller;
 
 import tesis.server.socialNetwork.entity.RepostEntity;
 
+@Controller
+@LocalBean
 public class RepostDao extends GenericDao<RepostEntity, Integer> {
 
 	@Override

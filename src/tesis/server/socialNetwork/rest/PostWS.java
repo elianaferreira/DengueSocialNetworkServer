@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -26,6 +27,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sun.jersey.multipart.BodyPartEntity;
@@ -92,12 +94,6 @@ public class PostWS {
 							@FormParam("longitud") String longitud,
 							@FormParam("fotoAntes") String fotoAntes,
 							@FormParam("fotoDespues") String fotoDespues){
-		
-		/*
-		 * ,
-							@FormDataParam("fotoAntes") InputStream fotoAntes,
-							@FormDataParam("fotoDespues") InputStream fotoDespues
-		 * */
 		
 		//traemos el usuario de la Base de Datos
 		VoluntarioEntity voluntarioEntity = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
@@ -341,6 +337,8 @@ public class PostWS {
 						favoritoEntity.setPost(postSolicitado);
 						//lo guardamos
 						favoritoDao.guardar(favoritoEntity);
+						//relevante
+						postDao.setPostRelevante(postSolicitado);
 						//buscamos el noFav si existe y lo eliminamos
 						NoFavoritoEntity noFavEliminar = noFavoritoDao.buscarMarcacion(idPost, usuarioQueMarca);
 						if(noFavEliminar == null){
@@ -354,6 +352,7 @@ public class PostWS {
 						Integer cantidadBuenos = favoritoDao.cantidadFavoritosByPost(postSolicitado);
 						Integer cantidadMalos = noFavoritoDao.cantidadNoFavoritosByPost(postSolicitado);
 						String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, true, false, false, previoMalo);
+						
 						return Utiles.retornarSalida(false, retorno);
 					} else {
 						//lo eliminamos
@@ -402,6 +401,8 @@ public class PostWS {
 						noFavoritoEntity.setPost(postSolicitado);
 						//lo guardamos
 						noFavoritoDao.guardar(noFavoritoEntity);
+						//relevante
+						postDao.setPostRelevante(postSolicitado);
 						//buscamos el fav si existe y lo eliminamos
 						FavoritoEntity favEliminar = favoritoDao.buscarMarcacion(idPost, usuarioQueMarca);
 						if(favEliminar == null){
@@ -540,41 +541,31 @@ public class PostWS {
 			}
 		}
 	}*/
-	
-	
-	
-	
-	//TODO multipart para las fotos
+
 	//TODO agregar un mapa en la app para que el usuario localice posts a su alrededor: rango puede ser variable, iconos del maker distintos para post resueltos y no resueltos
 	
-	
-	/*@POST
-	@Path("/nuevoPost")
-	@Consumes("multipart/mixed")
-	public String nuevoReporte(MultiPart multipart){
-		//la primera parte es un JSON
-		JSONObject jsonParte1 = multipart.getBodyParts().get(0).getEntityAs(JSONObject.class);
-		System.out.println(jsonParte1.get("username"));
-		System.out.println(jsonParte1.get("mensaje"));
+	@GET
+	@Path("/relevantes/{username}")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String postsRelevantes(@PathParam("username") String usernameSolicitante){
 		
-		//la segunda parte es la foto
-		BodyPartEntity bpe = (BodyPartEntity) multipart.getBodyParts().get(1).getEntity();
-		try{
-			InputStream source = bpe.getInputStream();
-			BufferedImage bi = ImageIO.read(source);
-			File file = new File(Utiles.PHOTOS_FOLDER + "antes_foto" + ".png");
-			//verificamos si el directorio existe
-			if(file.isDirectory()){
-				ImageIO.write(bi, "png", file);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "No existe el usuario");
+		} else {//verificamos si ha iniciado sesion
+			if(voluntario.getLogged() == false){
+				return Utiles.retornarSalida(true, "No has iniciado sesión");
 			} else {
-				file.mkdir();
-				ImageIO.write(bi, "png", file);
+				List<PostEntity> listaRelevantes = postDao.getRelevantes();
+				JSONArray retorno = new JSONArray();
+				for(int i=0; i<listaRelevantes.size(); i++){
+					JSONObject postJSON = postDao.getJSONFromPost(usernameSolicitante, listaRelevantes.get(i));
+					retorno.put(postJSON);
+				}
+				return Utiles.retornarSalida(false, retorno.toString());
 			}
-		} catch(Exception ex){
-			ex.printStackTrace();
 		}
-		
-		return Utiles.retornarSalida(false, "nuevo post agregado");
-	}*/
+	}
 
 }

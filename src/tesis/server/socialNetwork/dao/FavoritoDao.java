@@ -1,15 +1,29 @@
 package tesis.server.socialNetwork.dao;
 
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import org.hibernate.Query;
-import org.json.JSONObject;
+import org.springframework.stereotype.Controller;
 
 import tesis.server.socialNetwork.entity.FavoritoEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
+import tesis.server.socialNetwork.utils.Utiles;
 
+@Controller
+@LocalBean
 public class FavoritoDao extends GenericDao<FavoritoEntity, Integer> {
 
+	@Inject
+	private VoluntarioDao voluntarioDao;
+	
+	
 	@Override
 	protected Class<FavoritoEntity> getEntityBeanType() {
 		return FavoritoEntity.class;

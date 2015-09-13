@@ -45,6 +45,7 @@ public class PostEntity {
 	private List<NoFavoritoEntity> noLikeList;
 	//indica si un caso reportado ha sido solucionado.
 	private Boolean solucionado;
+	private Boolean relevante;
 	
 	
 	//getters y setters
@@ -150,6 +151,14 @@ public class PostEntity {
 	}
 	public void setNoLikeList(List<NoFavoritoEntity> noLikeList) {
 		this.noLikeList = noLikeList;
+	}
+	
+	@Column(name="RELEVANTE", columnDefinition="boolean default false")
+	public Boolean getRelevante() {
+		return relevante;
+	}
+	public void setRelevante(Boolean relevante) {
+		this.relevante = relevante;
 	}
 	
 	

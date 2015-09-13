@@ -7,10 +7,11 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
 import org.json.JSONObject;
+import org.springframework.stereotype.Controller;
 
 import tesis.server.socialNetwork.entity.AdminEntity;
 
-@Stateless
+@Controller
 @LocalBean
 public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 

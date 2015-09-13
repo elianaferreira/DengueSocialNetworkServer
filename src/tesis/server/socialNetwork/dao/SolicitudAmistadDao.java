@@ -3,6 +3,9 @@ package tesis.server.socialNetwork.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -16,6 +19,7 @@ import tesis.server.socialNetwork.entity.SolicitudAmistadEntity;
 
 
 @Controller
+@LocalBean
 public class SolicitudAmistadDao extends GenericDao<SolicitudAmistadEntity, Integer> {
 
 	//acceso a Base de Datos

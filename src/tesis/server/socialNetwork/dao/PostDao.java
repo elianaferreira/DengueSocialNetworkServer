@@ -2,9 +2,14 @@ package tesis.server.socialNetwork.dao;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -17,9 +22,11 @@ import tesis.server.socialNetwork.entity.FavoritoEntity;
 import tesis.server.socialNetwork.entity.NoFavoritoEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
+import tesis.server.socialNetwork.utils.Utiles;
 
 
 @Controller
+@LocalBean
 public class PostDao extends GenericDao<PostEntity, Integer> {
 
 	@Inject
@@ -217,5 +224,68 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		List lista = query.list();
 		
 		return lista;
+	}
+	
+	
+	/**
+	 * Metodo que retorna la lista de posts relevantes, y hace una validacion previa de la fecha para descartar
+	 * lo que ya no pueden ser considerados relevantes.
+	 * 
+	 * @return
+	 */
+	public List<PostEntity> getRelevantes(){
+		String consulta = "from PostEntity p where p.relevante = true";
+		Query query = this.getSession().createQuery(consulta);
+		List<PostEntity> lista = query.list();
+		List<PostEntity> retorno = new ArrayList<PostEntity>();
+		//hacemos la validacion de las fechas, aquella que supere los X dias debe ser descartada de la lista de relevantes
+		Date current = new Date();
+		for(int i=0; i<lista.size(); i++){
+			long diff = current.getTime() - lista.get(i).getFechaPost().getTime();
+			long diasPasados = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+			if(diasPasados > Utiles.DIAS_PASADOS_RELEVANTE){
+				// ya no es relevante
+				lista.get(i).setRelevante(false);
+				this.update(lista.get(i));
+			} else {
+				//sigue siendo relevante y lo agregamos a la lista de retorno
+				retorno.add(lista.get(i));
+			}
+		}
+		return retorno;
+	}
+	
+	
+	/**
+	 * Metodo que se encarga de setear si el post es relevante o no
+	 * 
+	 * @param posibleRelevante
+	 */
+	public void setPostRelevante(PostEntity posibleRelevante){
+		Integer cantFavs = favoritoDao.cantidadFavoritosByPost(posibleRelevante);
+		Integer cantidadTotalVoluntarios = voluntarioDao.cantidadVoluntariosTotal();
+		Integer cantNoFavs = noFavoritoDao.cantidadNoFavoritosByPost(posibleRelevante);
+		//solo si tiene mas favs que noFavs puede ser relevante
+		if(cantFavs > cantNoFavs){
+			if(Utiles.puedeSerUnPostRelevante(cantFavs, cantidadTotalVoluntarios)){
+				//verificamos el tiempo transcurrido entre el fav actual y la publicacion del post
+			    Date fechaPost = posibleRelevante.getFechaPost();
+				System.out.println(fechaPost);
+				
+				//verificamos si es del mismo anho
+				//cuantos dias han pasado
+				Date date = new Date();
+				long diff = date.getTime() - fechaPost.getTime();
+				long diasPasados = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+				System.out.println ("Dias pasados: " + diasPasados);
+				if(diasPasados > Utiles.DIAS_PASADOS_RELEVANTE){
+					//no hacer nada
+				} else {
+					//es un post relevante
+					posibleRelevante.setRelevante(true);
+					this.update(posibleRelevante);
+				}
+			}
+		}
 	}
 }

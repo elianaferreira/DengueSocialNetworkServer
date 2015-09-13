@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -25,6 +28,7 @@ import tesis.server.socialNetwork.entity.VoluntarioEntity;
 
 
 @Controller
+@LocalBean
 public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 
 	@Inject
@@ -211,6 +215,21 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 			}
 			return listaRetorno;
 		}
+	}
+	
+	
+	/**
+	 * Metodo que retorna la cantidad total de voluntarios dentro de la red
+	 * 
+	 * @return
+	 */
+	public Integer cantidadVoluntariosTotal(){
+		String consulta = "select count(*) from VoluntarioEntity v ";
+		Query query = this.getSession().createQuery(consulta);
+		Long cantidadLong = (Long) query.uniqueResult();
+		Integer cantidadTotal = cantidadLong.intValue();
+		
+		return cantidadTotal;
 	}
 		
 }

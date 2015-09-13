@@ -25,6 +25,7 @@ import tesis.server.socialNetwork.entity.VoluntarioEntity;
 public class Utiles {
 	
 	public static String PHOTOS_FOLDER = "C://tesisPhotos/";
+	public static long DIAS_PASADOS_RELEVANTE = 15;
 	
 	//acceso a Base de Datos
 	@Autowired
@@ -141,6 +142,24 @@ public class Utiles {
  
             e.printStackTrace();
         }
+	}
+	
+	
+	/**
+	 * Metodo que decide si un post es relevante de manera a ser mostrado a lo largo de toda la red de acuerdo a la cantidad
+	 * de favoritos o de reposts en relacion a la cantidad de voluntarios de la red.
+	 * 
+	 * @param cantFavsOrRepost
+	 * @param cantidadTotalVoluntarios
+	 * @return
+	 */
+	public static Boolean puedeSerUnPostRelevante(Integer cantFavsOrRepost, Integer cantidadTotalVoluntarios){
+		//por el momento tendremos que sea un terciod e la poblacion total de voluntarios
+		Integer parametro = cantidadTotalVoluntarios/3; //toma la parte entrera del resultado
+		if(cantFavsOrRepost >= parametro){
+			return true;
+		}
+		return false;
 	}
 	
 }
