@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -566,6 +567,30 @@ public class PostWS {
 				return Utiles.retornarSalida(false, retorno.toString());
 			}
 		}
+	}
+	
+	
+	@GET
+	@Path("/cercanos")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String resportesCercanos(@QueryParam("username") String username,
+									@QueryParam("distancia") double distancia,
+									@QueryParam("latitud") double latitud,
+									@QueryParam("longitud") double longitud){
+		//hacemos un barrido a la Base de Datos
+		List<PostEntity> lista = postDao.getAll();
+		JSONArray retorno = new JSONArray();
+		for(int i=0; i<lista.size(); i++){
+			if(lista.get(i).getLatitud() != null && lista.get(i).getLongitud() != null){
+				double distanciaMedida = Utiles.distance(lista.get(i).getLatitud(), lista.get(i).getLongitud(), latitud, longitud);
+				if(distanciaMedida <= distancia){
+					JSONObject postJSON = postDao.getJSONFromPost(username, lista.get(i));
+					retorno.put(postJSON);
+				}
+			}
+		}		
+		return Utiles.retornarSalida(false, retorno.toString());
 	}
 
 }

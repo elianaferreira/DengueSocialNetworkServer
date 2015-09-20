@@ -48,6 +48,7 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 	public Integer guardar(PostEntity postEntity){
 		//para un nuevo post es necesario agregar el campo 'solucionado' a FALSE
 		postEntity.setSolucionado(false);
+		postEntity.setRelevante(false);
 		//agregamos la fecha en formato timestamp
 		Date date = new Date();
 		postEntity.setFechaPost(new Timestamp(date.getTime()));
@@ -287,5 +288,18 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 				}
 			}
 		}
+	}
+	
+	
+	/**
+	 * Metodo que trae todos los reportes de la Base de Datos
+	 * @return
+	 */
+	public List<PostEntity> getAll(){
+		String consulta = "from PostEntity p";
+		Query query = this.getSession().createQuery(consulta);
+		List<PostEntity> lista = query.list();
+		
+		return lista;
 	}
 }
