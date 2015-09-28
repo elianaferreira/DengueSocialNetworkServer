@@ -23,17 +23,20 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 
 	
 	public AdminEntity verificarAdministrador(String adminName, String password){
+		String consulta = "from AdminEntity ad where ad.adminName = :adminName and ad.password = :password";
+		
+		
 		//creamos el JSON de restricciones que sera en base al username
 		JSONObject restriccion = new JSONObject();
 		restriccion.put("adminName", adminName);
 		List<AdminEntity> lista = this.getListOfEntitiesWithRestrictionsLike(AdminEntity.class, restriccion);
 		//la lista en teoria seria de un solo elemento
-		if(lista == null){
+		if(lista == null || lista.size() == 0){
 			return null;
 		} else{
 			AdminEntity admin = lista.get(0);
 			//verificamos el password
-			if(admin.getPassword() == password){
+			if(admin.getPassword().equals(password)){
 				return admin;
 			} else {
 				return null;
@@ -79,5 +82,22 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 			ex.printStackTrace();
 			return false;
 		}
+	}
+	
+	
+	
+	/**
+	 * Metodo que retorna un JSON de la entidad del Administrador
+	 * @param admin
+	 * @return
+	 */
+	public JSONObject getJsonFromAdmin(AdminEntity admin){
+		JSONObject retorno = new JSONObject();
+		retorno.put("adminname", admin.getAdminName());
+		retorno.put("nombre", admin.getNombre());
+		retorno.put("apellido", admin.getApellido());
+		retorno.put("password", admin.getPassword());
+		
+		return retorno;	
 	}
 }

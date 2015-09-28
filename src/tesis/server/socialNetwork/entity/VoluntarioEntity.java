@@ -47,6 +47,8 @@ public class VoluntarioEntity {
 	
 	private byte[] fotoDePerfil;
 	
+	private String categoria;
+	
 	//constructor
 	public VoluntarioEntity(){
 		contactos = new ArrayList<ContactoEntity>();
@@ -162,6 +164,15 @@ public class VoluntarioEntity {
 
 	public void setFotoDePerfil(byte[] fotoDePerfil) {
 		this.fotoDePerfil = fotoDePerfil;
+	}
+
+	@Column(name="CATEGORIA")
+	public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
 	}
 	
 	

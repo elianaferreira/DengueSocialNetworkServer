@@ -139,6 +139,8 @@ public class VoluntarioWS {
 
 					ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + usernameLower + "_profile.png"));
 				}
+				//los de categoria A son agregados por el administrador
+				voluntario.setCategoria("B");
 				voluntarioDao.guardar(voluntario);
 				return Utiles.retornarSalida(false, "Voluntario registrado con éxito");
 			}catch(Exception ex){

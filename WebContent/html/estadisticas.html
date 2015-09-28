@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="js/jQuery/jquery-1.11.0.min.js"></script>
+		<script src="js/startbootstrap-sb-admin-1.0.3/js/bootstrap.min.js"></script>
+		<link href="js/startbootstrap-sb-admin-1.0.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="js/startbootstrap-sb-admin-1.0.3/css/sb-admin.css" rel="stylesheet">
+		<link href="js/startbootstrap-sb-admin-1.0.3/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="js/morrisJS/morris.css">
+		<script src="js/morrisJS/raphael-min.js"></script>
+		<script src="js/morrisJS/morris.min.js"></script>
+		<script src="js/principal.js"></script>
+		<script src="js/estadisticas.js"></script>
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="page-wrapper">
+	            <div class="container-fluid">
+
+	                <!-- Page Heading -->
+	                <div class="row">
+	                    <div class="col-lg-12">
+	                        <h1 class="page-header">
+	                            Estad&iacute;sticas <small>Datos Estad&iacute;sticos</small>
+	                        </h1>
+	                        <ol class="breadcrumb">
+	                            <li class="active">
+	                                <i class="fa fa-bar-chart-o"></i> Estad&iacute;sticas
+	                            </li>
+	                        </ol>
+	                    </div>
+	                </div>
+	                <!-- /.row -->
+
+	                <div class="row">
+	                    <div class="col-lg-12">
+	                        <div class="panel panel-primary">
+	                            <div class="panel-heading">
+	                                <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Cantidad de Usuarios</h3>
+	                            </div>
+	                            <div class="panel-body">
+	                                <div class="flot-chart">
+	                                    <div class="flot-chart-content" id="cantUsuarios" style="height: 250px;">
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+                	<!-- /.row -->
+                	<div class="row">
+	                    <div class="col-lg-12">
+	                        <div class="panel panel-yellow">
+	                            <div class="panel-heading">
+	                                <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Cantidad de Reportes</h3>
+	                            </div>
+	                            <div class="panel-body">
+	                                <div class="flot-chart">
+	                                    <div class="flot-chart-content" id="postsPorFecha" style="height: 250px;">
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+                	<!-- /.row -->
+                	<div class="row">
+	                    <div class="col-lg-12">
+	                        <div class="panel panel-red">
+	                            <div class="panel-heading">
+	                                <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Cantidad de Reportes Solucionados</h3>
+	                            </div>
+	                            <div class="panel-body">
+	                                <div class="flot-chart">
+	                                    <div class="flot-chart-content" id="solucionadosPorFecha" style="height: 250px;">
+	                                    </div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+                	<!-- /.row -->
+
+	            </div>
+	            <!-- /.container-fluid -->
+
+	        </div>
+	        <!-- /#page-wrapper -->
+		</div>
+	</body>
+</html>
