@@ -2,7 +2,9 @@ package tesis.server.socialNetwork.rest;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -94,7 +96,8 @@ public class PostWS {
 							@FormParam("latitud") String latitud,
 							@FormParam("longitud") String longitud,
 							@FormParam("fotoAntes") String fotoAntes,
-							@FormParam("fotoDespues") String fotoDespues){
+							@FormParam("fotoDespues") String fotoDespues,
+							@FormParam("solucionado") Boolean solucionado){
 		
 		//traemos el usuario de la Base de Datos
 		VoluntarioEntity voluntarioEntity = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
@@ -110,18 +113,18 @@ public class PostWS {
 				try {
 					PostEntity postEntity = new PostEntity();
 					postEntity.setPost(mensaje);
-					postEntity.setVoluntario(voluntarioEntity);					
-					/*if(fotoAntes != null && fotoAntes != ""){
-						postEntity.setFotoAntes(Base64.decode(fotoAntes, Base64.DEFAULT));
-					}
-					if(fotoDespues != null && fotoDespues != ""){
-						postEntity.setFotoDespues(Base64.decode(fotoDespues, Base64.DEFAULT));
-					}*/
+					postEntity.setVoluntario(voluntarioEntity);
 					if(latitud != null && longitud != null){
 						System.out.print("latitud: " + String.valueOf(latitud));
 						System.out.print("longitud: " + String.valueOf(longitud));
 						postEntity.setLatitud(Double.parseDouble(latitud));
 						postEntity.setLongitud(Double.parseDouble(longitud));
+					}
+					if(solucionado){
+						postEntity.setVoluntarioQueSoluciona(voluntarioEntity);
+						if(fotoDespues == null){
+							return Utiles.retornarSalida(true, "No puede ser un reporte solucionado sin fotografía que lo pruebe");
+						}
 					}
 					Integer idGen = postDao.guardar(postEntity);
 					//una vez que se ha guardado se asocian las fotos con le ID del post en la BD
@@ -138,41 +141,60 @@ public class PostWS {
 
 						ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + String.valueOf(idGen) + "despues_image.png"));
 					}
-					return Utiles.retornarSalida(false, "Enviado");
+					
+					return Utiles.retornarSalida(false, "Guardado");
 				} catch(Exception ex){
 					ex.printStackTrace();
-					return Utiles.retornarSalida(true, "Error al enviar el mensaje");
+					return Utiles.retornarSalida(true, "Error al guardar el reporte");
 				}
 			}
 		}
 	}
 	
 	
-	@Path("/resolve")
+	/**
+	 * Para editar un post este no debe tener imagen de 'despues'
+	 * 
+	 * @param idPost
+	 * @param usernameEditor
+	 * @param nuevoMensaje
+	 * @param fotoDespues
+	 * @return
+	 */
+	@Path("/updateAndResolve")
 	@POST
 	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String resolver(@FormParam("id") Integer idPost,
-						   @FormParam("username") String username){
+						   @FormParam("username") String usernameEditor,
+						   @FormParam("nuevoMensaje") String nuevoMensaje,
+						   @FormParam("fotoDespues") String fotoDespues){
 		
 		//verificamos que el post exista en la Base de Datos
 		PostEntity postEntity = postDao.findByClassAndID(PostEntity.class, idPost);
 		if(postEntity == null){
-			return Utiles.retornarSalida(true, "El mensaje no existe");
+			return Utiles.retornarSalida(true, "El reporte no existe");
 		} else {
-			//verificamos que quien intenta resolverlo es el duenho del post
-			if(postEntity.getVoluntario().getUserName().equals(username)){
+			//verificamos que el voluntario exista
+			VoluntarioEntity voluntarioEditor = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameEditor.toLowerCase());
+			if(voluntarioEditor == null){
+				return Utiles.retornarSalida(true, "No existe el usuario");
+			} else {
 				try{
+					//actualizamos el post
+					postEntity.setVoluntarioQueSoluciona(voluntarioEditor);
 					postEntity.setSolucionado(true);
 					postDao.modificar(postEntity);
-					return Utiles.retornarSalida(false, "El caso ha sido resuelto");
+					//agregamos la imagen
+					byte[] aByteArray = Base64.decode(fotoDespues, Base64.DEFAULT);
+					BufferedImage img = ImageIO.read(new ByteArrayInputStream(aByteArray));
+					ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + String.valueOf(idPost) + "despues_image.png"));
+					
+					return Utiles.retornarSalida(false, "Reporte solucionado");
 				} catch(Exception ex){
 					ex.printStackTrace();
-					return Utiles.retornarSalida(true, "Error al resolver el caso");
+					return Utiles.retornarSalida(true, "Error al solucionar el reporte");
 				}
-			} else {
-				//el usuario no es el owner
-				return Utiles.retornarSalida(true, "No tienes permiso para resolver el caso");
 			}
 		}
 	}
@@ -543,7 +565,6 @@ public class PostWS {
 		}
 	}*/
 
-	//TODO agregar un mapa en la app para que el usuario localice posts a su alrededor: rango puede ser variable, iconos del maker distintos para post resueltos y no resueltos
 	
 	@GET
 	@Path("/relevantes/{username}")
@@ -591,6 +612,55 @@ public class PostWS {
 			}
 		}		
 		return Utiles.retornarSalida(false, retorno.toString());
+	}
+	
+	
+	
+	@GET
+	@Path("/photos")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String getPhoto(@QueryParam("username") String usernameSolicitante,
+							@QueryParam("idPost") Integer idPost,
+							@QueryParam("fotoAntes") String fotoAntes,
+							@QueryParam("fotoDespues") String fotoDespues){
+		
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "No existe el usuario");
+		} else {//verificamos si ha iniciado sesion
+			if(voluntario.getLogged() == false){
+				return Utiles.retornarSalida(true, "No has iniciado sesión");
+			} else {
+				String flagTipoFoto = "";
+				if(fotoAntes != null){
+					flagTipoFoto = "antes_image.png";
+				} else if(fotoDespues != null){
+					flagTipoFoto = "despues_image.png";
+				}				
+				
+				BufferedImage img = null;
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				byte[] imageInByte = null;
+				
+				try {
+					img = ImageIO.read(new File(Utiles.PHOTOS_FOLDER + String.valueOf(idPost) + flagTipoFoto));
+					ImageIO.write(img, "png", baos);
+					baos.flush();
+					imageInByte = baos.toByteArray();
+					baos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+					img = null;
+				}
+				
+				if(img == null){
+					return Utiles.retornarSalida(true, "Sin foto o error al retornar la foto");
+				} else {
+					return Utiles.retornarSalida(false, Base64.encodeToString(imageInByte, Base64.DEFAULT));
+				}
+			}
+		}
 	}
 
 }

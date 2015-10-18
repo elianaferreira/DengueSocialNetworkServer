@@ -46,6 +46,9 @@ public class PostEntity {
 	//indica si un caso reportado ha sido solucionado.
 	private Boolean solucionado;
 	private Boolean relevante;
+	//la persona que lo soluciona puede no ser el mismo autor
+	private VoluntarioEntity voluntarioQueSoluciona;
+	private Date fechaSolucion;
 	
 	
 	//getters y setters
@@ -159,6 +162,24 @@ public class PostEntity {
 	}
 	public void setRelevante(Boolean relevante) {
 		this.relevante = relevante;
+	}
+	
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+	@JoinColumn(name="VOLUNTARIO_SOLUCIONA", nullable=true)
+	public VoluntarioEntity getVoluntarioQueSoluciona() {
+		return voluntarioQueSoluciona;
+	}
+	public void setVoluntarioQueSoluciona(VoluntarioEntity voluntarioQueSoluciona) {
+		this.voluntarioQueSoluciona = voluntarioQueSoluciona;
+	}
+	
+	@Column(name="FECHA_SOLUCION", nullable=true, columnDefinition="TIMESTAMP WITHOUT TIME ZONE")
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getFechaSolucion() {
+		return fechaSolucion;
+	}
+	public void setFechaSolucion(Date fechaSolucion) {
+		this.fechaSolucion = fechaSolucion;
 	}
 	
 	

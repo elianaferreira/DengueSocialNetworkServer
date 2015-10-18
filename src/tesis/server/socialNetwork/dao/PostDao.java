@@ -51,7 +51,13 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		postEntity.setRelevante(false);
 		//agregamos la fecha en formato timestamp
 		Date date = new Date();
-		postEntity.setFechaPost(new Timestamp(date.getTime()));
+		Timestamp timestamp = new Timestamp(date.getTime()); 
+		postEntity.setFechaPost(timestamp);
+		
+		//si es un reporte solucionado debemos setear la fecha de solucion como la misma de guardado
+		if(postEntity.getSolucionado() == true){
+			postEntity.setFechaSolucion(timestamp);
+		}
 		
 		//this.save(postEntity);
 		Integer idGen = this.saveAndReturnPost(postEntity);
@@ -62,6 +68,9 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 	
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void modificar(PostEntity postEntity){
+		//agregamos la fecha en formato timestamp
+		Date date = new Date();
+		postEntity.setFechaSolucion(new Timestamp(date.getTime()));
 		this.update(postEntity);
 	}
 	
@@ -302,4 +311,5 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		
 		return lista;
 	}
+	
 }

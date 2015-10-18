@@ -43,7 +43,7 @@ $(document).ready(function(){
 	                        <a href="voluntarios.html"><i class="fa fa-fw fa-user"></i> Voluntarios</a>\
 	                    </li>\
 	                    <li id="map">\
-	                        <a href="tables.html"><i class="fa fa-fw fa-map-marker"></i> Mapa</a>\
+	                        <a href="mapa.html"><i class="fa fa-fw fa-map-marker"></i> Mapa</a>\
 	                    </li>\
 	                </ul>\
 	            </div>\
