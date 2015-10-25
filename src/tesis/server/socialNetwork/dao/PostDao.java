@@ -3,6 +3,7 @@ package tesis.server.socialNetwork.dao;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -113,7 +114,7 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		query.setParameter("username", username);
 		query.setParameter("ultimaactualizacion", ultimaActualizacion);
 		//limitar la cantidad de registros
-		query.setMaxResults(3);
+		query.setMaxResults(5);
 		List lista = query.list();
 		
 		
@@ -159,6 +160,8 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 	}
 	
 	
+	
+	
 	/**
 	 * Metodo que verifica si un usuario ya marco como FAV un post
 	 * 
@@ -178,6 +181,8 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 			return false;
 		}
 	}
+	
+
 	
 	
 	/**

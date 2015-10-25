@@ -5,37 +5,27 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.swing.text.html.ListView;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.sun.jersey.multipart.BodyPartEntity;
-import com.sun.jersey.multipart.FormDataParam;
-import com.sun.jersey.multipart.MultiPart;
 
 import tesis.server.socialNetwork.dao.ComentarioDao;
 import tesis.server.socialNetwork.dao.FavoritoDao;
@@ -50,6 +40,7 @@ import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.RepostEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
 import tesis.server.socialNetwork.utils.Base64;
+import tesis.server.socialNetwork.utils.SortedByDate;
 import tesis.server.socialNetwork.utils.Utiles;
 
 
@@ -182,6 +173,7 @@ public class PostWS {
 			} else {
 				try{
 					//actualizamos el post
+					postEntity.setPost(nuevoMensaje);
 					postEntity.setVoluntarioQueSoluciona(voluntarioEditor);
 					postEntity.setSolucionado(true);
 					postDao.modificar(postEntity);
@@ -232,18 +224,20 @@ public class PostWS {
 				    Date parsedDate = dateFormat.parse(ultimaActualizacionString);
 				    timestamp = new java.sql.Timestamp(parsedDate.getTime());
 				    
-				    JSONArray retornoArray = new JSONArray();
+				    List<JSONObject> retornoArray = new ArrayList<JSONObject>();
 					List<PostEntity> posts = postDao.getPosts(username, timestamp, top);
 					for(int i=0; i<posts.size(); i++){
 						JSONObject postJSON = postDao.getJSONFromPost(username, posts.get(i));
-						retornoArray.put(postJSON);
+						retornoArray.add(postJSON);
 					}
-					List<RepostEntity> reposts = repostDao.getReposts(username, timestamp);
+					List<RepostEntity> reposts = repostDao.getReposts(username, timestamp, top);
 					for(int j=0; j<reposts.size(); j++){
 						JSONObject repostJSON = repostDao.getJSONFromRepost(reposts.get(j));
-						retornoArray.put(repostJSON);
+						retornoArray.add(repostJSON);
 					}
 					
+					//TODO ordenar el array por fecha
+					Collections.sort(retornoArray, new SortedByDate());
 					
 					return Utiles.retornarSalida(false, retornoArray.toString());
 				}catch(Exception e){//this generic but you can control another types of exception

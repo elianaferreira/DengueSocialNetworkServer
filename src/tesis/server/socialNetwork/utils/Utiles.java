@@ -5,7 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Collections;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +20,23 @@ import tesis.server.socialNetwork.entity.VoluntarioEntity;
 
 
 /**
- * Clase que contiene metodos de utilidad
+ * Clase que contiene metodos y variables de utilidad
  * 
  * @author eliana
  *
  */
 public class Utiles {
 	
-	public static String PHOTOS_FOLDER = "C://tesisPhotos/";
-	public static long DIAS_PASADOS_RELEVANTE = 15;
+	public static final String PHOTOS_FOLDER = "C://tesisPhotos/";
+	public static final long DIAS_PASADOS_RELEVANTE = 15;
+	//variables de puntajes y reputacion
+	public static final Integer PUNTAJE_POR_SOLUCIONAR = 5;
+	public static final Integer PUNTAJE_POR_REPORTAR = 1;
+	//por el momento tendremos que sea un tercio de la poblacion total de voluntarios
+	public static final Integer PARTE_POBLACIONAL_PARA_MEDIR_RELEVANTES = 3;
+	
+	
+	
 	
 	//acceso a Base de Datos
 	@Autowired
@@ -84,7 +95,7 @@ public class Utiles {
 	
 	
 	/**
-	 * Metodo que retorna un voluntario como String pero en formato JOSN Object
+	 * Metodo que retorna un voluntario como String pero en formato JSON Object
 	 * Ej.: {
 			  "username": "username",
 			  "nombre": "nombre",
@@ -154,8 +165,7 @@ public class Utiles {
 	 * @return
 	 */
 	public static Boolean puedeSerUnPostRelevante(Integer cantFavsOrRepost, Integer cantidadTotalVoluntarios){
-		//por el momento tendremos que sea un terciod e la poblacion total de voluntarios
-		Integer parametro = cantidadTotalVoluntarios/3; //toma la parte entrera del resultado
+		Integer parametro = cantidadTotalVoluntarios/PARTE_POBLACIONAL_PARA_MEDIR_RELEVANTES; //toma la parte entera del resultado
 		if(cantFavsOrRepost >= parametro){
 			return true;
 		}
@@ -196,5 +206,8 @@ public class Utiles {
 	private static double rad2deg(double rad) {
 		return (rad * 180 / Math.PI);
 	}
+	
+	
+	
 	
 }

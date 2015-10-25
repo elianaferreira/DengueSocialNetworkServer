@@ -46,14 +46,41 @@ public class RepostDao extends GenericDao<RepostEntity, Integer> {
 	 * @param ultimaActualizacion
 	 * @return
 	 */
-	public List<RepostEntity> getReposts(String usernameAutor, Timestamp ultimaActualizacion){
-		String consulta = "from RepostEntity r where r.autorRepost.userName = :autor and "
+	public List<RepostEntity> getReposts(String username, Timestamp ultimaActualizacion, Boolean nuevos){
+		/*String consulta = "from RepostEntity r where r.autorRepost.userName = :autor and "
 				+ "r.fechaRepost > :ultimaactualizacion order by r.fechaRepost desc";
 		
 		Query query = this.getSession().createQuery(consulta);
 		query.setParameter("autor", usernameAutor);
 		query.setParameter("ultimaactualizacion", ultimaActualizacion);
 		List lista = query.list();
+		
+		return lista;*/
+		System.out.println("Uusario " + username + "; timestamp: " + ultimaActualizacion.toString() + "; son nuevos?: " + nuevos.toString());
+		String condicionActualizacion = "";
+		String condicionNuevos = " and rp.fechaRepost> :ultimaactualizacion order by rp.fechaRepost asc";
+		String condicionViejos = " and rp.fechaRepost< :ultimaactualizacion order by rp.fechaRepost desc";
+		if(nuevos){
+			condicionActualizacion = condicionNuevos;
+		} else {
+			condicionActualizacion = condicionViejos;
+		}
+		
+		String consulta = "from RepostEntity rp "
+				+ "where (rp.autorRepost in "
+				+ "(select c.voluntario from ContactoEntity c where c.contacto.userName= :username )"
+				+ "or rp.autorRepost in "
+				+ "(select c1.contacto from ContactoEntity c1 where c1.voluntario.userName= :username) "
+				+ "or rp.autorRepost in "
+				+ "(select v.userName from VoluntarioEntity v where v.userName= :username))"
+				+ condicionActualizacion;
+		Query query = this.getSession().createQuery(consulta);
+		query.setParameter("username", username);
+		query.setParameter("ultimaactualizacion", ultimaActualizacion);
+		//limitar la cantidad de registros
+		query.setMaxResults(5);
+		List lista = query.list();
+		
 		
 		return lista;
 	}
@@ -68,6 +95,7 @@ public class RepostDao extends GenericDao<RepostEntity, Integer> {
 	public JSONObject getJSONFromRepost(RepostEntity repost){
 		JSONObject retorno = new JSONObject();
 		retorno.put("idRepost", repost.getIdRepost());
+		retorno.put("fecha", repost.getFechaRepost());
 		retorno.put("autor", repost.getAutorRepost().getNombreReal());
 		retorno.put("post", postDao.getJSONFromPost(repost.getAutorRepost().getUserName(), repost.getPost()));
 		

@@ -333,7 +333,7 @@ public class VoluntarioWS {
 						nuevaSolicitud.setUsuarioSolicitado(contactoSolicitado);
 						solicitudAmistadDao.guadar(nuevaSolicitud);
 						//TODO enviarla en backgroud y que haga un push al usuario
-						return Utiles.retornarSalida(true, "Solicitud de amistad enviada");
+						return Utiles.retornarSalida(false, "Solicitud de amistad enviada");
 					}
 				}
 			}
@@ -562,7 +562,7 @@ public class VoluntarioWS {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
 			    Date parsedDate = dateFormat.parse(ultimaActualizacionString);
 			    timestamp = new java.sql.Timestamp(parsedDate.getTime());
-				List<RepostEntity> reposts = repostDao.getReposts(username, timestamp);
+				List<RepostEntity> reposts = repostDao.getReposts(username, timestamp, true);
 				for(int j=0; j<reposts.size(); j++){
 					JSONObject repostJSON = repostDao.getJSONFromRepost(reposts.get(j));
 					arrayRetorno.put(repostJSON);
