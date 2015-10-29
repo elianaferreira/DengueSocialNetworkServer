@@ -232,7 +232,7 @@ public class PostWS {
 					}
 					List<RepostEntity> reposts = repostDao.getReposts(username, timestamp, top);
 					for(int j=0; j<reposts.size(); j++){
-						JSONObject repostJSON = repostDao.getJSONFromRepost(reposts.get(j));
+						JSONObject repostJSON = repostDao.getJSONFromRepost(reposts.get(j), username);
 						retornoArray.add(repostJSON);
 					}
 					

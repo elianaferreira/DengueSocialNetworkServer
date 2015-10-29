@@ -564,7 +564,7 @@ public class VoluntarioWS {
 			    timestamp = new java.sql.Timestamp(parsedDate.getTime());
 				List<RepostEntity> reposts = repostDao.getReposts(username, timestamp, true);
 				for(int j=0; j<reposts.size(); j++){
-					JSONObject repostJSON = repostDao.getJSONFromRepost(reposts.get(j));
+					JSONObject repostJSON = repostDao.getJSONFromRepost(reposts.get(j), username);
 					arrayRetorno.put(repostJSON);
 				}
 			} catch(Exception e){

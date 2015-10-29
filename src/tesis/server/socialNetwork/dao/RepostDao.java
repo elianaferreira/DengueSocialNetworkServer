@@ -92,12 +92,12 @@ public class RepostDao extends GenericDao<RepostEntity, Integer> {
 	 * @param repost
 	 * @return
 	 */
-	public JSONObject getJSONFromRepost(RepostEntity repost){
+	public JSONObject getJSONFromRepost(RepostEntity repost, String usernameSolicitante){
 		JSONObject retorno = new JSONObject();
 		retorno.put("idRepost", repost.getIdRepost());
 		retorno.put("fecha", repost.getFechaRepost());
 		retorno.put("autor", repost.getAutorRepost().getNombreReal());
-		retorno.put("post", postDao.getJSONFromPost(repost.getAutorRepost().getUserName(), repost.getPost()));
+		retorno.put("post", postDao.getJSONFromPost(usernameSolicitante, repost.getPost()));
 		
 		return retorno;
 		

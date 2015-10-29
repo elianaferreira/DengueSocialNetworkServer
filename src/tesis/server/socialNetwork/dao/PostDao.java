@@ -141,6 +141,9 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		retorno.put("longitud", postEntity.getLongitud());
 		retorno.put("fecha", postEntity.getFechaPost());
 		retorno.put("solucionado", postEntity.getSolucionado());
+		if(postEntity.getVoluntarioQueSoluciona() != null){
+			retorno.put("autorSolucion", postEntity.getVoluntarioQueSoluciona().getUsernameString());
+		}
 		retorno.put("voluntario", voluntarioDao.getJSONFromVoluntario(postEntity.getVoluntario()));
 		if(listaFV == null || listaFV.size() == 0){
 			retorno.put("buenos", 0);
