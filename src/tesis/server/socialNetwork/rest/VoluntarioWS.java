@@ -562,7 +562,7 @@ public class VoluntarioWS {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
 			    Date parsedDate = dateFormat.parse(ultimaActualizacionString);
 			    timestamp = new java.sql.Timestamp(parsedDate.getTime());
-				List<RepostEntity> reposts = repostDao.getReposts(username, timestamp, true);
+				List<RepostEntity> reposts = repostDao.getOwnReposts(username, timestamp, true);
 				for(int j=0; j<reposts.size(); j++){
 					JSONObject repostJSON = repostDao.getJSONFromRepost(reposts.get(j), username);
 					arrayRetorno.put(repostJSON);

@@ -81,6 +81,36 @@ public class RepostDao extends GenericDao<RepostEntity, Integer> {
 		query.setMaxResults(5);
 		List lista = query.list();
 		
+		return lista;
+	}
+	
+	
+	/**
+	 * Metodo que retorna los reposts hechos por el usuario solicitante
+	 * @param username
+	 * @param ultimaActualizacion
+	 * @param nuevos
+	 * @return
+	 */
+	public List<RepostEntity> getOwnReposts(String username, Timestamp ultimaActualizacion, Boolean nuevos){
+		System.out.println("Usario " + username + "; timestamp: " + ultimaActualizacion.toString() + "; son nuevos?: " + nuevos.toString());
+		String condicionActualizacion = "";
+		String condicionNuevos = " and rp.fechaRepost> :ultimaactualizacion order by rp.fechaRepost asc";
+		String condicionViejos = " and rp.fechaRepost< :ultimaactualizacion order by rp.fechaRepost desc";
+		if(nuevos){
+			condicionActualizacion = condicionNuevos;
+		} else {
+			condicionActualizacion = condicionViejos;
+		}
+		
+		String consulta = "from RepostEntity rp where rp.autorRepost.userName = :username"
+				+ condicionActualizacion;
+		Query query = this.getSession().createQuery(consulta);
+		query.setParameter("username", username);
+		query.setParameter("ultimaactualizacion", ultimaActualizacion);
+		//limitar la cantidad de registros
+		query.setMaxResults(5);
+		List lista = query.list();
 		
 		return lista;
 	}
