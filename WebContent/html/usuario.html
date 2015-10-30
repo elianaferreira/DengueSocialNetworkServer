@@ -7,6 +7,8 @@
 		<link href="js/startbootstrap-sb-admin-1.0.3/css/sb-admin.css" rel="stylesheet">
 		<link href="js/startbootstrap-sb-admin-1.0.3/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 		<script src="js/principal.js"></script>
+		<script src="js/calls.js"></script>
+		<script src="js/utiles.js"></script>
 		<script src="js/usuario.js"></script>
 	</head>
 	<body>
@@ -21,9 +23,9 @@
 	                            Voluntario <small>Vista General</small>
 	                        </h1>
 	                        <div class="form-group input-group">
-                                <input type="text" class="form-control">
+                                <input id="inputBuscarUsuario" type="text" class="form-control">
                                 <span class="input-group-btn">
-                                	<button class="btn btn-default" type="button">
+                                	<button id="btnBuscar" class="btn btn-default" type="button">
                                 		<i class="fa fa-search"></i>
                                 	</button>
                                 </span>
@@ -32,83 +34,7 @@
 	                </div>	                   
 	                <!-- /.row -->
 
-	                <div class="row">
-	                	<div class="col-lg-4">
-	                		<div class="panel panel-default">
-	                            <div class="panel-heading">
-	                                <h3 class="panel-title"><i class="fa fa-user fa-fw"></i> Perfil</h3>
-	                            </div>
-	                            <div class="panel panel-body">
-	                            	<form role="form">	
-						                <fieldset disabled="">
-						                    <div class="form-group">
-						                        <label>Username</label>
-						                        <input class="form-control" id="usenameInput" type="text" placeholder="" value="admin1" >
-						                    </div>
-						                    <div class="form-group" >
-						                        <label>Nombre</label>
-						                        <input class="form-control" id="nameInput" type="text" placeholder="" value="nombre">
-						                    </div>
-						                </fieldset>
-						            </form>
-	                            </div>
-	                        </div>
-	                	</div>
-	                    <div class="col-lg-4">
-	                        <div class="panel panel-default">
-	                            <div class="panel-heading">
-	                                <h3 class="panel-title"><i class="fa fa-pencil fa-fw"></i> Reportes</h3>
-	                            </div>
-	                            <div class="panel-body">
-	                                <div class="list-group">
-	                                    <a href="#" class="list-group-item">
-	                                        <span class="badge">4 minutes ago</span>
-	                                        <i class="fa fa-fw fa-comment"></i> Commented on a post
-	                                    </a>
-	                                    <a href="#" class="list-group-item">
-	                                        <span class="badge">4 minutes ago</span>
-	                                        <i class="fa fa-fw fa-comment"></i> Commented on a post
-	                                    </a>
-	                                    <a href="#" class="list-group-item">
-	                                        <span class="badge">4 minutes ago</span>
-	                                        <i class="fa fa-fw fa-comment"></i> Commented on a post
-	                                    </a>
-	                                    <a href="#" class="list-group-item">
-	                                        <span class="badge">4 minutes ago</span>
-	                                        <i class="fa fa-fw fa-comment"></i> Commented on a post
-	                                    </a>
-	                                    <a href="#" class="list-group-item">
-	                                        <span class="badge">4 minutes ago</span>
-	                                        <i class="fa fa-fw fa-comment"></i> Commented on a post
-	                                    </a>
-	                                    <a href="#" class="list-group-item">
-	                                        <span class="badge">4 minutes ago</span>
-	                                        <i class="fa fa-fw fa-comment"></i> Commented on a post
-	                                    </a>
-	                                    <a href="#" class="list-group-item">
-	                                        <span class="badge">4 minutes ago</span>
-	                                        <i class="fa fa-fw fa-comment"></i> Commented on a post
-	                                    </a>
-	                                    <a href="#" class="list-group-item">
-	                                        <span class="badge">4 minutes ago</span>
-	                                        <i class="fa fa-fw fa-comment"></i> Commented on a post
-	                                    </a>
-	                                    <a href="#" class="list-group-item">
-	                                        <span class="badge">4 minutes ago</span>
-	                                        <i class="fa fa-fw fa-comment"></i> Commented on a post
-	                                    </a>
-	                                    <a href="#" class="list-group-item">
-	                                        <span class="badge">4 minutes ago</span>
-	                                        <i class="fa fa-fw fa-comment"></i> Commented on a post
-	                                    </a>
-	                                    <a href="#" class="list-group-item">
-	                                        <span class="badge">4 minutes ago</span>
-	                                        <i class="fa fa-fw fa-comment"></i> Commented on a post
-	                                    </a>
-	                                </div>
-	                            </div>
-	                        </div>
-	                    </div>
+	                <div id="perfiles" class="row">
 	                </div>
 	                <!-- /.row -->
 
