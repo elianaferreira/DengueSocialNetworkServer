@@ -44,5 +44,24 @@ public class ContactoDao extends GenericDao<ContactoEntity, Integer> {
 		List lista = query.list();
 		return lista;
 	}
+	
+	
+	/**
+	 * Metodo que retorna la cantidad de contactos de un voluntario.
+	 * el getContats del entity de voluntario no funciona cuando el usuario no es el owner de la relacion
+	 * @param voluntario
+	 * @return
+	 */
+	public Integer getCantidadContactos(VoluntarioEntity voluntario){
+		String consulta = "select count(*) from ContactoEntity c "
+				+ "where c.voluntario = :voluntario1 "
+				+ "or c.contacto = :voluntario2";
+		Query query = getSession().createQuery(consulta);
+		query.setEntity("voluntario1", voluntario);
+		query.setEntity("voluntario2", voluntario);
+		Long cantidadLong = (Long) query.uniqueResult();
+		Integer cantidad = cantidadLong.intValue();
+		return cantidad;
+	}
 
 }

@@ -119,7 +119,8 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		retorno.put("email", voluntarioEntity.getEmail());
 		retorno.put("ci", voluntarioEntity.getCi());
 		retorno.put("direccion", voluntarioEntity.getDireccion());
-		retorno.put("cantAmigos", voluntarioEntity.getContactos().size());
+		//retorno.put("cantAmigos", voluntarioEntity.getContactos().size());
+		retorno.put("cantAmigos", contactoDao.getCantidadContactos(voluntarioEntity));
 		retorno.put("reputacion", voluntarioEntity.getReputacion());
 		retorno.put("cantReportes", this.cantidadPosts(voluntarioEntity));
 		

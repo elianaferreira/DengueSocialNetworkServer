@@ -573,4 +573,19 @@ public class VoluntarioWS {
 			return Utiles.retornarSalida(false, arrayRetorno.toString());
 		}
 	}
+	
+	
+	@GET
+	@Path("/user/profile/{username}")
+	@ResponseBody
+	public String getProfileData(@PathParam("username") String username){
+		
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "El usuario no existe");
+		} else {
+			JSONObject retorno = voluntarioDao.getJSONFromVoluntario(voluntario);
+			return Utiles.retornarSalida(false, retorno.toString());
+		}
+	}
 }
