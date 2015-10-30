@@ -26,6 +26,9 @@ $(document).ready(function(){
 	$('#btnEnviarNuevosVoluntarios').click(function(event){
 		event.preventDefault();
 
+		var errorForm = false;
+		var mensajeErrorForm = [];
+
 		var listaVoluntarios = [];
 
 		$('.rowNuevoVoluntario').each(function() {
@@ -36,6 +39,20 @@ $(document).ready(function(){
 			var email = $(this).find("td").children('input.input-nuevo-email').val();
 			var direccion = $(this).find("td").children('input.input-nuevo-direccion').val();
 			var telefono = $(this).find("td").children('input.input-nuevo-telefono').val();
+
+			if(username.trim() == ""){
+				mensajeErrorForm.push('El nombre de usuario no puede estar vacio');
+				errorForm = true;
+				return;
+			} else if(nombre.trim() == ""){
+				mensajeErrorForm.push('El nombre no puede estar vacio');
+				errorForm = true;
+				return;
+			} else if(password.trim() == ""){
+				mensajeErrorForm.push('La contraseña no puede estar vacia');
+				errorForm = true;
+				return;
+			}
 
 			var jsonTemp = {}
 			jsonTemp["username"] = username;
@@ -55,39 +72,42 @@ $(document).ready(function(){
 			voluntarios: JSON.stringify(listaVoluntarios)
 		}
 
-
-		ajaxRequest("/admin/volunteers", "POST", params, function(response){
-			var respuestaJson = JSON.parse(response);
-			if(respuestaJson.error == true){
-				mostrarAlerta('Error', respuestaJson.msj);
-			} else {
-				//msj es un JSONArray
-				var noGuardadosArray = JSON.parse(respuestaJson.msj);
-				if(noGuardadosArray.length > 0){
-					mostrarAlerta('Alerta', 'Los siguientes usuarios no han sido agregado, verifique que no tengan el mismo nombre de usuario.');
-					//eliminamos todas las filas y agregamos por cada elemento del array
-					$('#bodyNuevoVoluntario').empty();
-					for(var j=0; j<noGuardadosArray.length; j++){
-						$('#bodyNuevoVoluntario').append('\
-							<tr class="rowNuevoVoluntario">\
-								<td><input class="input-nuevo-usuario form-control" value="'+noGuardadosArray[j]["username"]+'"></td>\
-								<td><input class="input-nuevo-nombre form-control" value="'+noGuardadosArray[j]["nombre"]+'"></td>\
-								<td><input class="input-nuevo-contrasenha form-control" style="-webkit-text-security:disc;" value="'+noGuardadosArray[j]["password"]+'"></td>\
-								<td><input class="input-nuevo-ci form-control" value="'+noGuardadosArray[j]["ci"]+'"></td>\
-								<td><input class="input-nuevo-email form-control" value="'+noGuardadosArray[j]["email"]+'"></td>\
-								<td><input class="input-nuevo-direccion form-control" value="'+noGuardadosArray[j]["direccion"]+'"></td>\
-								<td><input class="input-nuevo-telefono form-control" value="'+noGuardadosArray[j]["telefono"]+'"></td>\
-							</tr>'); 
-						//TODO hacer un .val() para meter el dato del JSON dentro del input
-					}
+		if(mensajeErrorForm.length > 0){
+			mostrarAlerta('Error', mensajeErrorForm[0]);
+		} else {
+			ajaxRequest("/admin/volunteers", "POST", params, function(response){
+				var respuestaJson = JSON.parse(response);
+				if(respuestaJson.error == true){
+					mostrarAlerta('Error', respuestaJson.msj);
 				} else {
-					//borramos los datos
-					$('#bodyNuevoVoluntario').empty();
-					//agregamos una fila
-					agregarFilaNuevoVoluntario();
+					//msj es un JSONArray
+					var noGuardadosArray = JSON.parse(respuestaJson.msj);
+					if(noGuardadosArray.length > 0){
+						mostrarAlerta('Alerta', 'Los siguientes usuarios no han sido agregado, verifique que no tengan el mismo nombre de usuario.');
+						//eliminamos todas las filas y agregamos por cada elemento del array
+						$('#bodyNuevoVoluntario').empty();
+						for(var j=0; j<noGuardadosArray.length; j++){
+							$('#bodyNuevoVoluntario').append('\
+								<tr class="rowNuevoVoluntario">\
+									<td><input class="input-nuevo-usuario form-control" value="'+noGuardadosArray[j]["username"]+'"></td>\
+									<td><input class="input-nuevo-nombre form-control" value="'+noGuardadosArray[j]["nombre"]+'"></td>\
+									<td><input class="input-nuevo-contrasenha form-control" style="-webkit-text-security:disc;" value="'+noGuardadosArray[j]["password"]+'"></td>\
+									<td><input class="input-nuevo-ci form-control" value="'+noGuardadosArray[j]["ci"]+'"></td>\
+									<td><input class="input-nuevo-email form-control" value="'+noGuardadosArray[j]["email"]+'"></td>\
+									<td><input class="input-nuevo-direccion form-control" value="'+noGuardadosArray[j]["direccion"]+'"></td>\
+									<td><input class="input-nuevo-telefono form-control" value="'+noGuardadosArray[j]["telefono"]+'"></td>\
+								</tr>'); 
+							//TODO hacer un .val() para meter el dato del JSON dentro del input
+						}
+					} else {
+						//borramos los datos
+						$('#bodyNuevoVoluntario').empty();
+						//agregamos una fila
+						agregarFilaNuevoVoluntario();
+					}
 				}
-			}
-		});
+			});
+		}
 		
 	});
 	
