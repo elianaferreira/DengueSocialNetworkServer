@@ -7,7 +7,7 @@ $(document).ready(function(){
 	if(navigator.geolocation){
 
 		var mapProp = {
-		    zoom:12,
+		    zoom:16,
 		    mapTypeId:google.maps.MapTypeId.ROADMAP
 		};
 	  	map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
@@ -52,14 +52,31 @@ $(document).ready(function(){
 					if(reporte.hasOwnProperty("latitud")){
 						//agregamos el marker
 						var marker = new google.maps.Marker({
+							id: reporte["id"],
+							map: map,
 						    position: {lat: reporte["latitud"], lng: reporte["longitud"]},
 						    title:reporte["nombre"]
 						});
+						//marker en verde solo en caso de que sea un marker solucionado
+						if(reporte["solucionado"] == true){
+							marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+						}
+
+						//marker.addListener('click', showReport(marker));
 						// To add the marker to the map, call setMap();
-						marker.setMap(map);
+						//marker.setMap(map);
+
+						mostrarID(marker);
 					}
 				}
 			}
 		});
 	});
+
+	function mostrarID(marker){
+		marker.addListener('click', function() {
+		    alert(marker.id);
+		});
+	}
+	
 });
