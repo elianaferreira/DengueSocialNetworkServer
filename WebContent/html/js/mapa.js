@@ -1,17 +1,30 @@
 $(document).ready(function(){
 
+	var x = document.getElementById("page-wrapper");
+	if(navigator.geolocation){
 
-	function initialize() {
 		var mapProp = {
-		    center:new google.maps.LatLng(51.508742,-0.120850),
-		    zoom:5,
+		    zoom:15,
 		    mapTypeId:google.maps.MapTypeId.ROADMAP
 		};
-		var map=new google.maps.Map(document.getElementById("googleMap"), mapProp);
+	  	var map=new google.maps.Map(document.getElementById("googleMap"), mapProp);
+
+
+		navigator.geolocation.getCurrentPosition(function(position) {
+    
+        var geolocate = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        
+        var infowindow = new google.maps.InfoWindow({
+            map: map,
+            position: geolocate,
+            content:
+                '<span>Usted está aquí</span>'
+        });
+        
+        map.setCenter(geolocate);
+    });
+	} else {
+		x.innerHTML = "Geolocaclizaci&oacute; no es soportada por este navegador.";
 	}
-	
-	google.maps.event.addDomListener(window, 'load', initialize);
-	console.log($(document).width());
-	console.log($(document).height());
 
 });
