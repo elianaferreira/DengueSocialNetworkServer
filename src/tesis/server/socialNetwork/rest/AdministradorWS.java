@@ -198,4 +198,38 @@ public class AdministradorWS {
 			}
 		}
 	}
+	
+	
+	/**
+	 * Metodo que retorna la lista completa de posts pero solo los datos relevantes para el mapa
+	 * 
+	 * @param adminName
+	 * @param password
+	 * @return
+	 */
+	@GET
+	@Path("/allPosts")
+	@ResponseBody
+	public String getAllPosts(@QueryParam("admin") String adminName,
+								@QueryParam("password") String password){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos");
+		} else {
+			List<PostEntity> todosLosPosts = postDao.getAll();
+			//vamos a enviar solo el nombre real, el id del post, la ubicacion y si ya fue solucionado
+			JSONArray retorno = new JSONArray();
+			for(PostEntity p: todosLosPosts){
+				JSONObject postJSON = new JSONObject();
+				postJSON.put("id", p.getIdPost());
+				postJSON.put("solucionado", p.getSolucionado());
+				postJSON.put("nombre", p.getVoluntario().getNombreReal());
+				postJSON.put("latitud", p.getLatitud());
+				postJSON.put("longitud", p.getLongitud());
+				retorno.put(postJSON);
+			}
+			return Utiles.retornarSalida(false, retorno.toString());
+		}
+	}
 }
