@@ -236,7 +236,6 @@ public class PostWS {
 						retornoArray.add(repostJSON);
 					}
 					
-					//TODO ordenar el array por fecha
 					Collections.sort(retornoArray, new SortedByDate());
 					
 					return Utiles.retornarSalida(false, retornoArray.toString());

@@ -2,6 +2,8 @@ package tesis.server.socialNetwork.rest;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +32,7 @@ import tesis.server.socialNetwork.entity.AdminEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.RepostEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
+import tesis.server.socialNetwork.utils.SortedByDate;
 import tesis.server.socialNetwork.utils.Utiles;
 
 
@@ -168,11 +171,11 @@ public class AdministradorWS {
 			if(voluntario == null){
 				return Utiles.retornarSalida(true, "El usuario no existe");
 			} else {
-				JSONArray arrayRetorno = new JSONArray();
+				List<JSONObject> arrayRetorno = new ArrayList<JSONObject>();
 				List<PostEntity> posts = postDao.getHomeTimeline(voluntario);
 				for(int i=0; i<posts.size(); i++){
 					JSONObject postJSON = postDao.getJSONFromPost(username, posts.get(i));
-					arrayRetorno.put(postJSON);
+					arrayRetorno.add(postJSON);
 				}
 				try{
 					Date date = new Date();
@@ -184,11 +187,13 @@ public class AdministradorWS {
 					List<RepostEntity> reposts = repostDao.getOwnReposts(username, timestamp, false);
 					for(int j=0; j<reposts.size(); j++){
 						JSONObject repostJSON = repostDao.getJSONFromRepost(reposts.get(j), username);
-						arrayRetorno.put(repostJSON);
+						arrayRetorno.add(repostJSON);
 					}
 				} catch(Exception e){
 					e.printStackTrace();
 				}
+				
+				Collections.sort(arrayRetorno, new SortedByDate());
 				return Utiles.retornarSalida(false, arrayRetorno.toString());
 			}
 		}

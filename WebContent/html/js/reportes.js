@@ -29,7 +29,7 @@ $(document).ready(function(){
 					$('#lista-reportes').append('\
 						<a href="#" class="list-group-item">\
 							<span class="badge">'+reporte.fecha+'</span>\
-							<i class="fa fa-fw fa-comment"></i> '+reporte.mensaje+'\
+							<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
 						</a>');
 				} else if(reporte.hasOwnProperty("idRepost")){
 					var post = reporte.post;
@@ -38,7 +38,7 @@ $(document).ready(function(){
 						<span style="font-size:12px">reposte&oacute; de <span style="font-weight:bold;">'+post.voluntario.nombre+'</span></span>\
 							<br>\
 							<span class="badge">'+reporte.fecha+'</span>\
-							<i class="fa fa-fw fa-comment"></i> '+post.mensaje+'\
+							<i class="fa fa-fw fa-mobile-phone"></i> '+post.mensaje+'\
 						</a>');
 				}
 			}

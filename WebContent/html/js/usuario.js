@@ -66,7 +66,7 @@ $(document).ready(function(){
 				<div class="col-lg-4">\
 	                <div class="panel panel-default">\
 	                	<div data-username="'+usuarioJSON.username+'" class="perfil panel-heading">\
-	                		<h3 class="panel-title"><i class="fa fa-user fa-fw"></i> ' + usuarioJSON.nombre + '</h3>\
+	                		<h3 style="cursor:pointer" class="panel-title"><i class="fa fa-user fa-fw"></i> ' + usuarioJSON.nombre + '</h3>\
 	                	</div>\
 	                	<div class="panel panel-body">\
 	                		<form role="form">\
