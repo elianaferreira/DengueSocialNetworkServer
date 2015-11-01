@@ -1,4 +1,7 @@
 $(document).ready(function(){
+
+	$('#voluntarios').addClass("active");
+	
 	var params = {
 				admin: getAdminUser(),
 				password: getAdminPass(),
