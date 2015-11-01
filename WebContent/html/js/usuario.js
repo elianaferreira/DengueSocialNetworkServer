@@ -66,7 +66,10 @@ $(document).ready(function(){
 				<div class="col-lg-4">\
 	                <div class="panel panel-default">\
 	                	<div data-username="'+usuarioJSON.username+'" class="perfil panel-heading">\
-	                		<h3 style="cursor:pointer" class="panel-title"><i class="fa fa-user fa-fw"></i> ' + usuarioJSON.nombre + '</h3>\
+	                		<h3 style="cursor:pointer" class="panel-title">\
+	                			<i id="iFotoPerfil_'+usuarioJSON.username+'" class="fa fa-user fa-fw fa-2x"></i>\
+	                			<img id="fotoReal_'+usuarioJSON.username+'" style="display: none;"/> ' + usuarioJSON.nombre + 
+	                		'</h3>\
 	                	</div>\
 	                	<div class="panel panel-body">\
 	                		<form role="form">\
@@ -95,6 +98,17 @@ $(document).ready(function(){
 	                	</div>\
 	                </div>\
 	            </div>');
+
+			//llamado para ver la foto de perfil del usuario
+	    	ajaxRequest("/users/user/profilePhoto/"+usuarioJSON.username, "GET", {}, function(responseProfile){
+	    		var rpp = JSON.parse(responseProfile);
+	    		if(rpp.error == false){
+	    			//setear la foto de perfil
+	    			$('#iFotoPerfil_'+usuarioJSON.username).hide();
+	    			document.getElementById('fotoReal_'+usuarioJSON.username).setAttribute( 'src', 'data:image/png;base64,'+rpp.msj);
+	    			$('#fotoReal_'+usuarioJSON.username).show();
+	    		}
+	    	});
 	}
 
 	$(document).on( 'click', '.perfil', function () {
