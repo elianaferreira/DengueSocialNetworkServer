@@ -28,16 +28,18 @@ $(document).ready(function(){
 
 			for(var i = 0; i<reportesArray.length; i++){
 				var reporte = reportesArray[i];
+				//post
 				if(reporte.hasOwnProperty("id")){
 					$('#lista-reportes').append('\
-						<a href="#" class="list-group-item">\
+						<a id="'+reporte.id+'" class="list-group-item">\
 							<span class="badge">'+reporte.fecha+'</span>\
 							<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
 						</a>');
 				} else if(reporte.hasOwnProperty("idRepost")){
+					//respost
 					var post = reporte.post;
 					$('#lista-reportes').append('\
-						<a href="#" class="list-group-item">\
+						<a id="'+post.id+'" class="list-group-item">\
 						<span style="font-size:12px">reposte&oacute; de <span style="font-weight:bold;">'+post.voluntario.nombre+'</span></span>\
 							<br>\
 							<span class="badge">'+reporte.fecha+'</span>\
@@ -46,5 +48,12 @@ $(document).ready(function(){
 				}
 			}
 		}
+	});
+
+	$(document).on('click', 'a', function() {
+		event.stopPropagation();
+		var idPost = $(this).attr("id");
+		localStorage.setItem("idPost", idPost);
+		window.open("post.html", "_self");
 	});
 });
