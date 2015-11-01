@@ -1,5 +1,7 @@
 $(document).ready(function(){
 
+	$('#map').addClass("active");
+
 	//representa al mapa
 	var map;
 
@@ -75,7 +77,9 @@ $(document).ready(function(){
 
 	function mostrarID(marker){
 		marker.addListener('click', function() {
-		    alert(marker.id);
+			//alert(marker.id);
+			localStorage.setItem("idPost", marker.id);
+			window.open("post.html", "_self");
 		});
 	}
 	

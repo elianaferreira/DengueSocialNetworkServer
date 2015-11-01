@@ -1,5 +1,9 @@
 package tesis.server.socialNetwork.rest;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,6 +13,7 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -32,6 +37,7 @@ import tesis.server.socialNetwork.entity.AdminEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.RepostEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
+import tesis.server.socialNetwork.utils.Base64;
 import tesis.server.socialNetwork.utils.SortedByDate;
 import tesis.server.socialNetwork.utils.Utiles;
 
@@ -229,6 +235,100 @@ public class AdministradorWS {
 				postJSON.put("longitud", p.getLongitud());
 				retorno.put(postJSON);
 			}
+			return Utiles.retornarSalida(false, retorno.toString());
+		}
+	}
+	
+	
+	
+	/**
+	 * Metodo que retorna los datos de un post especifico en base a si ID
+	 * 
+	 * @param adminName
+	 * @param password
+	 * @param idPost
+	 * @return
+	 */
+	@GET
+	@Path("/post")
+	@ResponseBody
+	public String getPost(@QueryParam("admin") String adminName,
+							@QueryParam("password") String password,
+							@QueryParam("idPost") Integer idPost){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos");
+		} else {
+			PostEntity postSolicitado = postDao.findByClassAndID(PostEntity.class, idPost);
+			if(postSolicitado == null){
+				return Utiles.retornarSalida(true, "El reporte no existe");
+			} else {
+				JSONObject postJSON = postDao.getJSONFromPost("", postSolicitado);
+				return Utiles.retornarSalida(false, postJSON.toString());
+			}
+		}
+	}
+	
+	
+	
+	@GET
+	@Path("/photos")
+	@ResponseBody
+	public String getPhotos(@QueryParam("admin") String adminName,
+							@QueryParam("password") String password,
+							@QueryParam("idPost") Integer idPost){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos");
+		} else {
+			String retornoAntes = null;
+			String retornoDespues = null;
+		
+			//foto de antes
+			BufferedImage img = null;
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] imageInByte = null;
+			
+			try {
+				img = ImageIO.read(new File(Utiles.PHOTOS_FOLDER + String.valueOf(idPost) + "antes_image.png"));
+				ImageIO.write(img, "png", baos);
+				baos.flush();
+				imageInByte = baos.toByteArray();
+				baos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				img = null;
+			}
+			
+			if(img != null){
+				retornoAntes = Base64.encodeToString(imageInByte, Base64.DEFAULT);
+			}
+			
+			BufferedImage img2 = null;
+			ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
+			byte[] imageInByte2 = null;
+			
+			try {
+				img2 = ImageIO.read(new File(Utiles.PHOTOS_FOLDER + String.valueOf(idPost) + "despues_image.png"));
+				ImageIO.write(img2, "png", baos2);
+				baos2.flush();
+				imageInByte2 = baos2.toByteArray();
+				baos2.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				img2 = null;
+			}
+			
+			if(img2 != null){
+				retornoDespues = Base64.encodeToString(imageInByte2, Base64.DEFAULT);
+			}
+			
+			JSONObject retorno = new JSONObject();
+			retorno.put("antes", retornoAntes);
+			retorno.put("despues", retornoDespues);
+			
 			return Utiles.retornarSalida(false, retorno.toString());
 		}
 	}
