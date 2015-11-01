@@ -258,11 +258,15 @@ public class VoluntarioWS {
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "El usuario o el password no es válido");
 		} else{
-			//se inicia sesion para el usuario
-			voluntario.setLogged(true);
-			voluntarioDao.modificar(voluntario);
-			JSONObject retorno = voluntarioDao.getJSONFromVoluntario(voluntario);
-			return Utiles.retornarSalida(false, retorno.toString());
+			if(voluntario.getActivo() == false){
+				return Utiles.retornarSalida(true, "El Administrador ha dado de baja tu cuenta.");
+			} else {
+				//se inicia sesion para el usuario
+				voluntario.setLogged(true);
+				voluntarioDao.modificar(voluntario);
+				JSONObject retorno = voluntarioDao.getJSONFromVoluntario(voluntario);
+				return Utiles.retornarSalida(false, retorno.toString());
+			}
 		}
 	}
 	

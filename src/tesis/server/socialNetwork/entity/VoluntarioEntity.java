@@ -49,6 +49,9 @@ public class VoluntarioEntity {
 	
 	private String categoria;
 	
+	private Boolean activo;
+	
+	
 	//constructor
 	public VoluntarioEntity(){
 		contactos = new ArrayList<ContactoEntity>();
@@ -173,6 +176,15 @@ public class VoluntarioEntity {
 
 	public void setCategoria(String categoria) {
 		this.categoria = categoria;
+	}
+
+	@Column(name="ACTIVO")
+	public Boolean getActivo() {
+		return activo;
+	}
+
+	public void setActivo(Boolean activo) {
+		this.activo = activo;
 	}
 	
 	

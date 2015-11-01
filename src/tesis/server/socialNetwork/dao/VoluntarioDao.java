@@ -49,6 +49,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		//agregamos la fecha de inscripcion del objeto
 		voluntarioEntity.setFechaIns(new Date());
 		voluntarioEntity.setReputacion(1);
+		voluntarioEntity.setActivo(true);
 		this.save(voluntarioEntity);
 	}
 	
