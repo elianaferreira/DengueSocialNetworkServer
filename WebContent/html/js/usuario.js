@@ -62,9 +62,25 @@ $(document).ready(function(){
 		}
 
 
+		var pathActivateInvalidate;
+		var msjActivateInvalidate;
+		var alertActivateInvalidate;
+
+		if(usuarioJSON.activo == true){
+			pathActivateInvalidate = "/admin/invalidateUser";
+			msjActivateInvalidate = "desactivar cuenta de usuario";
+			alertActivateInvalidate = "Est&aacute; seguro que desea invalidar la cuenta del voluntario?";
+
+		} else {
+			pathActivateInvalidate = "/admin/activateUser";
+			msjActivateInvalidate = "activar cuenta de usuario";
+			alertActivateInvalidate = "Est&aacute; seguro que desea activar la cuenta del voluntario?";
+		}
+
 		$('#perfiles').append('\
 				<div class="col-lg-4">\
 	                <div class="panel panel-default">\
+	                	<a class="activateInvalidate" data-username="'+usuarioJSON.username+'" style="cursor:pointer;">'+msjActivateInvalidate+'</a>\
 	                	<div data-username="'+usuarioJSON.username+'" class="perfil panel-heading">\
 	                		<h3 style="cursor:pointer" class="panel-title">\
 	                			<i id="iFotoPerfil_'+usuarioJSON.username+'" class="fa fa-user fa-fw fa-5x"></i>\
@@ -112,10 +128,39 @@ $(document).ready(function(){
 	    	});
 	}
 
-	$(document).on( 'click', '.perfil', function () {
+
+	$(document).on('click', '.activateInvalidate', function(){
+		var usernameSelected = $('.activateInvalidate').data('username');
+		mostrarAlertaConfirmacion("Atenci&oacute;n", alertActivateInvalidate, "S&iacute;", function(e){
+			e.preventDefault();
+			$('#myModal').modal('hide');
+			//$('#myModal').hide();
+			console.log("invalidar a: " + usernameSelected);
+
+			var parametros = {
+				admin: getAdminUser(),
+				password: getAdminPass(),
+				username: usernameSelected
+			}
+			ajaxRequest(pathActivateInvalidate, "POST", parametros, function(reponseInvalidate){
+				reponseInvalidate = JSON.parse(reponseInvalidate);
+				if(reponseInvalidate.error == true){
+					mostrarAlerta('Error', reponseInvalidate.msj);
+				} else {
+					mostrarAlerta('&Eacute;xito', reponseInvalidate.msj);
+				}
+			});
+		});
+	});
+
+
+	$(document).on('click', '.perfil', function () {
 		event.stopPropagation();
 		var usernameSelected = $(this).data("username");
 		localStorage.setItem("usernameReportes", usernameSelected);
 		window.open("reportes.html", "_self");
 	});
+
+
+	
 });

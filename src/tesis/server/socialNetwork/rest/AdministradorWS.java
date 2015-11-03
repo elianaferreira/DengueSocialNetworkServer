@@ -332,4 +332,64 @@ public class AdministradorWS {
 			return Utiles.retornarSalida(false, retorno.toString());
 		}
 	}
+	
+	
+	@POST
+	@Path("/invalidateUser")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String desactivarCuentaVoluntario(@FormParam("adminName") String adminName,
+												@FormParam("password") String password,
+												@FormParam("username") String username){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos");
+		} else {
+			//buscamos el voluntario
+			VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+			if(voluntario == null){
+				return Utiles.retornarSalida(true, "No existe un voluntario con use nombre de usuario");
+			} else {
+				try{
+					voluntario.setActivo(false);
+					voluntarioDao.modificar(voluntario);
+					return Utiles.retornarSalida(false, "El voluntario ha sido dado de baja");
+				}catch(Exception e){
+					e.printStackTrace();
+					return Utiles.retornarSalida(true, "Ha ocurrido un error");
+				}
+			}
+		}
+	}
+	
+	
+	@POST
+	@Path("/activateUser")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String activarCuentaUsuario(@FormParam("adminName") String adminName,
+										@FormParam("password") String password,
+										@FormParam("username") String username){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			//buscamos el voluntario
+			VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+			if(voluntario == null){
+				return Utiles.retornarSalida(true, "No existe un voluntario con use nombre de usuario.");
+			} else {
+				try{
+					voluntario.setActivo(true);
+					voluntarioDao.modificar(voluntario);
+					return Utiles.retornarSalida(false, "La cuenta del voluntario ha sido activada.");
+				}catch(Exception e){
+					e.printStackTrace();
+					return Utiles.retornarSalida(true, "Ha ocurrido un error.");
+				}
+			}
+		}
+	}
 }
