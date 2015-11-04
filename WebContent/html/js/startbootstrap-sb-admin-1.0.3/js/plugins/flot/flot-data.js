@@ -40,14 +40,14 @@ $(document).ready(function() {
             }
         };
 
-        var plotObj = $.plot($("#flot-line-chart"), [{
+        /*var plotObj = $.plot($("#flot-line-chart"), [{
                 data: sin,
                 label: "sin(x)"
             }, {
                 data: cos,
                 label: "cos(x)"
             }],
-            options);
+            options);*/
     }
 });
 
@@ -68,7 +68,7 @@ $(function() {
         data: 20
     }];
 
-    var plotObj = $.plot($("#flot-pie-chart"), data, {
+    /*var plotObj = $.plot($("#flot-pie-chart"), data, {
         series: {
             pie: {
                 show: true
@@ -86,7 +86,7 @@ $(function() {
             },
             defaultTheme: false
         }
-    });
+    });*/
 
 });
 

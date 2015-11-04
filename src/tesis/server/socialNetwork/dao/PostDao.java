@@ -320,4 +320,31 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		return lista;
 	}
 	
+	
+	/**
+	 * Metodo que retorna la cantidad total de reportes que han sido solucionados
+	 * @return
+	 */
+	public Integer getTotalSolucionados(){
+		String consulta = "select count(*) from PostEntity p where p.solucionado = true ";
+		Query query = this.getSession().createQuery(consulta);
+		Long cantidadLong = (Long) query.uniqueResult();
+		Integer cantidadTotal = cantidadLong.intValue();
+		
+		return cantidadTotal;
+	}
+	
+	
+	/**
+	 * Metodo que retorna la cantidad total de reportes que no han sido solucionados aun
+	 * @return
+	 */
+	public Integer getTotalNoSolucionados(){
+		String consulta = "select count(*) from PostEntity p where p.solucionado = false ";
+		Query query = this.getSession().createQuery(consulta);
+		Long cantidadLong = (Long) query.uniqueResult();
+		Integer cantidadTotal = cantidadLong.intValue();
+		
+		return cantidadTotal;
+	}
 }

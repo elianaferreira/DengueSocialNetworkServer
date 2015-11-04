@@ -452,4 +452,45 @@ public class AdministradorWS {
 			}
 		}
 	}
+	
+	
+	
+	@GET
+	@Path("/subtotalesReportes")
+	@ResponseBody
+	public String getSubtotalesReportes(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		JSONObject retorno = new JSONObject();
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			Integer totalSolucionados = postDao.getTotalSolucionados();
+			Integer totalNoSolucionados = postDao.getTotalNoSolucionados();
+			
+			retorno.put("solucionados", totalSolucionados);
+			retorno.put("noSolucionados", totalNoSolucionados);
+			
+			return Utiles.retornarSalida(false, retorno.toString());
+		}
+	}
+	
+	
+	@GET
+	@Path("/reportesRelevantes")
+	@ResponseBody
+	public String getReportesRelevantes(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		JSONArray retorno = new JSONArray();
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			List<PostEntity> listaRelevantes = postDao.getRelevantes();
+			for(PostEntity p: listaRelevantes){
+				JSONObject pJSON = postDao.getJSONFromPost("", p);
+				retorno.put(pJSON);
+			}
+			return Utiles.retornarSalida(false, retorno.toString());		
+		}
+	}
 }
