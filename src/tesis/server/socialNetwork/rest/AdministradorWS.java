@@ -30,10 +30,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
 
 import tesis.server.socialNetwork.dao.AdministradorDao;
+import tesis.server.socialNetwork.dao.ContactoDao;
 import tesis.server.socialNetwork.dao.PostDao;
 import tesis.server.socialNetwork.dao.RepostDao;
 import tesis.server.socialNetwork.dao.VoluntarioDao;
 import tesis.server.socialNetwork.entity.AdminEntity;
+import tesis.server.socialNetwork.entity.ContactoEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.RepostEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
@@ -57,6 +59,9 @@ public class AdministradorWS {
 	
 	@Inject
 	private RepostDao repostDao;
+	
+	@Inject
+	private ContactoDao contactoDao;
 
 	
 	@POST
@@ -388,6 +393,61 @@ public class AdministradorWS {
 				}catch(Exception e){
 					e.printStackTrace();
 					return Utiles.retornarSalida(true, "Ha ocurrido un error.");
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * Metodo que retorna en un array de JSON todas las relaciones de amistad existentes dentro de la red
+	 * @param adminName
+	 * @param password
+	 * @return
+	 */
+	@GET
+	@Path("/allNodeContacts")
+	@ResponseBody
+	public String getAllContacts(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		JSONObject retorno = new JSONObject();
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			//traemos una lista simplificada
+			List<VoluntarioEntity> listaSimpleVoluntarios = voluntarioDao.getSimpleListAllUsers();
+			if(listaSimpleVoluntarios.size() == 0){
+				return Utiles.retornarSalida(true, "No hay voluntarios dentro de la red.");
+			} else {
+				JSONArray arrayNodos = new JSONArray();
+				//agregamos los voluntarios como nodos
+				for(VoluntarioEntity v: listaSimpleVoluntarios){
+					JSONObject vTemp = new JSONObject();
+					vTemp.put("id", v.getUserName());
+					vTemp.put("label", v.getNombreReal());
+					//del lado del cliente se agregaran las coordenadas
+					arrayNodos.put(vTemp);
+				}
+				//agregamos el array de nodos al json de retorno
+				retorno.put("nodes", arrayNodos);
+				
+				List<ContactoEntity> listaTotalContactos = contactoDao.listarTodosLosContactos();
+				if(listaTotalContactos.size() == 0){
+					return Utiles.retornarSalida(true, "Aun no hay ninguna relacion de amistad formada dentro de la red.");
+				} else {
+					JSONArray arrayEdges = new JSONArray();
+					for(ContactoEntity c: listaTotalContactos){
+						JSONObject cTemp = new JSONObject();
+						cTemp.put("id", String.valueOf(c.getIdAmistad()));
+						cTemp.put("source", c.getContacto().getUserName());
+						cTemp.put("target", c.getVoluntario().getUserName());
+						arrayEdges.put(cTemp);
+					}
+					//agregamos el array de enlaces al json de retorno
+					retorno.put("edges", arrayEdges);
+					
+					return Utiles.retornarSalida(false, retorno.toString());
 				}
 			}
 		}

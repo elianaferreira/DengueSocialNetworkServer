@@ -8,6 +8,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import org.hibernate.Query;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 
 import tesis.server.socialNetwork.entity.ContactoEntity;
@@ -63,5 +64,21 @@ public class ContactoDao extends GenericDao<ContactoEntity, Integer> {
 		Integer cantidad = cantidadLong.intValue();
 		return cantidad;
 	}
+	
+	
+	
+	/**
+	 * Metodo que lista completa de contactos
+	 * 
+	 * @return
+	 */
+	public List<ContactoEntity> listarTodosLosContactos(){
+		String consulta = "from ContactoEntity c ";
+		Query query = getSession().createQuery(consulta);
+		List lista = query.list();
+		return lista;
+	}
+	
 
+	
 }

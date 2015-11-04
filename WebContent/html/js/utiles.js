@@ -1,3 +1,6 @@
+var RANDOM_MINIMO = -10;
+var RANDOM_MAXIMO = 10;
+
 
 /**
 *	Metodo que despliega un mensaje de alerta simple

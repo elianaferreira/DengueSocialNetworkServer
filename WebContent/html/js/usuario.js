@@ -81,7 +81,7 @@ $(document).ready(function(){
 		$('#perfiles').append('\
 				<div class="col-lg-4">\
 	                <div class="panel panel-default">\
-	                	<a class="activateInvalidate" data-username="'+usuarioJSON.username+'" style="cursor:pointer;">'+msjActivateInvalidate+'</a>\
+	                	<a class="activateInvalidate" data-username="'+usuarioJSON.username+'" style="cursor:pointer; padding-left:16px;">'+msjActivateInvalidate+'</a>\
 	                	<div data-username="'+usuarioJSON.username+'" class="perfil panel-heading">\
 	                		<h3 style="cursor:pointer" class="panel-title">\
 	                			<i id="iFotoPerfil_'+usuarioJSON.username+'" class="fa fa-user fa-fw fa-5x"></i>\
@@ -170,8 +170,5 @@ $(document).ready(function(){
 		var usernameSelected = $(this).data("username");
 		localStorage.setItem("usernameReportes", usernameSelected);
 		window.open("reportes.html", "_self");
-	});
-
-
-	
+	});	
 });
