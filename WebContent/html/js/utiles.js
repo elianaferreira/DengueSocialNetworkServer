@@ -68,3 +68,14 @@ function getAdminPass(){
 }
 
 
+/**
+	Metodo que borra las sombras que hayan podido quedar de los alerts
+*/
+function borrarVestigiosModal(){
+	var list = document.getElementsByClassName("modal-backdrop");
+	for(var i = list.length - 1; 0 <= i; i--){
+		if(list[i] && list[i].parentElement){
+			list[i].parentElement.removeChild(list[i]);
+		}
+	}
+}

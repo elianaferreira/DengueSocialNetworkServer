@@ -2,6 +2,12 @@ $(document).ready(function(){
 
 	$('#voluntarios').addClass("active");
 
+	var pathActivateInvalidate;
+	var msjActivateInvalidate;
+	var alertActivateInvalidate;
+
+	var elementoSeleccionado;
+
 	$('#btnBuscar').click(function(event){
 		event.stopPropagation();
 
@@ -60,11 +66,6 @@ $(document).ready(function(){
 						<input class="form-control" type="text" placeholder="" value="'+usuarioJSON.direccion+'" >\
 					</div>';
 		}
-
-
-		var pathActivateInvalidate;
-		var msjActivateInvalidate;
-		var alertActivateInvalidate;
 
 		if(usuarioJSON.activo == true){
 			pathActivateInvalidate = "/admin/invalidateUser";
@@ -129,13 +130,20 @@ $(document).ready(function(){
 	}
 
 
-	$(document).on('click', '.activateInvalidate', function(){
-		var usernameSelected = $('.activateInvalidate').data('username');
+	$(document).on('click', '.activateInvalidate', function(event){
+		event.preventDefault();
+		var usernameSelected = $(this).data('username');
+		elementoSeleccionado = $(this);
 		mostrarAlertaConfirmacion("Atenci&oacute;n", alertActivateInvalidate, "S&iacute;", function(e){
 			e.preventDefault();
 			$('#myModal').modal('hide');
-			//$('#myModal').hide();
-			console.log("invalidar a: " + usernameSelected);
+			//eliminamos el div de modal porque se puede querer volver a mostrar en el alert a exito/error
+			var el2 = document.getElementById("myModal");
+			el2.parentElement.removeChild(el2);
+
+			console.log("activar o desactivar cuenta de: " + usernameSelected);
+
+			borrarVestigiosModal();
 
 			var parametros = {
 				admin: getAdminUser(),
@@ -147,7 +155,10 @@ $(document).ready(function(){
 				if(reponseInvalidate.error == true){
 					mostrarAlerta('Error', reponseInvalidate.msj);
 				} else {
-					mostrarAlerta('&Eacute;xito', reponseInvalidate.msj);
+					mostrarAlerta('&Eacute;xito', reponseInvalidate.msj + '<br><span>Para visualizar los cambios es necesario recargar la p&aacute;gina.</span>');
+					//cambiamos el color del panel para indicar que hay que actualizar para ver los cambios
+					elementoSeleccionado.parent().removeClass("panel-default");
+					elementoSeleccionado.parent().addClass("panel-warning");
 				}
 			});
 		});
