@@ -2,7 +2,47 @@ $(document).ready(function(){
 
 	$('#charts').addClass("active");
 
-	new Morris.Line({
+	var params = {
+		admin: getAdminUser(),
+		password: getAdminPass(),
+	}
+	ajaxRequest("/admin/usuariosPorMes", "GET", params, function(responseUsers){
+		responseUsers = JSON.parse(responseUsers);
+		if(responseUsers.error == true){
+			//no hacer nada
+		} else {
+			var datos = JSON.parse(responseUsers.msj);
+			var dataArray = [];
+			for(key in datos){
+				var jsonTemp = {};
+				jsonTemp["fecha"] = key;
+				jsonTemp["cantidad"] = datos[key];
+				dataArray.push(jsonTemp);
+			}
+
+			new Morris.Line({
+				// ID of the element in which to draw the chart.
+				element: 'cantUsuarios',
+				// Chart data records -- each entry in this array corresponds to a point on
+				// the chart.
+				data: dataArray,
+				// The name of the data record attribute that contains x-values.
+				xkey: 'fecha',
+				// A list of names of data record attributes that contain y-values.
+				ykeys: ['cantidad'],
+				// Labels for the ykeys -- will be displayed when you hover over the
+				// chart.
+				labels: ['Usuarios registrados'],
+				lineColors: ["#337ab7"],
+				parseTime:false
+			});
+		}
+	});
+
+
+
+
+	/*new Morris.Line({
 		// ID of the element in which to draw the chart.
 		element: 'cantUsuarios',
 		// Chart data records -- each entry in this array corresponds to a point on
@@ -22,11 +62,11 @@ $(document).ready(function(){
 		// chart.
 		labels: ['Value'],
 		lineColors: ["#1B5E20"]
-	});
+	});*/
 
 
 	//postsPorFecha
-
+/*
 	Morris.Bar({
 		element: 'postsPorFecha',
 		axes: false,
@@ -68,5 +108,5 @@ $(document).ready(function(){
 		    }
   		}
 	});
-	
+	*/
 });

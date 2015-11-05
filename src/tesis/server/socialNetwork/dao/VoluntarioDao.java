@@ -237,11 +237,11 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 	
 	
 	/**
-	 * Metodo que retorna un versio muy simplificada de los datos del usuario que solo tiene el username y el nombre real
+	 * Metodo que retorna la lista completa de usuarios
 	 * 
 	 * @return
 	 */
-	public List<VoluntarioEntity> getSimpleListAllUsers(){
+	public List<VoluntarioEntity> getListAllUsers(){
 		String consulta = "from VoluntarioEntity v";
 		Query query = getSession().createQuery(consulta);
 		List listaSimple = query.list();

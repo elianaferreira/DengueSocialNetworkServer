@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -416,7 +417,7 @@ public class AdministradorWS {
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
 		} else {
 			//traemos una lista simplificada
-			List<VoluntarioEntity> listaSimpleVoluntarios = voluntarioDao.getSimpleListAllUsers();
+			List<VoluntarioEntity> listaSimpleVoluntarios = voluntarioDao.getListAllUsers();
 			if(listaSimpleVoluntarios.size() == 0){
 				return Utiles.retornarSalida(true, "No hay voluntarios dentro de la red.");
 			} else {
@@ -493,5 +494,35 @@ public class AdministradorWS {
 			return Utiles.retornarSalida(false, retorno.toString());		
 		}
 	}
-
+	
+	
+	@GET
+	@Path("/usuariosPorMes")
+	@ResponseBody
+	public String getCantUsuariosPorMes(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		JSONObject retorno = new JSONObject();
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			//traemos la lista completa de voluntarios
+			List<VoluntarioEntity> lista = voluntarioDao.getListAllUsers();
+			for(VoluntarioEntity v: lista){
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(v.getFechaIns());
+				int mes = cal.get(Calendar.MONTH) + 1;
+				int year = cal.get(Calendar.YEAR);
+				String posibleKey = String.valueOf(year) + "-" + String.valueOf(mes);
+				//si ya tiene le sumanos 1
+				if(retorno.has(posibleKey)){
+					//seteamos con el mismo valor + 1;
+					retorno.put(posibleKey, retorno.getInt(posibleKey)+1);
+				} else {
+					//sino el valor inicial es 1
+					retorno.put(posibleKey, 1);
+				}
+			}
+			return Utiles.retornarSalida(false, retorno.toString());
+		}	
+	}
 }
