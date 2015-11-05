@@ -50,6 +50,8 @@ public class PostEntity {
 	private VoluntarioEntity voluntarioQueSoluciona;
 	private Date fechaSolucion;
 	
+	private Integer rankingEstado;
+	
 	
 	//getters y setters
 	@Id
@@ -180,6 +182,17 @@ public class PostEntity {
 	}
 	public void setFechaSolucion(Date fechaSolucion) {
 		this.fechaSolucion = fechaSolucion;
+	}
+	
+	
+	//solo puede tener valores 1, 2 o 3
+	//por defecto el valor sera de 1
+	@Column(name="RANKING_ESTADO", nullable=true)
+	public Integer getRankingEstado() {
+		return rankingEstado;
+	}
+	public void setRankingEstado(Integer rankingEstado) {
+		this.rankingEstado = rankingEstado;
 	}
 	
 	

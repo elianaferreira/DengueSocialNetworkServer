@@ -1,5 +1,6 @@
 package tesis.server.socialNetwork.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,11 +32,19 @@ public class CampanhaEntity {
 	private Integer idCampanha;
 	private String nombreCampanha;
 	private String mensaje;
-	//private List<FotografiaEntity> fotografias;
-	//private GeolocalizacionEntity geolocalizacion;
 	private EstadoEntity estado;
 	private Date fechaLanzamiento;
-	//private List<FavoritoEntity> favoritoDe;
+	private Date fechaFinalizacion;
+	private List<VoluntarioEntity> voluntariosInvitados;
+	private List<VoluntarioEntity> voluntariosAdheridos;
+	
+	
+	//constructor
+	public CampanhaEntity() {
+		voluntariosInvitados = new ArrayList<VoluntarioEntity>();
+		voluntariosAdheridos = new ArrayList<VoluntarioEntity>();
+	}
+	
 	
 	//getters y setters
 	@Id
@@ -65,24 +74,6 @@ public class CampanhaEntity {
 		this.mensaje = mensaje;
 	}
 	
-	/*s/mappedBy es el campo que es dueña de la relacion
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="ID_CAMPANHA")
-	public List<FotografiaEntity> getFotografias() {
-		return fotografias;
-	}
-	public void setFotografias(List<FotografiaEntity> fotografias) {
-		this.fotografias = fotografias;
-	}*/
-	
-	/*/en gelocalizacion no es necesario el mapeo
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinColumn(name="GEOLOCALIZACION", nullable=true)
-	public GeolocalizacionEntity getGeolocalizacion() {
-		return geolocalizacion;
-	}
-	public void setGeolocalizacion(GeolocalizacionEntity geolocalizacion) {
-		this.geolocalizacion = geolocalizacion;
-	}*/
 	
 	@ManyToOne(optional=false)
 	@JoinColumn(name="ESTADO", nullable=false)
@@ -102,11 +93,38 @@ public class CampanhaEntity {
 		this.fechaLanzamiento = fechaLanzamiento;
 	}
 	
-	/*@OneToMany(cascade=CascadeType.ALL, mappedBy="campanha")
-	public List<FavoritoEntity> getFavoritoDe() {
-		return favoritoDe;
+	
+	@Column(name="FECHA_FINALIZACION", nullable=true)
+	@Temporal(TemporalType.DATE)
+	public Date getFechaFinalizacion() {
+		return fechaFinalizacion;
 	}
-	public void setFavoritoDe(List<FavoritoEntity> favoritoDe) {
-		this.favoritoDe = favoritoDe;
-	}*/
+
+
+	public void setFechaFinalizacion(Date fechaFinalizacion) {
+		this.fechaFinalizacion = fechaFinalizacion;
+	}
+	
+	
+	@OneToMany()
+	@JoinColumn(name="VOLUNTARIOS_INVITADOS")
+	public List<VoluntarioEntity> getVoluntariosInvitados() {
+		return voluntariosInvitados;
+	}
+	public void setVoluntariosInvitados(List<VoluntarioEntity> voluntariosInvitados) {
+		this.voluntariosInvitados = voluntariosInvitados;
+	}
+	
+	@OneToMany
+	@JoinColumn(name="VOLUNTARIOS_ADHERIDOS")
+	public List<VoluntarioEntity> getVoluntariosAdheridos() {
+		return voluntariosAdheridos;
+	}
+	public void setVoluntariosAdheridos(List<VoluntarioEntity> voluntariosAdheridos) {
+		this.voluntariosAdheridos = voluntariosAdheridos;
+	}
+
+
+	
+	
 }

@@ -239,6 +239,7 @@ public class AdministradorWS {
 				postJSON.put("nombre", p.getVoluntario().getNombreReal());
 				postJSON.put("latitud", p.getLatitud());
 				postJSON.put("longitud", p.getLongitud());
+				postJSON.put("ranking", p.getRankingEstado());
 				retorno.put(postJSON);
 			}
 			return Utiles.retornarSalida(false, retorno.toString());
