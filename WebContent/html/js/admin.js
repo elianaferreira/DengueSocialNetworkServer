@@ -17,13 +17,15 @@ $(document).ready(function(){
 			var data = [{
 		        label: "Solucionados",
 		        data: responseSubtotales.msj.solucionados,
-		        color: "#5cb85c"
+		        color: "#66BB6A"
 		    }, {
 		        label: "No Solucionados",
 		        data: responseSubtotales.msj.noSolucionados,
-		        color: "#d9534f"
+		        color: "#FF5252"
 		    }];
 
+		    //mostrar el porcentaje: content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+		    //mostrar el valor: http://stackoverflow.com/a/24413739/4173916
 		    var plotObj = $.plot($("#subtotalReportesPie"), data, {
 		        series: {
 		            pie: {
@@ -35,7 +37,9 @@ $(document).ready(function(){
 		        },
 		        tooltip: true,
 		        tooltipOpts: {
-		            content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+		            content: function(label,x,y){
+                        return y+" "+label;
+                    },
 		            shifts: {
 		                x: 20,
 		                y: 0
