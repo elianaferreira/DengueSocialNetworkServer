@@ -1,12 +1,16 @@
 $(document).ready(function(){
 
+	//colores
 	var COLOR_ZONA_TRES = "#FF0000";
 	var COLOR_ZONA_DOS = "#FF8000";
 	var COLOR_ZONA_UNO = "#FFBF00";
 
+	//zonas
+	var zonaTres;
+	var zonaDos;
+	var zonaUno;
 
 	$('#map').addClass("active");
-	$('#btnVerZonas').hide();
 
 	//representa al mapa
 	var map;
@@ -58,8 +62,7 @@ $(document).ready(function(){
 				mostrarAlerta('Error', responseJSON.msj);
 			} else {
 
-				//agregamos el boton para ver las zonas
-				$('#btnVerZonas').show();
+				$('fieldset').removeAttr('disabled');
 				var reportesArray = JSON.parse(responseJSON.msj);
 				for(var i=0; i<reportesArray.length; i++){
 					var reporte = reportesArray[i];
@@ -112,10 +115,23 @@ $(document).ready(function(){
 		});
 	});
 
-	$('#btnVerZonas').click(function(event){
-		event.stopPropagation();
+	$('#mostrarZonaTres').click(function(event){
+		event.preventDefault();
+		drawZoneThree();
+	});
+	$('#mostrarZonaDos').click(function(event){
+		event.preventDefault();
+		drawZoneTwo();
+	});
+	$('#mostrarZonaUno').click(function(event){
+		event.preventDefault();
+		drawZoneOne();
+	});
+	$('#mostrarZonas').click(function(event){
+		event.preventDefault();
 		drawZones();
 	});
+
 
 
 
@@ -131,7 +147,7 @@ $(document).ready(function(){
 	function drawZones(){
 		//Zona 3
 		if(coordenadasZonaTres.length > 0){
-			var zonaTres = new google.maps.Polygon({
+			zonaTres = new google.maps.Polygon({
 				paths: coordenadasZonaTres,
 				strokeColor: COLOR_ZONA_TRES,
 				strokeOpacity: 0.8,
@@ -143,7 +159,7 @@ $(document).ready(function(){
 		}
 
 		if(coordenadasZonaDos.length > 0){
-			var zonaTres = new google.maps.Polygon({
+			zonaDos = new google.maps.Polygon({
 				paths: coordenadasZonaDos,
 				strokeColor: COLOR_ZONA_DOS,
 				strokeOpacity: 0.8,
@@ -151,11 +167,11 @@ $(document).ready(function(){
 				fillColor: COLOR_ZONA_DOS,
 				fillOpacity: 0.35
 			});
-			zonaTres.setMap(map);
+			zonaDos.setMap(map);
 		}
 
 		if(coordenadasZonaUno.length > 0){
-			var zonaTres = new google.maps.Polygon({
+			zonaUno = new google.maps.Polygon({
 				paths: coordenadasZonaUno,
 				strokeColor: COLOR_ZONA_UNO,
 				strokeOpacity: 0.8,
@@ -163,8 +179,75 @@ $(document).ready(function(){
 				fillColor: COLOR_ZONA_UNO,
 				fillOpacity: 0.35
 			});
+			zonaUno.setMap(map);
+		}
+	}
+
+
+
+	function drawZoneThree(){
+		//desdibujamos las demas zonas
+		if(zonaUno != null){
+			zonaUno.setMap(null);
+		}
+		if(zonaDos != null){
+			zonaDos.setMap(null);
+		}
+
+		if(coordenadasZonaTres.length > 0){
+			zonaTres = new google.maps.Polygon({
+				paths: coordenadasZonaTres,
+				strokeColor: COLOR_ZONA_TRES,
+				strokeOpacity: 0.8,
+				strokeWeight: 2,
+				fillColor: COLOR_ZONA_TRES,
+				fillOpacity: 0.35
+			});
 			zonaTres.setMap(map);
 		}
 	}
 	
+
+	function drawZoneTwo(){
+		if(zonaUno != null){
+			zonaUno.setMap(null);
+		}
+		if(zonaTres != null){
+			zonaTres.setMap(null);
+		}
+
+		if(coordenadasZonaDos.length > 0){
+			zonaDos = new google.maps.Polygon({
+				paths: coordenadasZonaDos,
+				strokeColor: COLOR_ZONA_DOS,
+				strokeOpacity: 0.8,
+				strokeWeight: 2,
+				fillColor: COLOR_ZONA_DOS,
+				fillOpacity: 0.35
+			});
+			zonaDos.setMap(map);
+		}
+	}
+
+
+	function drawZoneOne(){
+		if(zonaDos != null){
+			zonaDos.setMap(null);
+		}
+		if(zonaTres != null){
+			zonaTres.setMap(null);
+		}
+
+		if(coordenadasZonaUno.length > 0){
+			zonaUno = new google.maps.Polygon({
+				paths: coordenadasZonaUno,
+				strokeColor: COLOR_ZONA_UNO,
+				strokeOpacity: 0.8,
+				strokeWeight: 2,
+				fillColor: COLOR_ZONA_UNO,
+				fillOpacity: 0.35
+			});
+			zonaUno.setMap(map);
+		}
+	}
 });
