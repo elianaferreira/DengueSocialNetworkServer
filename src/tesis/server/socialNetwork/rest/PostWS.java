@@ -23,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 
+import org.jboss.logging.FormatWith;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -88,7 +89,8 @@ public class PostWS {
 							@FormParam("longitud") String longitud,
 							@FormParam("fotoAntes") String fotoAntes,
 							@FormParam("fotoDespues") String fotoDespues,
-							@FormParam("solucionado") Boolean solucionado){
+							@FormParam("solucionado") Boolean solucionado,
+							@FormParam("ranking") Integer rankingEstado){
 		
 		//traemos el usuario de la Base de Datos
 		VoluntarioEntity voluntarioEntity = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
@@ -105,6 +107,7 @@ public class PostWS {
 					PostEntity postEntity = new PostEntity();
 					postEntity.setPost(mensaje);
 					postEntity.setVoluntario(voluntarioEntity);
+					postEntity.setRankingEstado(rankingEstado);
 					if(latitud != null && longitud != null){
 						System.out.print("latitud: " + String.valueOf(latitud));
 						System.out.print("longitud: " + String.valueOf(longitud));
@@ -114,7 +117,7 @@ public class PostWS {
 					if(solucionado){
 						postEntity.setVoluntarioQueSoluciona(voluntarioEntity);
 						if(fotoDespues == null){
-							return Utiles.retornarSalida(true, "No puede ser un reporte solucionado sin fotografía que lo pruebe");
+							return Utiles.retornarSalida(true, "No puede ser un reporte solucionado sin fotografía que lo pruebe.");
 						}
 					}
 					Integer idGen = postDao.guardar(postEntity);
