@@ -135,9 +135,10 @@ public class VoluntarioWS {
 			try{
 				if(fotoPerfil != null){
 					byte[] aByteArray = Base64.decode(fotoPerfil, Base64.DEFAULT);
-					BufferedImage img = ImageIO.read(new ByteArrayInputStream(aByteArray));
+					voluntario.setFotoDePerfil(aByteArray);
+					/*BufferedImage img = ImageIO.read(new ByteArrayInputStream(aByteArray));
 
-					ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + usernameLower + "_profile.png"));
+					ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + usernameLower + "_profile.png"));*/
 				}
 				//los de categoria A son agregados por el administrador
 				voluntario.setCategoria("B");
@@ -217,13 +218,14 @@ public class VoluntarioWS {
 				}
 				if(fotoPerfil != null){
 					byte[] aByteArray = Base64.decode(fotoPerfil, Base64.DEFAULT);
-					BufferedImage img;
+					voluntario.setFotoDePerfil(aByteArray);
+					/*BufferedImage img;
 					try {
 						img = ImageIO.read(new ByteArrayInputStream(aByteArray));
 						ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + usernameLower + "_profile.png"));
 					} catch (IOException e) {
 						e.printStackTrace();
-					}
+					}*/
 				}
 				try{
 					voluntarioDao.modificar(voluntario);
@@ -589,6 +591,9 @@ public class VoluntarioWS {
 			return Utiles.retornarSalida(true, "El usuario no existe");
 		} else {
 			JSONObject retorno = voluntarioDao.getJSONFromVoluntario(voluntario);
+			if(voluntario.getFotoDePerfil() != null){
+				retorno.put("fotoPerfil", Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
+			}
 			return Utiles.retornarSalida(false, retorno.toString());
 		}
 	}
