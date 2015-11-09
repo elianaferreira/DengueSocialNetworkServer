@@ -188,7 +188,8 @@ public class VoluntarioWS {
 			//verificamos que el usuario haya iniciado sesion
 			if(Utiles.haIniciadoSesion(voluntario)){
 				//cargamos los cambios que envio el usuario
-				if(newUserName != null){
+				//verificamos que newUsername sea distinto de nulo y solo si es distinto del actual se valida
+				if(newUserName != null && !newUserName.toLowerCase().equals(usernameLower)){
 					//verificamos que no exista ya alguien con ese nombre de usuario
 					if(voluntarioDao.findByClassAndID(VoluntarioEntity.class, newUserName.toLowerCase()) != null){
 						return Utiles.retornarSalida(true, "Este nombre de usuario ya está registrado");
@@ -591,6 +592,7 @@ public class VoluntarioWS {
 			return Utiles.retornarSalida(true, "El usuario no existe");
 		} else {
 			JSONObject retorno = voluntarioDao.getJSONFromVoluntario(voluntario);
+			retorno.put("password", voluntario.getPassword());
 			if(voluntario.getFotoDePerfil() != null){
 				retorno.put("fotoPerfil", Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
 			}
