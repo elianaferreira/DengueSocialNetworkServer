@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="js/jQuery/jquery-1.11.0.min.js"></script>
+		<script src="js/startbootstrap-sb-admin-1.0.3/js/bootstrap.min.js"></script>
+		<link href="js/startbootstrap-sb-admin-1.0.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="js/startbootstrap-sb-admin-1.0.3/css/sb-admin.css" rel="stylesheet">
+		<link href="js/startbootstrap-sb-admin-1.0.3/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" type="text/css" href="css/datepicker.css">
+		<script src="js/bootstrap-datepicker.js"></script>
+		<script src="js/principal.js"></script>
+		<script src="js/calls.js"></script>
+		<script src="js/utiles.js"></script>
+		<script src="js/campanha.js"></script>
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="page-wrapper">
+	            <div class="container-fluid">
+	             <!-- Page Heading -->
+	                <div class="row">
+	                    <div class="col-lg-12">
+	                        <h1 class="page-header">
+	                            Campanha <small>Crear Campa&ntilde;a</small>
+	                        </h1>
+	                        
+	                    </div>
+	                </div>	                   
+	                <!-- /.row -->
+
+	                <div class="col-lg-6">
+		                <form role="form">
+		                    <div id="divNombreCamp" class="form-group">
+		                        <label>nombre de la campa&ntilde;a</label>
+		                        <input id="inputNombre" class="form-control">
+		                    </div>
+		                    <div id="divMensaje" class="form-group">
+		                        <label>mensaje</label>
+		                        <input id="inputMensaje" class="form-control">
+		                    </div>
+		                    <div id="divFechas">
+		                    	<div class="well" style="background:#fff">
+									<table class="table">
+											<tr>
+												<th style="border-top:none">Fecha de Inicio: <input type="text" class="form-control" value="" id="dpd1"></th>
+												<th style="border-top:none">Fecha de Finalizaci&oacute;n: <input type="text" class="form-control" value="" id="dpd2"></th>
+											</tr>
+									</table>
+								</div>
+		                    </div>
+		                    <button id="btnAcceder" type="submit" class="btn btn-success">crear</button>
+		                </form>
+		            </div>
+
+		            <div class="col-lg-6">
+		            	<form role="form">
+		            		<table class="table">
+								<tr>
+									<th style="border-top:none">
+										<div class="form-group input-group">
+			                                <input id="inputBuscar" type="text" class="form-control" placeholder="buscar por nombre">
+			                                <span id"btnBuscarPorNombre" class="input-group-btn"><button class="btn btn-default" type="button"><i class="fa fa-search"></i></button></span>
+			                            </div>
+			                        </th>
+									<th style="border-top:none"><button id="btnBuscarPorReputacion" type="submit" class="btn btn-primary">buscar por reputaci&oacute;n</button></th>
+								</tr>
+							</table>
+		            	</form>
+		            </div>
+	            </div>
+	        </div>
+	    </div>
+	</body>
+</html>

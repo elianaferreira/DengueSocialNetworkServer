@@ -246,6 +246,19 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		List listaSimple = query.list();
 		return listaSimple;
 	}
+	
+	
+	/**
+	 * Metodo que retorna la lista completa de 
+	 * @return
+	 */
+	public List<VoluntarioEntity> getListUsersByRanking(){
+		String consulta = "from VoluntarioEntity v order by v.reputacion desc";
+		Query query = getSession().createQuery(consulta);
+		query.setMaxResults(50);
+		List listaSimple = query.list();
+		return listaSimple;
+	}
 		
 }
 

@@ -32,7 +32,7 @@ public class CampanhaEntity {
 	private Integer idCampanha;
 	private String nombreCampanha;
 	private String mensaje;
-	private EstadoEntity estado;
+	private Boolean activa;
 	private Date fechaLanzamiento;
 	private Date fechaFinalizacion;
 	private List<VoluntarioEntity> voluntariosInvitados;
@@ -74,15 +74,14 @@ public class CampanhaEntity {
 		this.mensaje = mensaje;
 	}
 	
+	@Column(name="ACTIVA", nullable=false)
+	public Boolean getActiva() {
+		return activa;
+	}
+	public void setActiva(Boolean activa) {
+		this.activa = activa;
+	}
 	
-	@ManyToOne(optional=false)
-	@JoinColumn(name="ESTADO", nullable=false)
-	public EstadoEntity getEstado() {
-		return estado;
-	}
-	public void setEstado(EstadoEntity estado) {
-		this.estado = estado;
-	}
 	
 	@Column(name="FECHA_LANZAMIENTO", nullable=false)
 	@Temporal(TemporalType.DATE)
@@ -94,7 +93,7 @@ public class CampanhaEntity {
 	}
 	
 	
-	@Column(name="FECHA_FINALIZACION", nullable=true)
+	@Column(name="FECHA_FINALIZACION", nullable=false)
 	@Temporal(TemporalType.DATE)
 	public Date getFechaFinalizacion() {
 		return fechaFinalizacion;
@@ -123,8 +122,5 @@ public class CampanhaEntity {
 	public void setVoluntariosAdheridos(List<VoluntarioEntity> voluntariosAdheridos) {
 		this.voluntariosAdheridos = voluntariosAdheridos;
 	}
-
-
-	
 	
 }

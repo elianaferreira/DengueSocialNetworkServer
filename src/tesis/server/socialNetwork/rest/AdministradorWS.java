@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,11 +32,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
 
 import tesis.server.socialNetwork.dao.AdministradorDao;
+import tesis.server.socialNetwork.dao.CampanhaDao;
 import tesis.server.socialNetwork.dao.ContactoDao;
 import tesis.server.socialNetwork.dao.PostDao;
 import tesis.server.socialNetwork.dao.RepostDao;
 import tesis.server.socialNetwork.dao.VoluntarioDao;
 import tesis.server.socialNetwork.entity.AdminEntity;
+import tesis.server.socialNetwork.entity.CampanhaEntity;
 import tesis.server.socialNetwork.entity.ContactoEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.RepostEntity;
@@ -63,7 +66,11 @@ public class AdministradorWS {
 	
 	@Inject
 	private ContactoDao contactoDao;
-
+	
+	@Inject
+	private CampanhaDao campanhaDao;
+	
+	
 	
 	@POST
 	@Path("/auth")
@@ -525,5 +532,112 @@ public class AdministradorWS {
 			}
 			return Utiles.retornarSalida(false, retorno.toString());
 		}	
+	}
+	
+	
+	@GET
+	@Path("/usersByRanking")
+	@ResponseBody
+	public String getUsersByRanking(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		JSONArray retorno = new JSONArray();
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			//traemos la lista completa de voluntarios
+			List<VoluntarioEntity> lista = voluntarioDao.getListUsersByRanking();
+			for(VoluntarioEntity v: lista){
+				retorno.put(voluntarioDao.getJSONFromVoluntario(v));
+			}
+			return Utiles.retornarSalida(false, retorno.toString());
+		}
+	}
+	
+	
+	@POST
+	@Path("/campanha")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String iniciarCampanha(@FormParam("adminName") String adminName,
+									@FormParam("password") String password,
+									@FormParam("nombre") String nombreCampanha,
+									@FormParam("mensaje") String mensajeCampanha,
+									@FormParam("fechaLanzamiento") String fechaLanzamiento,
+									@FormParam("fechaFinalizacion") String fechaFinalizacion,
+									@FormParam("voluntariosInvitados") String voluntariosInvitados){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			//buscamos la campanha por el nombre
+			if(nombreCampanha.trim().equals("")){
+				return Utiles.retornarSalida(true, "La campanha debe contar con un nombre.");
+			} else {
+				if(campanhaDao.buscarPorNombre(nombreCampanha) != null){
+					return Utiles.retornarSalida(true, "Ya existe una campanha con ese nombre.");
+				} else {
+					CampanhaEntity campanha = new CampanhaEntity();
+					//verificamos la fecha de lanzamiento
+					if(fechaLanzamiento.trim().equals("")){
+						return Utiles.retornarSalida(true, "La campanha debe contar con fecha de inicio.");
+					} else {
+						if(fechaFinalizacion.trim().equals("")){
+							return Utiles.retornarSalida(true, "La campanha debe contar con una fecha de finalización.");
+						}
+						campanha.setNombreCampanha(nombreCampanha);
+						if(!mensajeCampanha.trim().equals("")){
+							campanha.setMensaje(mensajeCampanha);
+						}
+						
+						//verificamos que la fecha de finalizcion sea superior a la fecha de inicio
+						SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+						try {
+							Date dateLanzamiento = formatter.parse(fechaLanzamiento);
+							Date dateFinalizacion = formatter.parse(fechaFinalizacion);
+							
+							if(dateFinalizacion.before(dateLanzamiento)){
+								return Utiles.retornarSalida(true, "La fecha de finalización no puede ser anterior a la fecha de inicio.");
+							}
+							
+							campanha.setFechaLanzamiento(dateLanzamiento);
+							campanha.setFechaFinalizacion(dateFinalizacion);
+							
+							JSONArray arrayInvitados = new JSONArray(voluntariosInvitados);
+							if(arrayInvitados.length() == 0){
+								return Utiles.retornarSalida(true, "La campanha debe contar con al menos un voluntario como invitado.");
+							}
+							JSONArray retornoNoInvitados = new JSONArray();
+							for(int i=0; i<arrayInvitados.length(); i++){
+								String username = arrayInvitados.getString(i);
+								//buscamos el username en la Base de Datos
+								VoluntarioEntity invitado = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+								if(invitado == null){
+									retornoNoInvitados.put(username);
+								} else {
+									campanha.getVoluntariosAdheridos().add(invitado);
+								}
+							}
+							//si la cantidad de retornoNoInvitados es igual al lenght de invitados, ningun voluntario era valido
+							if(retornoNoInvitados.length() == arrayInvitados.length()){
+								return Utiles.retornarSalida(true, "Ningún voluntario tenía un nombre de usuario válido, por favor, verifíquelo y vuelta a intentarlo");
+							}
+							
+							//intentamos guardar la campanha
+							try{
+								campanhaDao.guardar(campanha);
+								return Utiles.retornarSalida(false, retornoNoInvitados.toString());
+							} catch(Exception ex){
+								ex.printStackTrace();
+								return Utiles.retornarSalida(true, "Hubo un error al intentar guardar la campanha, por favor, intentalo de nuevo más tarde");
+							}
+						} catch (ParseException e) {
+							e.printStackTrace();
+							return Utiles.retornarSalida(true, "La fecha no tiene un formato válido.");
+						}
+					}
+				}
+			}
+		}
 	}
 }

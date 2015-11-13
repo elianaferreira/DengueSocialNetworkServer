@@ -31,7 +31,7 @@ public class EstadoEntity {
 	/**
 	 * posibles valores:
 	 * cuando la campanha es lanzada.
-	 * cuando ya campaña ha finalizado y no se pueden realizar cambios en la misma.
+	 * cuando la campaña ha finalizado y no se pueden realizar cambios en la misma.
 	 * 
 	 */
 	private String descripcion;
