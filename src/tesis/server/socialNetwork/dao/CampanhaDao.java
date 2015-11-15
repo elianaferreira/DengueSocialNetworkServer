@@ -18,7 +18,7 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 	
 	
 	public CampanhaEntity buscarPorNombre(String nombreBuscar){
-		String consulta = "from CampanhaEntity c where c=:nombre";
+		String consulta = "from CampanhaEntity c where c.nombreCampanha=:nombre";
 		Query query = this.getSession().createQuery(consulta);
 		query.setString("nombre", nombreBuscar);
 		 CampanhaEntity c =  (CampanhaEntity) query.uniqueResult();

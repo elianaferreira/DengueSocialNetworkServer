@@ -591,7 +591,7 @@ public class AdministradorWS {
 						}
 						
 						//verificamos que la fecha de finalizcion sea superior a la fecha de inicio
-						SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+						SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 						try {
 							Date dateLanzamiento = formatter.parse(fechaLanzamiento);
 							Date dateFinalizacion = formatter.parse(fechaFinalizacion);
@@ -629,7 +629,7 @@ public class AdministradorWS {
 								return Utiles.retornarSalida(false, retornoNoInvitados.toString());
 							} catch(Exception ex){
 								ex.printStackTrace();
-								return Utiles.retornarSalida(true, "Hubo un error al intentar guardar la campanha, por favor, intentalo de nuevo más tarde");
+								return Utiles.retornarSalida(true, "Hubo un error al intentar guardar la campanha, por favor, intentalo de nuevo más tarde.");
 							}
 						} catch (ParseException e) {
 							e.printStackTrace();

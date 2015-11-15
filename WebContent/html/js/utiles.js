@@ -61,6 +61,41 @@ function mostrarAlertaConfirmacion(titulo, mensaje, boton, callback){
 }
 
 
+/**
+*	Metodo que muestra una alerta con dos opciones personalizadas
+*/
+function mostrarConfirmacionDosOpciones(titulo, mensaje, primerBoton, segundoBoton, callbackPrimerBoton, callbackSegundoBoton){
+	$('#wrapper').prepend('\
+		<div class="modal fade" id="modalDosOpciones" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">\
+		  <div class="modal-dialog" role="document">\
+		    <div class="modal-content">\
+		      <div class="modal-header">\
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
+		        <h4 class="modal-title" id="myModalLabel">' + titulo + '</h4>\
+		      </div>\
+		      <div class="modal-body">\
+		        ' + mensaje + '\
+		      </div>\
+		      <div class="modal-footer">\
+		        <button id="btnPrimerBoton" type="button" class="btn btn-default" data-dismiss="modal">' + primerBoton + '</button>\
+		        <button id="btnSegundoBoton" type="button" class="btn btn-success data-dismiss="modal">' + segundoBoton + '</button>\
+		      </div>\
+		    </div>\
+		  </div>\
+		</div>');
+
+	$('#modalDosOpciones').modal('show');
+
+	$('#btnPrimerBoton').click(function (e) {
+		callbackPrimerBoton(e);
+	});
+
+	$('#btnSegundoBoton').click(function (e) {
+		callbackSegundoBoton(e);
+	});
+}
+
+
 
 function getAdminUser(){
 	return localStorage.getItem("adminUser");
