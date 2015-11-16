@@ -1,8 +1,8 @@
 $(document).ready(function(){
 
 	$('#voluntarios').addClass("active");
-	//$('#btnVerCampanha').hide();
 	$('#modalCampanha').modal('hide');
+	$('#btnVerCampanhaGuardada').hide();
 
 	var nowTemp = new Date();
 	var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
@@ -31,7 +31,7 @@ $(document).ready(function(){
 		checkout.hide();
 	}).data('datepicker');
 
-	
+
 
 	var params = {
 		admin: getAdminUser(),
@@ -43,8 +43,6 @@ $(document).ready(function(){
 		if(response.error == true){
 			mostrarAlerta('Error', response.msj);
 		} else {
-			$('#btnVerCampanha').show();
-
 			//es necesario setear las coordenadas de los nodos
 			var jsonData = JSON.parse(response.msj);
 
@@ -131,7 +129,7 @@ $(document).ready(function(){
 			});
 
 
-			//mostramos los datos de la campanha si es que existe una guardada
+			/*/mostramos los datos de la campanha si es que existe una guardada
 			if(localStorage.getItem("nuevaCampanha") != undefined){
 				$('#btnVerCampanha').show();
 				var campanhaTemp = JSON.parse(localStorage.getItem("nuevaCampanha"));
@@ -139,12 +137,61 @@ $(document).ready(function(){
 				$('#mensajeCampanha').html(campanhaTemp.mensaje);
 				$('#fechaInicio').html('fecha de inicio: ' + campanhaTemp.fechaInicio);
 				$('#fechaFin').html('fecha de finalizaci&oacute;n: ' + campanhaTemp.fechaFin);
-			}
+			}*/
 		}
 
 		$('#btnCampanha').click(function (event){
 			event.preventDefault();
 			$('#modalCampanha').modal('show');
 		});
+	});
+
+
+	$('#btnGuardarCampanha').click(function (e){
+		e.preventDefault();
+
+		var nombreCampanha = $('#inputNombre').val();
+		var mensajeCampanha = $('#inputMensaje').val();
+		var fechaInicio = $('#fechaInicio').val();
+		var fechaFin = $('#fechaFin').val();
+
+		if(nombreCampanha.trim() == ""){
+			$('#divNombreCamp').addClass('has-error');
+			$('#divMensaje').removeClass('has-error');
+			$('.well').removeClass('has-error');
+		} else {
+			if(mensajeCampanha.trim() == ""){
+				$('#divMensaje').addClass('has-error');
+				$('#divNombreCamp').removeClass('has-error');
+				$('.well').removeClass('has-error');
+			} else {
+				if(fechaInicio.trim() == ""){
+					$('.well').addClass('has-error');
+					$('#divMensaje').removeClass('has-error');
+					$('#divNombreCamp').removeClass('has-error');
+				} else {
+					if(fechaFin.trim() == ""){
+						$('.well').addClass('has-error');
+						$('#divMensaje').removeClass('has-error');
+						$('#divNombreCamp').removeClass('has-error');
+					} else {
+						$('#divNombreCamp').removeClass('has-error');
+						$('#divMensaje').removeClass('has-error');
+						$('.well').removeClass('has-error');
+
+						//guardar la campanha
+						var jsonTemp = {};
+						jsonTemp.nombre = nombreCampanha;
+						jsonTemp.mensaje = mensajeCampanha;
+						jsonTemp.fechaInicio = fechaInicio;
+						jsonTemp.fechaFin = fechaFin;
+						localStorage.setItem("tempCampanha", JSON.stringify(jsonTemp));
+						$('#modalCampanha').modal('hide');
+						$('#btnCampanha').hide();
+						$('#btnVerCampanhaGuardada').show();
+					}
+				}
+			}
+		}
 	});
 });
