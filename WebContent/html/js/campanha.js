@@ -161,63 +161,68 @@ $(document).ready(function(){
 			mostrarAlerta("Error", "La campa&ntilde;a debe tener un nombre.");
 			return;
 		} else {
-			if(fechaInicio.trim() == ""){
-				mostrarAlerta("Error", "La campa&ntilde;a debe tener una fecha de inicio.");
+			if(mensajeCampanha.trim() == ""){
+				mostrarAlerta("Error", "La campa&ntilde;a debe tener un mensaje a modo de descripci&oacute;n.");
 				return;
 			} else {
-				if(fechaFin.trim() == ""){
-					mostrarAlerta("Error", "La campa&ntilde;a debe tener una fecha de finalizaci&oacute;n.");
+				if(fechaInicio.trim() == ""){
+					mostrarAlerta("Error", "La campa&ntilde;a debe tener una fecha de inicio.");
 					return;
 				} else {
-					if(arrayUsuariosInvitados.length == 0){
-						mostrarAlerta("Error", "La campa&ntilde;a debe contar con usuarios invitados.");
+					if(fechaFin.trim() == ""){
+						mostrarAlerta("Error", "La campa&ntilde;a debe tener una fecha de finalizaci&oacute;n.");
 						return;
 					} else {
-						mostrarConfirmacionDosOpciones("Crear una campa&ntilde;a", "Para agregar voluntarios tambi&eacute;n lo puede "+
-							"hacer desde la vista de 'relaciones' para una mejor visualizaci&oacute;n de cu&aacute;les son los "+
-							"voluntarios m&aacute;s influentes.", "No, lanzar campa&ntilde;a.", "S&iacute;, ir a la vista de relaciones",
-							function(event){
-								//enviar campanha tal y como esta
-								event.preventDefault();
-								$('#myModal').modal('hide');
-								var params = {
-									adminName: getAdminUser(),
-									password: getAdminPass(),
-									nombre: nombreCampanha,
-									mensaje: mensajeCampanha,
-									fechaLanzamiento: fechaInicio,
-									fechaFinalizacion: fechaFin,
-									voluntariosInvitados: JSON.stringify(arrayUsuariosInvitados)
-								}
-
-								ajaxRequest("/admin/campanha", "POST", params, function(response){
-									var response = JSON.parse(response);
-									borrarVestigiosModal();
-									if(response.error == true){
-										mostrarAlerta("Error", response.msj);
-									} else {
-										//mostramos los voluntarios no invitados
-										var arrayNoInvitados = JSON.parse(response.msj);
-										if(arrayNoInvitados.length == 0){
-											mostrarAlerta("&Eacute;xito", "La campa&ntilde;a ha sido lanzada.");
-										} else {
-											var mensaje = "La campa&ntilde;a ha sido lanzada. Sin embargo, los siguientes voluntarios "+
-													"no pudieron ser invitados.";
-											var listaHTML = '<br>\
-											<div class="panel-body">\
-												<div class="list-group">';
-											for(var k=0; k<arrayNoInvitados.length; k++){
-												listaHTML += '\
-													<a class="list-group-item">\
-														<i class="fa fa-fw fa-user"></i> '+arrayUsuarios[k]+'\
-													</a>';
-											}
-											listaHTML += '</div></div>';
-											
-										}
+						if(arrayUsuariosInvitados.length == 0){
+							mostrarAlerta("Error", "La campa&ntilde;a debe contar con usuarios invitados.");
+							return;
+						} else {
+							mostrarConfirmacionDosOpciones("Campa&ntilde;a", "Est&aacute; seguro que desea lanzar la campa&ntilde;a?", 
+								"S&iacute;, lanzar la campa&ntilde;a",
+								function(event){
+									//enviar campanha tal y como esta
+									event.preventDefault();
+									$('#myModal').modal('hide');
+									var params = {
+										adminName: getAdminUser(),
+										password: getAdminPass(),
+										nombre: nombreCampanha,
+										mensaje: mensajeCampanha,
+										fechaLanzamiento: fechaInicio,
+										fechaFinalizacion: fechaFin,
+										voluntariosInvitados: JSON.stringify(arrayUsuariosInvitados)
 									}
-								});
-							});
+
+									ajaxRequest("/admin/campanha", "POST", params, function(response){
+										var response = JSON.parse(response);
+										borrarVestigiosModal();
+										if(response.error == true){
+											mostrarAlerta("Error", response.msj);
+										} else {
+											//mostramos los voluntarios no invitados
+											var arrayNoInvitados = JSON.parse(response.msj);
+											if(arrayNoInvitados.length == 0){
+												mostrarAlerta("&Eacute;xito", "La campa&ntilde;a ha sido lanzada.");
+											} else {
+												var mensaje = "La campa&ntilde;a ha sido lanzada. Sin embargo, los siguientes voluntarios "+
+														"no pudieron ser invitados.";
+												var listaHTML = '<br>\
+												<div class="panel-body">\
+													<div class="list-group">';
+												for(var k=0; k<arrayNoInvitados.length; k++){
+													listaHTML += '\
+														<a class="list-group-item">\
+															<i class="fa fa-fw fa-user"></i> '+arrayUsuarios[k]+'\
+														</a>';
+												}
+												listaHTML += '</div></div>';
+												
+											}
+										}
+									});
+								}
+							);
+						}
 					}
 				}
 			}

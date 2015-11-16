@@ -34,17 +34,17 @@ $(document).ready(function(){
 	            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->\
 	            <div class="collapse navbar-collapse navbar-ex1-collapse">\
 	                <ul class="nav navbar-nav side-nav">\
-	                    <li id="dashboard">\
-	                        <a href="admin.html"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>\
+	                    <li class="opcion" id="dashboard" data-url="admin.html">\
+	                        <a href=""><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>\
 	                    </li>\
-	                    <li id="charts">\
-	                        <a href="estadisticas.html"><i class="fa fa-fw fa-bar-chart-o"></i> Estad&iacute;sticas</a>\
+	                    <li class="opcion" id="charts" data-url="estadisticas.html">\
+	                        <a href=""><i class="fa fa-fw fa-bar-chart-o"></i> Estad&iacute;sticas</a>\
 	                    </li>\
-	                    <li id="voluntarios">\
-	                        <a href="voluntarios.html"><i class="fa fa-fw fa-user"></i> Voluntarios</a>\
+	                    <li class="opcion" id="voluntarios" data-url="voluntarios.html">\
+	                        <a href=""><i class="fa fa-fw fa-user"></i> Voluntarios</a>\
 	                    </li>\
-	                    <li id="map">\
-	                        <a href="mapa.html"><i class="fa fa-fw fa-map-marker"></i> Mapa</a>\
+	                    <li class="opcion" id="map" data-url="mapa.html">\
+	                        <a href=""><i class="fa fa-fw fa-map-marker"></i> Mapa</a>\
 	                    </li>\
 	                </ul>\
 	            </div>\
@@ -66,7 +66,36 @@ $(document).ready(function(){
 
 	$('#cerrarSesion').click(function (e) {
 		e.preventDefault();
-		//TODO enviar post al server
-		window.open("login.html", "_self");
+		ajaxRequest("/admin/logout", "POST", {name: getAdminUser, password: getAdminPass}, function(response){
+			var response = JSON.parse(response);
+			if(response.error == true){
+				mostrarAlerta("Error", "Hubo un error al cerrar la sesi&oacute;n. Int&eacute;ntelo m&aacute;s tarde.");
+			} else {
+				localStorage.clear();
+				window.open("login.html", "_self");
+			}
+		});
+		
 	})
+
+	$('.opcion').click(function (event) {
+		event.preventDefault();
+		for(key in localStorage){
+			if(key != "admiPass" && key != "adminApellido" && key != "adminName" && key != "adminNombre" && key != "adminUser"){
+				localStorage.removeItem(key);
+			}
+		}
+		//abrimos la vista correspondiente
+		var url = $(this).data("url");
+		window.open(url, "_self");
+
+	});
 });
+
+function removeDataFromLocalStorage(){
+	for(key in localStorage){
+		if(key != "admiPass" && key != "adminApellido" && key != "adminName" && key != "adminNombre" && key != "adminUser"){
+			localStorage.removeItem(key);
+		}
+	}
+}

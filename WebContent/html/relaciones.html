@@ -6,12 +6,15 @@
 		<link href="js/startbootstrap-sb-admin-1.0.3/css/bootstrap.min.css" rel="stylesheet">
 		<link href="js/startbootstrap-sb-admin-1.0.3/css/sb-admin.css" rel="stylesheet">
 		<link href="js/startbootstrap-sb-admin-1.0.3/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" type="text/css" href="css/toastr.css">
+		<link rel="stylesheet" type="text/css" href="css/toastr.min.css">
 		<script src="js/principal.js"></script>
 		<script src="js/calls.js"></script>
 		<script src="js/sigmaJS/sigma.min.js"></script>
 		<script src="js/sigmaJS/sigma.parsers.json.min.js"></script>
 		<script src="js/utiles.js"></script>
 		<script src="js/relaciones.js"></script>
+		<script src="js/toastr.min.js"></script>
 	</head>
 	<body>
 		<div id="wrapper">
@@ -27,7 +30,27 @@
 	                    </div>
 	                </div>	                   
 	                <!-- /.row -->
-
+	                <div class="dropdown">
+                        <button id="btnVerCampanha" type="submit" class="btn btn-success dropdown-toggle" data-toggle="dropdown" style="margin-bottom:7px;">ver campa&ntilde;a</button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a id="nombreCampanha" href=""></a>
+                            </li>
+                            <li>
+                                <a id="mensajeCampanha" href=""></a>
+                            </li>
+                            <li>
+                                <input readonly type="text" class="form-control" data-date-format="dd/mm/yyyy" value="" id="fechaInicio">
+                            </li>
+                            <li>
+                                <input readonly type="text" class="form-control" data-date-format="dd/mm/yyyy" value="" id="fechaFin">
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+	                            <a id="lanzar" href=""><i class="fa fa-fw"></i> lanzar campa&ntilde;a</a>
+	                        </li>
+                        </ul>
+                    </div>
 	            	<div id="graph-container" style="width:160rem;height:80rem;"></div>
 	            </div>
 	        </div>

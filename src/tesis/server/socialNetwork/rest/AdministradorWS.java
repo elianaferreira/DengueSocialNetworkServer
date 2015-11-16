@@ -95,6 +95,28 @@ public class AdministradorWS {
 	}
 	
 	
+	@POST
+	@Path("/logout")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String adminLogout(@FormParam("name") String adminName,
+							@FormParam("password") String password){
+		
+		//verificamos si el administrador existe
+		AdminEntity administrador = administradorDao.verificarAdministrador(adminName, password);
+		if(administrador == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos");
+		} else {
+			//iniciamos sesion para el administrador
+			if(administradorDao.cerrarSesionAdmin(administrador)){
+				return Utiles.retornarSalida(false, "Sesion cerrada");
+			} else {
+				return Utiles.retornarSalida(true, "Error al cerrar la sesion");
+			}
+		}
+	}
+	
+	
 	
 	@POST
 	@Path("/volunteers")
@@ -612,7 +634,7 @@ public class AdministradorWS {
 								String username = arrayInvitados.getString(i);
 								//buscamos el username en la Base de Datos
 								VoluntarioEntity invitado = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
-								if(invitado == null){
+								if(invitado == null || invitado.getActivo() == false){
 									retornoNoInvitados.put(username);
 								} else {
 									campanha.getVoluntariosAdheridos().add(invitado);

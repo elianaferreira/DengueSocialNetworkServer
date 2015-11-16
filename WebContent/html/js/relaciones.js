@@ -1,6 +1,7 @@
 $(document).ready(function(){
 
 	$('#voluntarios').addClass("active");
+	$('#btnVerCampanha').hide();
 
 	var params = {
 		admin: getAdminUser(),
@@ -37,9 +38,80 @@ $(document).ready(function(){
 		        }
 			});
 
-			s.bind('clickNode doubleClickNode rightClickNode', function(e) {
+			s.bind('clickNode', function(e) {
 				console.log(e.type, e.data.node.label, e.data.node.id, e.data.captor);
+				//verificamos si es para agregar a una campanha
+				if(localStorage.getItem("nuevaCampanha") != undefined){
+					var campanhaTemp = JSON.parse(localStorage.getItem("nuevaCampanha"));
+					var arrayUsuariosInvitados = JSON.parse(campanhaTemp.voluntariosInvitados);
+					var yaExiste = false;
+					for(var j=0; j<arrayUsuariosInvitados.length; j++){
+						if(e.data.node.id == arrayUsuariosInvitados[j]){
+							yaExiste = true;
+							break;
+						}
+					}
+					if(!yaExiste){
+						arrayUsuariosInvitados.push(e.data.node.id);
+						//ocultamos ese usuario de manera que no pueda ser agregado nuevamente
+						$(this).hide();
+						//mostrar toast
+						toastr["success"]("Usuario agregado a la lista de invitados.", "Exito");
+						toastr.options = {
+							"closeButton": false,
+							"debug": false,
+							"newestOnTop": false,
+							"progressBar": false,
+							"positionClass": "toast-top-right",
+							"preventDuplicates": false,
+							"onclick": null,
+							"showDuration": "30",
+							"hideDuration": "1000",
+							"timeOut": "1000",
+							"extendedTimeOut": "1000",
+							"showEasing": "swing",
+							"hideEasing": "linear",
+							"showMethod": "fadeIn",
+							"hideMethod": "fadeOut"
+						}
+					} else {
+						$(this).hide();
+						toastr["info"]("Este usuario ya ha sido agregado.", "Info");
+						toastr.options = {
+							"closeButton": false,
+							"debug": false,
+							"newestOnTop": false,
+							"progressBar": false,
+							"positionClass": "toast-top-right",
+							"preventDuplicates": false,
+							"onclick": null,
+							"showDuration": "30",
+							"hideDuration": "1000",
+							"timeOut": "1000",
+							"extendedTimeOut": "1000",
+							"showEasing": "swing",
+							"hideEasing": "linear",
+							"showMethod": "fadeIn",
+							"hideMethod": "fadeOut"
+						}
+					}
+				}
 			});
+
+
+			//mostramos los datos de la campanha si es que existe una guardada
+			if(localStorage.getItem("nuevaCampanha") != undefined){
+				$('#btnVerCampanha').show();
+				var campanhaTemp = JSON.parse(localStorage.getItem("nuevaCampanha"));
+				$('#nombreCampanha').html(campanhaTemp.nombre);
+				$('#mensajeCampanha').html(campanhaTemp.mensaje);
+				$('#fechaInicio').html('fecha de inicio: ' + campanhaTemp.fechaInicio);
+				$('#fechaFin').html('fecha de finalizaci&oacute;n: ' + campanhaTemp.fechaFin);
+			}
 		}
+
+		$('#lanzar').click(function (event){
+			event.preventDefault();
+		});
 	});
 });
