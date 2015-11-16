@@ -1,8 +1,14 @@
+var arrayUsuariosInvitados = [];
+
+var existeCampanhaGuardada = false;
+
 $(document).ready(function(){
 
 	$('#voluntarios').addClass("active");
 	$('#modalCampanha').modal('hide');
+	$('#btnCampanha').hide();
 	$('#btnVerCampanhaGuardada').hide();
+	$('#btnVerCampanhaGuardada').parent().hide();
 
 	var nowTemp = new Date();
 	var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
@@ -11,7 +17,7 @@ $(document).ready(function(){
 	//la fecha de inicio no puede ser inferior al dia actual, y la fecha fin no puede ser infereior a la fecha de inicio 
 	var checkin = $('#fechaInicio').datepicker({
 		onRender: function(date) {
-			return date.valueOf() < now.valueOf() ? 'disabled' : '';
+			return date.valueOf() <= now.valueOf() ? 'disabled' : '';
 		}
 	}).on('changeDate', function(ev) {
 		if (ev.date.valueOf() > checkout.date.valueOf()) {
@@ -43,6 +49,7 @@ $(document).ready(function(){
 		if(response.error == true){
 			mostrarAlerta('Error', response.msj);
 		} else {
+			$('#btnCampanha').show();
 			//es necesario setear las coordenadas de los nodos
 			var jsonData = JSON.parse(response.msj);
 
@@ -70,10 +77,13 @@ $(document).ready(function(){
 
 			s.bind('clickNode', function(e) {
 				console.log(e.type, e.data.node.label, e.data.node.id, e.data.captor);
+
+				if(arrayUsuariosInvitados.length > 0){
+					$('#btnLanzar').attr("disabled", false);
+				}
+
 				//verificamos si es para agregar a una campanha
-				if(localStorage.getItem("nuevaCampanha") != undefined){
-					var campanhaTemp = JSON.parse(localStorage.getItem("nuevaCampanha"));
-					var arrayUsuariosInvitados = JSON.parse(campanhaTemp.voluntariosInvitados);
+				if(existeCampanhaGuardada){
 					var yaExiste = false;
 					for(var j=0; j<arrayUsuariosInvitados.length; j++){
 						if(e.data.node.id == arrayUsuariosInvitados[j]){
@@ -83,8 +93,10 @@ $(document).ready(function(){
 					}
 					if(!yaExiste){
 						arrayUsuariosInvitados.push(e.data.node.id);
+						//agregamos al preview
+						$('#detalles').append('<li><span style="padding-left: 20px; padding-right: 20px">'+e.data.node.label+'</span></li>');
+
 						//ocultamos ese usuario de manera que no pueda ser agregado nuevamente
-						$(this).hide();
 						//mostrar toast
 						toastr["success"]("Usuario agregado a la lista de invitados.", "Exito");
 						toastr.options = {
@@ -105,7 +117,6 @@ $(document).ready(function(){
 							"hideMethod": "fadeOut"
 						}
 					} else {
-						$(this).hide();
 						toastr["info"]("Este usuario ya ha sido agregado.", "Info");
 						toastr.options = {
 							"closeButton": false,
@@ -127,17 +138,6 @@ $(document).ready(function(){
 					}
 				}
 			});
-
-
-			/*/mostramos los datos de la campanha si es que existe una guardada
-			if(localStorage.getItem("nuevaCampanha") != undefined){
-				$('#btnVerCampanha').show();
-				var campanhaTemp = JSON.parse(localStorage.getItem("nuevaCampanha"));
-				$('#nombreCampanha').html(campanhaTemp.nombre);
-				$('#mensajeCampanha').html(campanhaTemp.mensaje);
-				$('#fechaInicio').html('fecha de inicio: ' + campanhaTemp.fechaInicio);
-				$('#fechaFin').html('fecha de finalizaci&oacute;n: ' + campanhaTemp.fechaFin);
-			}*/
 		}
 
 		$('#btnCampanha').click(function (event){
@@ -189,6 +189,34 @@ $(document).ready(function(){
 						$('#modalCampanha').modal('hide');
 						$('#btnCampanha').hide();
 						$('#btnVerCampanhaGuardada').show();
+						$('#btnVerCampanhaGuardada').parent().show();
+
+						//seteamos al toggle
+						$('#verNombre').html(nombreCampanha);
+						$('#verMensaje').html(mensajeCampanha);
+						$('#verInicio').html('inicio: '+fechaInicio);
+						$('#verFin').html('fin: ' + fechaFin);
+
+						existeCampanhaGuardada = true;
+
+						toastr["info"]("Ahora puede agregar los voluntarios invitados haciendo click en los nodos correspondientes.", "Info")
+						toastr.options = {
+							"closeButton": false,
+							"debug": false,
+							"newestOnTop": false,
+							"progressBar": false,
+							"positionClass": "toast-top-center",
+							"preventDuplicates": false,
+							"onclick": null,
+							"showDuration": "300",
+							"hideDuration": "1000",
+							"timeOut": "5000",
+							"extendedTimeOut": "1000",
+							"showEasing": "swing",
+							"hideEasing": "linear",
+							"showMethod": "fadeIn",
+							"hideMethod": "fadeOut"
+						}
 					}
 				}
 			}
