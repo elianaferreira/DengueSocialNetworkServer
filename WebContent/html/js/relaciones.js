@@ -1,7 +1,37 @@
 $(document).ready(function(){
 
 	$('#voluntarios').addClass("active");
-	$('#btnVerCampanha').hide();
+	//$('#btnVerCampanha').hide();
+	$('#modalCampanha').modal('hide');
+
+	var nowTemp = new Date();
+	var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+	 
+
+	//la fecha de inicio no puede ser inferior al dia actual, y la fecha fin no puede ser infereior a la fecha de inicio 
+	var checkin = $('#fechaInicio').datepicker({
+		onRender: function(date) {
+			return date.valueOf() < now.valueOf() ? 'disabled' : '';
+		}
+	}).on('changeDate', function(ev) {
+		if (ev.date.valueOf() > checkout.date.valueOf()) {
+			var newDate = new Date(ev.date)
+			newDate.setDate(newDate.getDate() + 1);
+			checkout.setValue(newDate);
+		}
+		checkin.hide();
+		$('#fechaFin')[0].focus();
+	}).data('datepicker');
+
+	var checkout = $('#fechaFin').datepicker({
+		onRender: function(date) {
+			return date.valueOf() <= checkin.date.valueOf() ? 'disabled' : '';
+		}
+	}).on('changeDate', function(ev) {
+		checkout.hide();
+	}).data('datepicker');
+
+	
 
 	var params = {
 		admin: getAdminUser(),
@@ -13,6 +43,8 @@ $(document).ready(function(){
 		if(response.error == true){
 			mostrarAlerta('Error', response.msj);
 		} else {
+			$('#btnVerCampanha').show();
+
 			//es necesario setear las coordenadas de los nodos
 			var jsonData = JSON.parse(response.msj);
 
@@ -110,8 +142,9 @@ $(document).ready(function(){
 			}
 		}
 
-		$('#lanzar').click(function (event){
+		$('#btnCampanha').click(function (event){
 			event.preventDefault();
+			$('#modalCampanha').modal('show');
 		});
 	});
 });

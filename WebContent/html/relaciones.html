@@ -8,6 +8,8 @@
 		<link href="js/startbootstrap-sb-admin-1.0.3/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 		<link rel="stylesheet" type="text/css" href="css/toastr.css">
 		<link rel="stylesheet" type="text/css" href="css/toastr.min.css">
+		<link rel="stylesheet" type="text/css" href="css/datepicker.css">
+		<script src="js/bootstrap-datepicker.js"></script>
 		<script src="js/principal.js"></script>
 		<script src="js/calls.js"></script>
 		<script src="js/sigmaJS/sigma.min.js"></script>
@@ -15,6 +17,11 @@
 		<script src="js/utiles.js"></script>
 		<script src="js/relaciones.js"></script>
 		<script src="js/toastr.min.js"></script>
+
+		<style type="text/css">
+			.datepicker{z-index:1151 !important;}
+		</style>
+
 	</head>
 	<body>
 		<div id="wrapper">
@@ -26,31 +33,48 @@
 	                        <h1 class="page-header">
 	                            Voluntario <small>Vista General</small>
 	                        </h1>
-	                        
 	                    </div>
 	                </div>	                   
 	                <!-- /.row -->
-	                <div class="dropdown">
-                        <button id="btnVerCampanha" type="submit" class="btn btn-success dropdown-toggle" data-toggle="dropdown" style="margin-bottom:7px;">ver campa&ntilde;a</button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a id="nombreCampanha" href=""></a>
-                            </li>
-                            <li>
-                                <a id="mensajeCampanha" href=""></a>
-                            </li>
-                            <li>
-                                <input readonly type="text" class="form-control" data-date-format="dd/mm/yyyy" value="" id="fechaInicio">
-                            </li>
-                            <li>
-                                <input readonly type="text" class="form-control" data-date-format="dd/mm/yyyy" value="" id="fechaFin">
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-	                            <a id="lanzar" href=""><i class="fa fa-fw"></i> lanzar campa&ntilde;a</a>
-	                        </li>
-                        </ul>
-                    </div>
+	                <button id="btnCampanha" type="submit" class="btn btn-success" dstyle="margin-bottom:7px;">campa&ntilde;a</button>
+	                <div class="modal fade" id="modalCampanha" role="dialog">
+						<div class="modal-dialog">
+							<!-- Modal content-->
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title">Crear Campa&ntilde;a</h4>
+								</div>
+								<div class="modal-body">
+									<form role="form">
+					                    <div id="divNombreCamp" class="form-group">
+					                        <label>nombre de la campa&ntilde;a</label>
+					                        <input id="inputNombre" class="form-control">
+					                    </div>
+					                    <div id="divMensaje" class="form-group">
+					                        <label>mensaje</label>
+					                        <input id="inputMensaje" class="form-control">
+					                    </div>
+					                    <div id="divFechas">
+					                    	<div class="well" style="background:#fff">
+												<table class="table">
+														<tr>
+															<th style="border-top:none">Fecha de Inicio: <input readonly type="text" class="form-control" 
+																	data-date-format="dd/mm/yyyy" value="" id="fechaInicio"></th>
+															<th style="border-top:none">Fecha de Finalizaci&oacute;n: <input readonly type="text" class="form-control" 
+																	data-date-format="dd/mm/yyyy"value="" id="fechaFin"></th>
+														</tr>
+												</table>
+											</div>
+					                    </div>
+					                </form>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+								</div>
+							</div>
+						</div>
+				  	</div>
 	            	<div id="graph-container" style="width:160rem;height:80rem;"></div>
 	            </div>
 	        </div>
