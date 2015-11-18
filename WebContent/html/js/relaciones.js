@@ -6,9 +6,11 @@ $(document).ready(function(){
 
 	$('#voluntarios').addClass("active");
 	$('#modalCampanha').modal('hide');
-	$('#btnCampanha').hide();
+	$('#toolbarCampanha').hide();
+	/*$('#btnCampanha').hide();
 	$('#btnVerCampanhaGuardada').hide();
 	$('#btnVerCampanhaGuardada').parent().hide();
+	$('#btnEditar').hide();*/
 
 	var nowTemp = new Date();
 	var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
@@ -17,7 +19,7 @@ $(document).ready(function(){
 	//la fecha de inicio no puede ser inferior al dia actual, y la fecha fin no puede ser infereior a la fecha de inicio 
 	var checkin = $('#fechaInicio').datepicker({
 		onRender: function(date) {
-			return date.valueOf() <= now.valueOf() ? 'disabled' : '';
+			return date.valueOf() < now.valueOf() ? 'disabled' : '';
 		}
 	}).on('changeDate', function(ev) {
 		if (ev.date.valueOf() > checkout.date.valueOf()) {
@@ -49,7 +51,7 @@ $(document).ready(function(){
 		if(response.error == true){
 			mostrarAlerta('Error', response.msj);
 		} else {
-			$('#btnCampanha').show();
+			//$('#btnCampanha').show();
 			//es necesario setear las coordenadas de los nodos
 			var jsonData = JSON.parse(response.msj);
 
@@ -144,7 +146,18 @@ $(document).ready(function(){
 			event.preventDefault();
 			$('#modalCampanha').modal('show');
 		});
+
+		
 	});
+
+
+
+	/*$('#btnEditar').click(function (event){
+		if(localStorage.getItem("tempCampanha") != undefined){
+			event.preventDefault();
+			$('#modalCampanha').modal('show');
+		}
+	});*/
 
 
 	$('#btnGuardarCampanha').click(function (e){
@@ -187,9 +200,12 @@ $(document).ready(function(){
 						jsonTemp.fechaFin = fechaFin;
 						localStorage.setItem("tempCampanha", JSON.stringify(jsonTemp));
 						$('#modalCampanha').modal('hide');
-						$('#btnCampanha').hide();
-						$('#btnVerCampanhaGuardada').show();
-						$('#btnVerCampanhaGuardada').parent().show();
+						//$('#btnCampanha').hide();
+						//$('#btnCampanha').attr("disabled", true);
+						//$('#btnVerCampanhaGuardada').show();
+						//$('#btnVerCampanhaGuardada').parent().show();
+						//mostramos para editar
+						//$('#btnEditar').show();
 
 						//seteamos al toggle
 						$('#verNombre').html(nombreCampanha);
@@ -225,15 +241,21 @@ $(document).ready(function(){
 
 	
 	//enviar la campanha
-	$('btnLanzar').click(function (event){
+	$('#btnLanzar').click(function (event){
 		event.preventDefault();
 
 
-		mostrarConfirmacionDosOpciones("Campa&ntilde;a", "Est&aacute; seguro que desea lanzar la campa&ntilde;a?", 
+		if(localStorage.getItem("tempCampanha") != undefined){
+			if(arrayUsuariosInvitados.length == 0){
+				mostrarAlerta("Error", "La campa&ntilde;a debe contar con usuarios invitados");
+			} else{
+
+
+		/*mostrarConfirmacionDosOpciones("Campa&ntilde;a", "Est&aacute; seguro que desea lanzar la campa&ntilde;a?", 
 			"S&iacute;, lanzar la campa&ntilde;a",
 			function(event){
 				//enviar campanha tal y como esta
-				event.preventDefault();
+				event.preventDefault();*/
 				var tempJson = {};
 				tempJson = JSON.parse(localStorage.getItem("tempCampanha"));
 
@@ -241,9 +263,9 @@ $(document).ready(function(){
 					adminName: getAdminUser(),
 					password: getAdminPass(),
 					nombre: tempJson.nombre,
-					mensaje: mensaje,
-					fechaLanzamiento: fechaInicio,
-					fechaFinalizacion: fechaFin,
+					mensaje: tempJson.mensaje,
+					fechaLanzamiento: tempJson.fechaInicio,
+					fechaFinalizacion: tempJson.fechaFin,
 					voluntariosInvitados: JSON.stringify(arrayUsuariosInvitados)
 				}
 
@@ -253,6 +275,7 @@ $(document).ready(function(){
 					if(response.error == true){
 						mostrarAlerta("Error", response.msj);
 					} else {
+						localStorage.removeItem("tempCampanha");
 						//mostramos los voluntarios no invitados
 						var arrayNoInvitados = JSON.parse(response.msj);
 						if(arrayNoInvitados.length == 0){
@@ -274,7 +297,9 @@ $(document).ready(function(){
 						}
 					}
 				});
+			//}
+		//);
 			}
-		);
+		}
 	});
 });

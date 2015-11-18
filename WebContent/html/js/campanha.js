@@ -229,14 +229,14 @@ $(document).ready(function(){
 												}
 												listaHTML += '</div></div>';
 												mostrarAlerta("&Eacute;xito", mensaje + listaHTML);
-												//limpiamos todos los datos
-												$('#inputNombre').val("");
-												$('#inputMensaje').val("");
-												$('#fechaInicio').val("");
-												$('#fechaFin').val("");
-												$('#inputBuscar').val("");
-												$('#listaUsuarios').empty();
 											}
+											//limpiamos todos los datos
+											$('#inputNombre').val("");
+											$('#inputMensaje').val("");
+											$('#fechaInicio').val("");
+											$('#fechaFin').val("");
+											$('#inputBuscar').val("");
+											$('#listaUsuarios').empty();
 										}
 									});
 								//}

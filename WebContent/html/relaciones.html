@@ -33,30 +33,74 @@
 	                        <h1 class="page-header">
 	                            Voluntario <small>Vista General</small>
 	                        </h1>
-	                        <button disabled id="btnLanzar" type="submit" class="btn btn-success" style="margin-bottom:7px;">lanzar campa&ntilde;a</button>
 	                    </div>
 	                </div>	                   
 	                <!-- /.row -->
-	                <button id="btnCampanha" type="submit" class="btn btn-success" style="margin-bottom:7px;">campa&ntilde;a</button>
-	                <div class="dropdown open">
-	                	<button id="btnVerCampanhaGuardada" type="submit" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="margin-bottom:7px; margin-left: 7px;">ver</button>
-	                	<ul id="detalles" class="dropdown-menu">
-	                		<li>
-								<span id="verNombre" style="padding-left: 20px; padding-right: 20px"></span>
-							</li>
-							<li>
-								<span id="verMensaje" style="padding-left: 20px; padding-right: 20px"></span>
-							</li>
-							<li>
-								<span id="verInicio" style="padding-left: 20px; padding-right: 20px"></span>
-							</li>
-							<li>
-								<span id="verFin" style="padding-left: 20px; padding-right: 20px"></span>
-							</li>
-							<li class="divider"></li>
-							<li class="dropdown-header">Voluntarios</li>
-						</ul>
+	                <div id"toolbarCampanha" class="navbar navbar-default">
+	                    <div class="container" style="margin-left: 15px; padding-left: 0px">
+		                    <div class="navbar-header">
+	                            <a id="btnLanzar" class="navbar-brand" style="cursor:pointer">Lanzar campa&ntilde;a</a>
+	                        </div>
+	                        <div class="navbar-collapse collapse">
+	                            <ul class="nav navbar-nav">
+	                                <li id="btnCampanha"><a style="cursor:pointer">Campa&ntilde;a / Editar</a>
+	                                </li>	                                
+	                                <li id="btnVerCampanhaGuardada" class="dropdown">
+	                                    <a href="" class="dropdown-toggle" data-toggle="dropdown">Ver <b class="caret"></b></a>
+	                                    <ul id="detalles" class="dropdown-menu">
+					                		<li>
+												<span id="verNombre" style="padding-left: 20px; padding-right: 20px"></span>
+											</li>
+											<li>
+												<span id="verMensaje" style="padding-left: 20px; padding-right: 20px"></span>
+											</li>
+											<li>
+												<span id="verInicio" style="padding-left: 20px; padding-right: 20px"></span>
+											</li>
+											<li>
+												<span id="verFin" style="padding-left: 20px; padding-right: 20px"></span>
+											</li>
+											<li class="divider"></li>
+											<li class="dropdown-header">Voluntarios</li>
+										</ul>
+	                                </li>
+	                                <!--li id="btnEditar"><a style="cursor:pointer">Editar</a>
+	                                </li-->
+	                            </ul>
+	                        </div>
+	                        <!--/.nav-collapse -->
+	                    </div>
 	                </div>
+
+	                <!--div class="row">
+		                <div class="col-lg-1">
+			                <button id="btnCampanha" type="submit" class="btn btn-success" style="margin-bottom:7px;">campa&ntilde;a</button>
+		                </div>
+		                <div class="col-lg-1">
+			                <div class="dropdown open">
+			                	<button id="btnVerCampanhaGuardada" type="submit" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="margin-bottom:7px; margin-left: 7px;">ver</button>
+			                	<ul id="detalles" class="dropdown-menu">
+			                		<li>
+										<span id="verNombre" style="padding-left: 20px; padding-right: 20px"></span>
+									</li>
+									<li>
+										<span id="verMensaje" style="padding-left: 20px; padding-right: 20px"></span>
+									</li>
+									<li>
+										<span id="verInicio" style="padding-left: 20px; padding-right: 20px"></span>
+									</li>
+									<li>
+										<span id="verFin" style="padding-left: 20px; padding-right: 20px"></span>
+									</li>
+									<li class="divider"></li>
+									<li class="dropdown-header">Voluntarios</li>
+								</ul>
+			                </div>
+		                </div>
+		                <div class="col-lg-1">
+		                	<button id="btnEditar" type="submit" class="btn btn-default" style="margin-bottom:7px;">editar</button>
+		                </div>
+	                </div-->
 	                <div class="modal fade" id="modalCampanha" role="dialog">
 						<div class="modal-dialog">
 							<!-- Modal content-->
