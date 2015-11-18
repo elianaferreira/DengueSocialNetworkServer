@@ -222,4 +222,59 @@ $(document).ready(function(){
 			}
 		}
 	});
+
+	
+	//enviar la campanha
+	$('btnLanzar').click(function (event){
+		event.preventDefault();
+
+
+		mostrarConfirmacionDosOpciones("Campa&ntilde;a", "Est&aacute; seguro que desea lanzar la campa&ntilde;a?", 
+			"S&iacute;, lanzar la campa&ntilde;a",
+			function(event){
+				//enviar campanha tal y como esta
+				event.preventDefault();
+				var tempJson = {};
+				tempJson = JSON.parse(localStorage.getItem("tempCampanha"));
+
+				var params = {
+					adminName: getAdminUser(),
+					password: getAdminPass(),
+					nombre: tempJson.nombre,
+					mensaje: mensaje,
+					fechaLanzamiento: fechaInicio,
+					fechaFinalizacion: fechaFin,
+					voluntariosInvitados: JSON.stringify(arrayUsuariosInvitados)
+				}
+
+				ajaxRequest("/admin/campanha", "POST", params, function(response){
+					var response = JSON.parse(response);
+					borrarVestigiosModal();
+					if(response.error == true){
+						mostrarAlerta("Error", response.msj);
+					} else {
+						//mostramos los voluntarios no invitados
+						var arrayNoInvitados = JSON.parse(response.msj);
+						if(arrayNoInvitados.length == 0){
+							mostrarAlerta("&Eacute;xito", "La campa&ntilde;a ha sido lanzada.");
+						} else {
+							var mensaje = "La campa&ntilde;a ha sido lanzada. Sin embargo, los siguientes voluntarios "+
+									"no pudieron ser invitados.";
+							var listaHTML = '<br>\
+							<div class="panel-body">\
+								<div class="list-group">';
+							for(var k=0; k<arrayNoInvitados.length; k++){
+								listaHTML += '\
+									<a class="list-group-item">\
+										<i class="fa fa-fw fa-user"></i> '+arrayNoInvitados[k]+'\
+									</a>';
+							}
+							listaHTML += '</div></div>';
+							mostrarAlerta("&Eacute;xito", mensaje + listaHTML);
+						}
+					}
+				});
+			}
+		);
+	});
 });

@@ -150,6 +150,7 @@ $(document).ready(function(){
 
 	$('#btnCrearCampanha').click(function(event){
 		event.preventDefault();
+		event.stopPropagation();
 
 		//nombre de la campanha
 		var nombreCampanha = $('#inputNombre').val();
@@ -158,31 +159,42 @@ $(document).ready(function(){
 		var fechaFin = $('#fechaFin').val();
 
 		if(nombreCampanha.trim() == ""){
-			mostrarAlerta("Error", "La campa&ntilde;a debe tener un nombre.");
-			return;
+			$('#divNombreCamp').append('\
+				<div class="alert alert-danger">\
+                    <strong>Error!</strong> La campa&ntilde;a debe tener un nombre.\
+                </div>');
 		} else {
 			if(mensajeCampanha.trim() == ""){
-				mostrarAlerta("Error", "La campa&ntilde;a debe tener un mensaje a modo de descripci&oacute;n.");
-				return;
+				$('#divMensaje').append('\
+				<div class="alert alert-danger">\
+                    <strong>Error!</strong> La campa&ntilde;a debe tener un mensaje a modo de descripci&oacute;n.\
+                </div>');
 			} else {
 				if(fechaInicio.trim() == ""){
-					mostrarAlerta("Error", "La campa&ntilde;a debe tener una fecha de inicio.");
-					return;
+					$('#divFechas').append('\
+						<div class="alert alert-danger">\
+		                    <strong>Error!</strong> La campa&ntilde;a debe tener una fecha de inicio.\
+		                </div>');
 				} else {
 					if(fechaFin.trim() == ""){
-						mostrarAlerta("Error", "La campa&ntilde;a debe tener una fecha de finalizaci&oacute;n.");
-						return;
+						$('#divFechas').append('\
+							<div class="alert alert-danger">\
+			                    <strong>Error!</strong> La campa&ntilde;a debe tener una fecha de finalizaci&oacute;n.\
+			                </div>');
 					} else {
 						if(arrayUsuariosInvitados.length == 0){
-							mostrarAlerta("Error", "La campa&ntilde;a debe contar con usuarios invitados.");
-							return;
+							$('#formUsuarios').append('\
+								<div class="alert alert-danger">\
+				                    <strong>Error!</strong> La campa&ntilde;a debe contar con usuarios invitados.\
+				                </div>');
 						} else {
-							mostrarConfirmacionDosOpciones("Campa&ntilde;a", "Est&aacute; seguro que desea lanzar la campa&ntilde;a?", 
+							/*mostrarAlertaConfirmacion("Campa&ntilde;a", "Est&aacute; seguro que desea lanzar la campa&ntilde;a?", 
 								"S&iacute;, lanzar la campa&ntilde;a",
 								function(event){
 									//enviar campanha tal y como esta
 									event.preventDefault();
 									$('#myModal').modal('hide');
+									borrarVestigiosModal();*/
 									var params = {
 										adminName: getAdminUser(),
 										password: getAdminPass(),
@@ -212,21 +224,32 @@ $(document).ready(function(){
 												for(var k=0; k<arrayNoInvitados.length; k++){
 													listaHTML += '\
 														<a class="list-group-item">\
-															<i class="fa fa-fw fa-user"></i> '+arrayUsuarios[k]+'\
+															<i class="fa fa-fw fa-user"></i> '+arrayNoInvitados[k]+'\
 														</a>';
 												}
 												listaHTML += '</div></div>';
-												
+												mostrarAlerta("&Eacute;xito", mensaje + listaHTML);
 											}
 										}
 									});
-								}
-							);
+								//}
+							//);
 						}
 					}
 				}
 			}
 		}
 
+	});
+	
+	//ocultar la vista de error cuando se haga click fuera de el
+	$(document).mouseup(function (e) {
+	    var container = $(".alert");
+
+	    if (!container.is(e.target) // if the target of the click isn't the container...
+	        && container.has(e.target).length === 0) // ... nor a descendant of the container
+	    {
+	        container.hide();
+	    }
 	});
 });

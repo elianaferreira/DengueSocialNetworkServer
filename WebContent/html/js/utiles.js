@@ -47,7 +47,7 @@ function mostrarAlertaConfirmacion(titulo, mensaje, boton, callback){
 		      </div>\
 		      <div class="modal-footer">\
 		        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>\
-		        <button id="btnSuccess" type="button" class="btn btn-success">' + boton + '</button>\
+		        <button id="btnSuccess" type="button" class="btn btn-success" data-dismiss="modal">' + boton + '</button>\
 		      </div>\
 		    </div>\
 		  </div>\
