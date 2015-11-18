@@ -637,7 +637,7 @@ public class AdministradorWS {
 								if(invitado == null || invitado.getActivo() == false){
 									retornoNoInvitados.put(username);
 								} else {
-									campanha.getVoluntariosAdheridos().add(invitado);
+									campanha.getVoluntariosInvitados().add(invitado);
 								}
 							}
 							//si la cantidad de retornoNoInvitados es igual al lenght de invitados, ningun voluntario era valido

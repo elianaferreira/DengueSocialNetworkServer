@@ -38,11 +38,13 @@ import com.sun.jersey.json.impl.writer.JsonEncoder;
 import com.sun.jersey.multipart.FormDataParam;
 import com.sun.xml.rpc.processor.modeler.j2ee.xml.exceptionMappingType;
 
+import tesis.server.socialNetwork.dao.CampanhaDao;
 import tesis.server.socialNetwork.dao.ContactoDao;
 import tesis.server.socialNetwork.dao.PostDao;
 import tesis.server.socialNetwork.dao.RepostDao;
 import tesis.server.socialNetwork.dao.SolicitudAmistadDao;
 import tesis.server.socialNetwork.dao.VoluntarioDao;
+import tesis.server.socialNetwork.entity.CampanhaEntity;
 import tesis.server.socialNetwork.entity.ContactoEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.RepostEntity;
@@ -78,6 +80,9 @@ public class VoluntarioWS {
 
 	@Inject
 	private RepostDao repostDao;
+	
+	@Inject
+	private CampanhaDao campanhaDao;
 	
 	/**
 	 * Metodo que  agrega un nuevo usuario a la BD
@@ -596,6 +601,50 @@ public class VoluntarioWS {
 			if(voluntario.getFotoDePerfil() != null){
 				retorno.put("fotoPerfil", Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
 			}
+			return Utiles.retornarSalida(false, retorno.toString());
+		}
+	}
+	
+	
+	@GET
+	@Path("/user/campaigns")
+	@ResponseBody
+	public String getCampanhasActivas(@QueryParam("username") String username){
+		
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "El usuario no existe");
+		} else {
+			try{
+				//buscamos todas las campanhas
+				List<CampanhaEntity> lista = campanhaDao.getAll();
+				JSONArray retorno = new JSONArray();
+				for(int i=0; i<lista.size(); i++){
+					retorno.put(campanhaDao.getJSONFromCampanha(lista.get(i), username));
+				}
+				return Utiles.retornarSalida(false, retorno.toString());
+			} catch(Exception e){
+				e.printStackTrace();
+				return Utiles.retornarSalida(true, "Ha ocurrido un error al obtener las campanhas lanzadas.");
+			}
+		}
+	}
+	
+	@GET
+	@Path("/user/campaign/adheridos/{id}")
+	@ResponseBody
+	public String getAdheridosCampanha(@PathParam("id") Integer idCampanha){
+		
+		CampanhaEntity campanha = campanhaDao.findByClassAndID(CampanhaEntity.class, idCampanha);
+		if(campanha == null){
+			return Utiles.retornarSalida(true, "La campanha no existe.");
+		} else {
+			List<VoluntarioEntity> adheridos = campanha.getVoluntariosAdheridos();
+			JSONArray retorno = new JSONArray();
+			for(int i=0; i<adheridos.size(); i++){
+				retorno.put(voluntarioDao.getJSONFromVoluntario(adheridos.get(i)));
+			}
+			
 			return Utiles.retornarSalida(false, retorno.toString());
 		}
 	}
