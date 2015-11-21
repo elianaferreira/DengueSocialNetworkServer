@@ -137,7 +137,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 	 * @return
 	 */
 	public boolean yaEsContacto(VoluntarioEntity voluntario1, VoluntarioEntity voluntario2){
-		//verificamos que vountario2 se encuentre en la lista de contactos de voluntario1
+		/*/verificamos que vountario2 se encuentre en la lista de contactos de voluntario1
 		List<ContactoEntity> listaContactos = voluntario1.getContactos();
 		if(listaContactos.isEmpty()){
 			return false;
@@ -150,7 +150,20 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 				}
 			}
 		}
-		return false;
+		return false;*/
+		
+		//buscamos si hay alguna referencia en la entidad de contactos
+		/*String consulta = "select exists (select ce.idAmistad from ContactoEntity ce where "
+				+ "(ce.contacto = :voluntario1 and ce.voluntario = :voluntario2 ) or "
+				+ "(ce.voluntario = :voluntario1 and ce.contacto = :voluntario2))";*/
+		
+		Query query = this.getSession().createQuery("from ContactoEntity ce where "
+				+ "(ce.contacto = :voluntario1 and ce.voluntario = :voluntario2 ) or "
+				+ "(ce.voluntario = :voluntario1 and ce.contacto = :voluntario2)");
+		query.setEntity("voluntario1", voluntario1);
+		query.setEntity("voluntario2", voluntario2);
+		Boolean sonAmigos = query.setMaxResults(1).uniqueResult() != null;
+		return sonAmigos;
 	}
 	
 	

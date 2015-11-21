@@ -633,19 +633,31 @@ public class VoluntarioWS {
 	@GET
 	@Path("/user/campaign/adheridos/{id}")
 	@ResponseBody
-	public String getAdheridosCampanha(@PathParam("id") Integer idCampanha){
+	public String getAdheridosCampanha(@PathParam("id") Integer idCampanha,
+			@QueryParam("username") String username){
 		
 		CampanhaEntity campanha = campanhaDao.findByClassAndID(CampanhaEntity.class, idCampanha);
 		if(campanha == null){
 			return Utiles.retornarSalida(true, "La campanha no existe.");
 		} else {
-			List<VoluntarioEntity> adheridos = campanha.getVoluntariosAdheridos();
-			JSONArray retorno = new JSONArray();
-			for(int i=0; i<adheridos.size(); i++){
-				retorno.put(voluntarioDao.getJSONFromVoluntario(adheridos.get(i)));
+			VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+			if(voluntario == null){
+				return Utiles.retornarSalida(true, "El usuario no existe");
+			} else {
+				List<VoluntarioEntity> adheridos = campanha.getVoluntariosAdheridos();
+				JSONArray retorno = new JSONArray();
+				for(int i=0; i<adheridos.size(); i++){
+					JSONObject v = voluntarioDao.getJSONFromVoluntario(adheridos.get(i));
+					if(voluntarioDao.yaEsContacto(voluntario, adheridos.get(i))){
+						v.put("yaEsAmigo", true);
+					} else {
+						v.put("yaEsAmigo", false);
+					}
+					retorno.put(v);
+				}
+				
+				return Utiles.retornarSalida(false, retorno.toString());
 			}
-			
-			return Utiles.retornarSalida(false, retorno.toString());
 		}
 	}
 }
