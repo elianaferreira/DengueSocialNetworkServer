@@ -590,18 +590,62 @@ public class VoluntarioWS {
 	@GET
 	@Path("/user/profile/{username}")
 	@ResponseBody
-	public String getProfileData(@PathParam("username") String username){
+	public String getProfileData(@PathParam("username") String username, 
+			@QueryParam("usernameSolicitante") String usernameSolicitante){
+		
+		VoluntarioEntity solicitante = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante);
+		if(solicitante == null){
+			return Utiles.retornarSalida(true, "El usuario no existe.");
+		} else {
+			//verificamos si ha iniciado sesion
+			if(solicitante.getLogged() == false){
+				//no ha iniciado sesion
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
+			} else {
+				VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+				if(voluntario == null){
+					return Utiles.retornarSalida(true, "El usuario no existe");
+				} else {
+					JSONObject retorno = voluntarioDao.getJSONFromVoluntario(voluntario);
+					//retorno.put("password", voluntario.getPassword());
+					if(voluntario.getFotoDePerfil() != null){
+						retorno.put("fotoPerfil", Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
+					}
+					//verificamos si son amigos
+					if(voluntarioDao.yaEsContacto(solicitante, voluntario)){
+						retorno.put("sonAmigos", true);
+					} else {
+						retorno.put("sonAmigos", false);
+					}
+					return Utiles.retornarSalida(false, retorno.toString());
+				}
+			}
+		}
+	}
+	
+	
+	@GET
+	@Path("/user/myProfileToEdit/{username}")
+	@ResponseBody
+	public String getMyProfileDataToEdit(@PathParam("username") String username){
 		
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "El usuario no existe");
+			return Utiles.retornarSalida(true, "El usuario no existe.");
 		} else {
-			JSONObject retorno = voluntarioDao.getJSONFromVoluntario(voluntario);
-			retorno.put("password", voluntario.getPassword());
-			if(voluntario.getFotoDePerfil() != null){
-				retorno.put("fotoPerfil", Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
+			//verificamos si ha iniciado sesion
+			if(voluntario.getLogged() == false){
+				//no ha iniciado sesion
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
+			} else {
+					JSONObject retorno = voluntarioDao.getJSONFromVoluntario(voluntario);
+					retorno.put("password", voluntario.getPassword());
+					if(voluntario.getFotoDePerfil() != null){
+						retorno.put("fotoPerfil", Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
+					}
+					return Utiles.retornarSalida(false, retorno.toString());
+				
 			}
-			return Utiles.retornarSalida(false, retorno.toString());
 		}
 	}
 	
