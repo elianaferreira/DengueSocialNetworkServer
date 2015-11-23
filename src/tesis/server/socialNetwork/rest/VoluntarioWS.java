@@ -704,4 +704,34 @@ public class VoluntarioWS {
 			}
 		}
 	}
+	
+	
+	@POST
+	@Path("/user/contacts/delete")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String eliminarContacto(@FormParam("username") String username, @FormParam("eliminar") String usernameAEliminar){
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "El usuario no existe");
+		} else {
+			VoluntarioEntity vEliminar = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameAEliminar);
+			if(vEliminar == null){
+				return Utiles.retornarSalida(true, "El usuario no existe");
+			} else {
+				ContactoEntity cEliminar = contactoDao.getContact(voluntario, vEliminar);
+				if(cEliminar == null){
+					return Utiles.retornarSalida(true, "No son amigos.");
+				} else {
+					try{
+						contactoDao.delete(cEliminar);
+						return Utiles.retornarSalida(false, "Ya no son amigos.");
+					} catch(Exception e){
+						e.printStackTrace();
+						return Utiles.retornarSalida(true, "Ha ocurrido un error al borrar la amistad.");
+					}
+				}
+			}
+		}
+	}
 }

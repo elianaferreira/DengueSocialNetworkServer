@@ -79,6 +79,22 @@ public class ContactoDao extends GenericDao<ContactoEntity, Integer> {
 		return lista;
 	}
 	
-
 	
+	
+	/**
+	 * Metodo que retorna la entidad contacto que representa la amistad entre dos voluntarios
+	 * @param v1
+	 * @param v2
+	 * @return
+	 */
+	public ContactoEntity getContact(VoluntarioEntity v1, VoluntarioEntity v2){
+		String consulta = "from ContactoEntity ce where "
+				+ "(ce.contacto = :voluntario1 and ce.voluntario = :voluntario2 ) or "
+				+ "(ce.voluntario = :voluntario1 and ce.contacto = :voluntario2)";
+		Query query = getSession().createQuery(consulta);
+		query.setEntity("voluntario1", v1);
+		query.setEntity("voluntario2", v2);
+		ContactoEntity contacto = (ContactoEntity) query.uniqueResult();
+		return contacto;
+	}	
 }

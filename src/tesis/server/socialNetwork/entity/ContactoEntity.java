@@ -43,7 +43,7 @@ public class ContactoEntity {
 	}
 	
 	
-	@ManyToOne(cascade=CascadeType.REMOVE)
+	@ManyToOne
 	@JoinColumn(name="VOLUNTARIO")
 	public VoluntarioEntity getVoluntario() {
 		return voluntario;
@@ -52,7 +52,7 @@ public class ContactoEntity {
 		this.voluntario = voluntario;
 	}
 	
-	@ManyToOne(cascade=CascadeType.REMOVE)
+	@ManyToOne
 	@JoinColumn(name="CONTACTO")
 	public VoluntarioEntity getContacto() {
 		return contacto;
