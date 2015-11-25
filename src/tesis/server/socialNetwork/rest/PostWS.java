@@ -579,6 +579,9 @@ public class PostWS {
 				JSONArray retorno = new JSONArray();
 				for(int i=0; i<listaRelevantes.size(); i++){
 					JSONObject postJSON = postDao.getJSONFromPost(usernameSolicitante, listaRelevantes.get(i));
+					if(listaRelevantes.get(i).getVoluntario().getFotoDePerfil() != null){
+						postJSON.put("fotoPerfil", Base64.encodeToString(listaRelevantes.get(i).getVoluntario().getFotoDePerfil(), Base64.DEFAULT));
+					}
 					retorno.put(postJSON);
 				}
 				return Utiles.retornarSalida(false, retorno.toString());
