@@ -506,11 +506,6 @@ public class VoluntarioWS {
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "No existe el usuario");
 		} else {
-			//verificamos si ha iniciado sesion
-			if(voluntario.getLogged() == false){
-				//no ha iniciado sesion
-				return Utiles.retornarSalida(true, "No has iniciado sesión");
-			} else {
 				//obtenemos la lista de contactos
 				List<VoluntarioEntity> listaContactos = voluntarioDao.getListaContactos(voluntario);
 				if(listaContactos == null){
@@ -526,12 +521,11 @@ public class VoluntarioWS {
 				}
 				
 			}
-		}
+		
 	}
 	
 	
 	@GET
-	@Path("/user/profilePhoto/{username}")
 	@ResponseBody
 	public String photoProfile(@PathParam("username") String usernameFoto){
 		
