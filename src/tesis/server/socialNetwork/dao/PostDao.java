@@ -23,6 +23,7 @@ import tesis.server.socialNetwork.entity.FavoritoEntity;
 import tesis.server.socialNetwork.entity.NoFavoritoEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
+import tesis.server.socialNetwork.utils.Base64;
 import tesis.server.socialNetwork.utils.Utiles;
 
 
@@ -146,6 +147,9 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 			retorno.put("autorSolucion", postEntity.getVoluntarioQueSoluciona().getUsernameString());
 		}
 		retorno.put("voluntario", voluntarioDao.getJSONFromVoluntario(postEntity.getVoluntario()));
+		if(postEntity.getVoluntario().getFotoDePerfil() != null){
+			retorno.put("fotoPerfil", Base64.encodeToString(postEntity.getVoluntario().getFotoDePerfil(), Base64.DEFAULT));
+		}
 		if(listaFV == null || listaFV.size() == 0){
 			retorno.put("buenos", 0);
 		} else {
