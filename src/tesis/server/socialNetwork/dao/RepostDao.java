@@ -56,7 +56,7 @@ public class RepostDao extends GenericDao<RepostEntity, Integer> {
 		List lista = query.list();
 		
 		return lista;*/
-		System.out.println("Uusario " + username + "; timestamp: " + ultimaActualizacion.toString() + "; son nuevos?: " + nuevos.toString());
+		System.out.println("Usario " + username + "; timestamp: " + ultimaActualizacion.toString() + "; son nuevos?: " + nuevos.toString());
 		String condicionActualizacion = "";
 		String condicionNuevos = " and rp.fechaRepost> :ultimaactualizacion order by rp.fechaRepost asc";
 		String condicionViejos = " and rp.fechaRepost< :ultimaactualizacion order by rp.fechaRepost desc";
@@ -130,7 +130,6 @@ public class RepostDao extends GenericDao<RepostEntity, Integer> {
 		retorno.put("post", postDao.getJSONFromPost(usernameSolicitante, repost.getPost()));
 		
 		return retorno;
-		
-		
 	}
+	
 }

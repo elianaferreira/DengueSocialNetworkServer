@@ -23,6 +23,7 @@ import tesis.server.socialNetwork.entity.FavoritoEntity;
 import tesis.server.socialNetwork.entity.NoFavoritoEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
+import tesis.server.socialNetwork.rest.PostWS;
 import tesis.server.socialNetwork.utils.Base64;
 import tesis.server.socialNetwork.utils.Utiles;
 
@@ -148,7 +149,7 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		}
 		retorno.put("voluntario", voluntarioDao.getJSONFromVoluntario(postEntity.getVoluntario()));
 		if(postEntity.getVoluntario().getFotoDePerfil() != null){
-			retorno.put("fotoPerfil", Base64.encodeToString(postEntity.getVoluntario().getFotoDePerfil(), Base64.DEFAULT));
+			//retorno.put("fotoPerfil", Base64.encodeToString(postEntity.getVoluntario().getFotoDePerfil(), Base64.DEFAULT));
 		}
 		if(listaFV == null || listaFV.size() == 0){
 			retorno.put("buenos", 0);
@@ -163,6 +164,11 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		//se debe indicar si es usuario que solicita marco como bueno o malo
 		retorno.put("marcoComoBueno", marcoComoBueno(usernameSolicitante, listaFV));
 		retorno.put("marcoComoMalo", marcoComoMalo(usernameSolicitante, listaNFV));
+		
+		//verificamos si el usuario ya reposteo este post
+		if(userRepostThisPost(postEntity.getIdPost(), usernameSolicitante)){
+			retorno.put("reposteo", true);
+		}
 		
 		return retorno;
 	}
@@ -351,5 +357,23 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		Integer cantidadTotal = cantidadLong.intValue();
 		
 		return cantidadTotal;
+	}
+	
+	/**
+	 * Metodo que verifica si un usuario reposteo un post
+	 * @param idPost
+	 * @param username
+	 * @return
+	 */
+	public Boolean userRepostThisPost(Integer idPost, String username){
+		String consulta = "select count(*) from RepostEntity re where re.post.idPost= :idPost and re.autorRepost.userName= :username";
+		
+		Query query = this.getSession().createQuery(consulta);
+		query.setInteger("idPost", idPost);
+		query.setString("username", username);
+		
+		boolean reposteo = (Long) query.uniqueResult() > 0;
+		//boolean exists = (Long) session.createQuery("select count(*) from PersistentEntity where ...").uniqueResult() > 0
+		return reposteo;
 	}
 }
