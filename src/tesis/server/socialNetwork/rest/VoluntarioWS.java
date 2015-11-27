@@ -700,6 +700,38 @@ public class VoluntarioWS {
 	}
 	
 	
+	
+	@POST
+	@Path("/user/campaign/adherirse")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String adherirme(@FormParam("campaign") Integer idCampanha, @FormParam("username") String username){
+		CampanhaEntity campanha = campanhaDao.findByClassAndID(CampanhaEntity.class, idCampanha);
+		if(campanha == null){
+			return Utiles.retornarSalida(true, "La campanha no existe.");
+		} else {
+			VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+			if(voluntario == null){
+				return Utiles.retornarSalida(true, "El usuario no existe.");
+			} else {
+				if(!voluntario.getLogged()){
+					return Utiles.retornarSalida(true, "No has iniciado sesión.");
+				} else {
+					try{
+						campanha.getVoluntariosAdheridos().add(voluntario);
+						campanhaDao.modificar(campanha);
+						return Utiles.retornarSalida(false, "Voluntario adherido.");
+					} catch(Exception e){
+						e.printStackTrace();
+						return Utiles.retornarSalida(true, "Ha ocurrido un error al adherirse a la campaña.");
+					}
+				}
+			}
+		}
+	}
+	
+	
+	
 	@POST
 	@Path("/user/contacts/delete")
 	@Consumes("application/x-www-form-urlencoded")

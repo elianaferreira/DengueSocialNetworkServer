@@ -21,6 +21,10 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 	}
 	
 	
+	public void modificar(CampanhaEntity entity){
+		this.update(entity);
+	}
+	
 	public CampanhaEntity buscarPorNombre(String nombreBuscar){
 		String consulta = "from CampanhaEntity c where c.nombreCampanha=:nombre";
 		Query query = this.getSession().createQuery(consulta);
