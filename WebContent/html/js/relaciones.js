@@ -41,6 +41,91 @@ $(document).ready(function(){
 
 
 
+
+
+		/*
+function init() {
+  // Instanciate sigma.js and customize rendering :
+  var sigInst = sigma.init(document.getElementById('sigma-example')).drawingProperties({
+    defaultLabelColor: '#fff',
+    defaultLabelSize: 14,
+    defaultLabelBGColor: '#fff',
+    defaultLabelHoverColor: '#000',
+    labelThreshold: 6,
+    defaultEdgeType: 'curve',
+	borderSize: 1,//Something other than 0
+    nodeBorderColor: "default",//exactly like this
+    defaultNodeBorderColor: "#000",//Any color of your choice
+    defaultBorderView: "always"//apply the default color to all nodes always (normal+hover)    
+  }).graphProperties({
+    minNodeSize: 0.5,
+    maxNodeSize: 5,
+    minEdgeSize: 1,
+    maxEdgeSize: 1
+  }).mouseProperties({
+    maxRatio: 4
+  });
+
+  // Parse a GEXF encoded file to fill the graph
+  // (requires "sigma.parseGexf.js" to be included)
+  sigInst.parseGexf('les_miserables.gexf');
+
+  // Bind events :
+  var greyColor = '#666';
+  sigInst.bind('overnodes',function(event){
+    var nodes = event.content;
+    var neighbors = {};
+    sigInst.iterEdges(function(e){
+      if(nodes.indexOf(e.source)<0 && nodes.indexOf(e.target)<0){
+        if(!e.attr['grey']){
+          e.attr['true_color'] = e.color;
+          e.color = greyColor;
+          e.attr['grey'] = 1;
+        }
+      }else{
+        e.color = e.attr['grey'] ? e.attr['true_color'] : e.color;
+        e.attr['grey'] = 0;
+
+        neighbors[e.source] = 1;
+        neighbors[e.target] = 1;
+      }
+    }).iterNodes(function(n){
+      if(!neighbors[n.id]){
+        if(!n.attr['grey']){
+          n.attr['true_color'] = n.color;
+          n.color = greyColor;
+          n.attr['grey'] = 1;
+        }
+      }else{
+        n.color = n.attr['grey'] ? n.attr['true_color'] : n.color;
+        n.attr['grey'] = 0;
+      }
+    }).draw(2,2,2);
+  }).bind('outnodes',function(){
+    sigInst.iterEdges(function(e){
+      e.color = e.attr['grey'] ? e.attr['true_color'] : e.color;
+      e.attr['grey'] = 0;
+    }).iterNodes(function(n){
+      n.color = n.attr['grey'] ? n.attr['true_color'] : n.color;
+      n.attr['grey'] = 0;
+    }).draw(2,2,2);
+  });
+
+  // Draw the graph :
+  sigInst.draw();
+}
+
+if (document.addEventListener) {
+  document.addEventListener("DOMContentLoaded", init, false);
+} else {
+  window.onload = init;
+}
+
+		*/
+
+
+
+
 	var params = {
 		admin: getAdminUser(),
 		password: getAdminPass(),
@@ -65,16 +150,30 @@ $(document).ready(function(){
 					jsonData.nodes[i]["x"] = Math.floor(Math.random() * (RANDOM_MAXIMO - RANDOM_MINIMO+ 1)) + RANDOM_MINIMO;
 					jsonData.nodes[i]["y"] = Math.floor(Math.random() * (RANDOM_MAXIMO - RANDOM_MINIMO+ 1)) + RANDOM_MINIMO;
 				}
-				//jsonData.nodes[i]["size"] = 1;
+				jsonData.nodes[i]["size"] = 1;
 			}
 
 			//var jsonData = {"nodes":[{"id":"n0","label":"A node","x":0,"y":0,"size":3},{"id":"n1","label":"Another node","x":-3,"y":1,"size":2},{"id":"n2","label":"And a last one","x":1,"y":-5,"size":1}],"edges":[{"id":"e0","source":"n0","target":"n1","type":"arrow"},{"id":"e1","source":"n1","target":"n2","type":"arrow"]};
+			
+			sigma.classes.graph.addMethod('neighbors', function(nodeId) {
+			    var k,
+			        neighbors = {},
+			        index = this.allNeighborsIndex[nodeId] || {};
+
+			    for (k in index)
+			      neighbors[k] = this.nodesIndex[k];
+
+			    return neighbors;
+			});
+
+
+
 			s = new sigma({ 
 		        graph: jsonData,
 		        container: document.getElementById('graph-container'),
 		        settings: {
 		            defaultNodeColor: '#ec5148',
-		            maxEdgeSize: 10
+		            minEdgeSize: 5
 		        }
 			});
 
@@ -140,15 +239,47 @@ $(document).ready(function(){
 						}
 					}
 				}
+			}).bind('overNode',function(e){
+				var nodeId = e.data.node.id;
+		        toKeep = s.graph.neighbors(nodeId);
+		        toKeep[nodeId] = e.data.node;
+
+		        s.graph.nodes().forEach(function(n) {
+		          if (toKeep[n.id])
+		            n.color = n.originalColor;
+		          else
+		            n.color = '#eee';
+		        });
+
+		        s.graph.edges().forEach(function(e) {
+		          if (toKeep[e.source] && toKeep[e.target])
+		            e.color = e.originalColor;
+		          else
+		            e.color = '#eee';
+		        });
+
+		        // Since the data has been modified, we need to
+		        // call the refresh method to make the colors
+		        // update effective.
+		        s.refresh();
+			}).bind('clickStage', function(e) {
+		        s.graph.nodes().forEach(function(n) {
+		          n.color = n.originalColor;
+		        });
+
+		        s.graph.edges().forEach(function(e) {
+		          e.color = e.originalColor;
+		        });
+
+		        // Same as in the previous event:
+		        s.refresh();
+		    });
+
+			$('#btnCampanha').click(function (event){
+				event.preventDefault();
+				$('#modalCampanha').modal('show');
 			});
 		}
-
-		$('#btnCampanha').click(function (event){
-			event.preventDefault();
-			$('#modalCampanha').modal('show');
-		});
-
-		
 	});
 
 
