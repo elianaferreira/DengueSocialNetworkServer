@@ -2,13 +2,20 @@ package tesis.server.socialNetwork.dao;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.hibernate.Query;
 import org.json.JSONObject;
 
 import tesis.server.socialNetwork.entity.CampanhaEntity;
+import tesis.server.socialNetwork.entity.NotificacionEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
+import tesis.server.socialNetwork.utils.Utiles;
 
 public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
+	
+	@Inject
+	NotificacionDao notificacionDao;
 
 	@Override
 	protected Class<CampanhaEntity> getEntityBeanType() {
@@ -68,5 +75,24 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 		
 		return jsonRetorno;
 	}
-
+	
+	
+	/**
+	 * Metodo que guarda una entidad notificacion para el voluntario
+	 * @param listaInvitados
+	 */
+	public void guardarNotificacionParaVoluntarios(CampanhaEntity campanha, List<VoluntarioEntity> listaInvitados){
+		for(int i=0; i<listaInvitados.size(); i++){
+			try{
+				NotificacionEntity notificacion = new NotificacionEntity();
+				notificacion.setTipoNotificacion(Utiles.NOTIF_INVITADO_CAMPANHA);
+				notificacion.setMensaje("El Administrador te ha invitado a unirte a esta campaña.");
+				notificacion.setVoluntarioTarget(listaInvitados.get(i));
+				notificacion.setCampanha(campanha);
+				notificacionDao.guardar(notificacion);
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+	}
 }

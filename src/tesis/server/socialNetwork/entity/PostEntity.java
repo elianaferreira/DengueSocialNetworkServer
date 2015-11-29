@@ -73,7 +73,7 @@ public class PostEntity {
 		this.post = post;
 	}
 	
-	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="VOLUNTARIO", nullable=false)
 	public VoluntarioEntity getVoluntario() {
 		return voluntario;

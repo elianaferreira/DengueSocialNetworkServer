@@ -649,6 +649,8 @@ public class AdministradorWS {
 							//intentamos guardar la campanha
 							try{
 								campanhaDao.guardar(campanha);
+								//guardar para la notificacion de los voluntarios
+								campanhaDao.guardarNotificacionParaVoluntarios(campanha, campanha.getVoluntariosInvitados());
 								return Utiles.retornarSalida(false, retornoNoInvitados.toString());
 							} catch(Exception ex){
 								ex.printStackTrace();

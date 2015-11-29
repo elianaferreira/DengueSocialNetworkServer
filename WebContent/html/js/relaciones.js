@@ -173,7 +173,9 @@ if (document.addEventListener) {
 		        container: document.getElementById('graph-container'),
 		        settings: {
 		            defaultNodeColor: '#ec5148',
-		            minEdgeSize: 5
+		            minEdgeSize: 5,
+		            maxEdgeSize: 5,
+		            minArrowSize: 5
 		        }
 			});
 

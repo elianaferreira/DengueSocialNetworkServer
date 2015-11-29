@@ -35,6 +35,10 @@ public class Utiles {
 	//por el momento tendremos que sea un tercio de la poblacion total de voluntarios
 	public static final Integer PARTE_POBLACIONAL_PARA_MEDIR_RELEVANTES = 3;
 	
+	//tipos de notificacion
+	public static final String NOTIF_NUEVA_SOLICITUD_AMISTAD = "NUEVA_SOLICITUD_AMISTAD";
+	public static final String NOTIF_INVITADO_CAMPANHA = "INVITADO_CAMPANHA";
+	
 	
 	
 	
