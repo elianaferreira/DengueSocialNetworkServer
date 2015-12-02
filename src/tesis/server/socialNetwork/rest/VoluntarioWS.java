@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -40,17 +41,20 @@ import com.sun.xml.rpc.processor.modeler.j2ee.xml.exceptionMappingType;
 
 import tesis.server.socialNetwork.dao.CampanhaDao;
 import tesis.server.socialNetwork.dao.ContactoDao;
+import tesis.server.socialNetwork.dao.NotificacionDao;
 import tesis.server.socialNetwork.dao.PostDao;
 import tesis.server.socialNetwork.dao.RepostDao;
 import tesis.server.socialNetwork.dao.SolicitudAmistadDao;
 import tesis.server.socialNetwork.dao.VoluntarioDao;
 import tesis.server.socialNetwork.entity.CampanhaEntity;
 import tesis.server.socialNetwork.entity.ContactoEntity;
+import tesis.server.socialNetwork.entity.NotificacionEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.RepostEntity;
 import tesis.server.socialNetwork.entity.SolicitudAmistadEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
 import tesis.server.socialNetwork.utils.Base64;
+import tesis.server.socialNetwork.utils.SortedByDate;
 import tesis.server.socialNetwork.utils.Utiles;
 
 /**
@@ -83,6 +87,9 @@ public class VoluntarioWS {
 	
 	@Inject
 	private CampanhaDao campanhaDao;
+	
+	@Inject
+	private NotificacionDao notificacionDao;
 	
 	/**
 	 * Metodo que  agrega un nuevo usuario a la BD
@@ -325,27 +332,32 @@ public class VoluntarioWS {
 		//verificamos que el usuario que ha solicitado exista
 		VoluntarioEntity voluntarioQueSolicita = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioQueEnvia.toLowerCase());
 		if(voluntarioQueSolicita == null){
-			return Utiles.retornarSalida(true, "El usuario no existe");
+			return Utiles.retornarSalida(true, "El usuario no existe.");
 		} else {
 			//verificamos que el usuario que solicita haya iniciado sesion
 			if(!Utiles.haIniciadoSesion(voluntarioQueSolicita)){
-				return Utiles.retornarSalida(true, "No has iniciado sesión");
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
 			} else {
 				//verificamos que el contacto exista
 				VoluntarioEntity contactoSolicitado = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioSolicitado.toLowerCase());
 				if(contactoSolicitado == null){
-					return Utiles.retornarSalida(true, "El contacto no existe");
+					return Utiles.retornarSalida(true, "El contacto no existe.");
 				} else {
 					//verificamos que no sean ya amigos
 					if(voluntarioDao.yaEsContacto(voluntarioQueSolicita, contactoSolicitado)){
-						return Utiles.retornarSalida(true, "Ya son amigos");
+						return Utiles.retornarSalida(true, "Ya son amigos.");
 					} else {
-						SolicitudAmistadEntity nuevaSolicitud = new SolicitudAmistadEntity();
-						nuevaSolicitud.setUsuarioSolicitante(voluntarioQueSolicita);
-						nuevaSolicitud.setUsuarioSolicitado(contactoSolicitado);
-						solicitudAmistadDao.guadar(nuevaSolicitud);
-						//TODO enviarla en backgroud y que haga un push al usuario
-						return Utiles.retornarSalida(false, "Solicitud de amistad enviada");
+						try{
+							SolicitudAmistadEntity nuevaSolicitud = new SolicitudAmistadEntity();
+							nuevaSolicitud.setUsuarioSolicitante(voluntarioQueSolicita);
+							nuevaSolicitud.setUsuarioSolicitado(contactoSolicitado);
+							solicitudAmistadDao.guardar(nuevaSolicitud);
+							notificacionDao.crearNotificacionSolicitudAmistad(voluntarioQueSolicita, contactoSolicitado);
+							return Utiles.retornarSalida(false, "Solicitud de amistad enviada.");
+						}catch(Exception e){
+							e.printStackTrace();
+							return Utiles.retornarSalida(true, "Ha ocurrido un error al enviar la solicitud de amistad.");
+						}
 					}
 				}
 			}
@@ -739,11 +751,11 @@ public class VoluntarioWS {
 	public String eliminarContacto(@FormParam("username") String username, @FormParam("eliminar") String usernameAEliminar){
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "El usuario no existe");
+			return Utiles.retornarSalida(true, "El usuario no existe.");
 		} else {
 			VoluntarioEntity vEliminar = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameAEliminar);
 			if(vEliminar == null){
-				return Utiles.retornarSalida(true, "El usuario no existe");
+				return Utiles.retornarSalida(true, "El usuario no existe.");
 			} else {
 				ContactoEntity cEliminar = contactoDao.getContact(voluntario, vEliminar);
 				if(cEliminar == null){
@@ -757,6 +769,57 @@ public class VoluntarioWS {
 						return Utiles.retornarSalida(true, "Ha ocurrido un error al borrar la amistad.");
 					}
 				}
+			}
+		}
+	}
+	
+	
+	@GET
+	@Path("/user/notifications/{username}")
+	@ResponseBody
+	public String getNotificaciones(@PathParam("username") String username, @QueryParam("ultimaActualizacion") String ultimaActualizacionString){
+		
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "El usuario no existe.");
+		} else {
+			if(!voluntario.getLogged()){
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
+			} else {
+				List<NotificacionEntity> lista = new ArrayList<NotificacionEntity>();
+				if(ultimaActualizacionString != null && !ultimaActualizacionString.equals("")){
+					Timestamp timestamp;
+					try{
+					    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+					    Date parsedDate = dateFormat.parse(ultimaActualizacionString);
+					    timestamp = new java.sql.Timestamp(parsedDate.getTime());
+						lista = notificacionDao.getListaNotificacion(username, timestamp);
+					}catch(Exception e){
+						e.printStackTrace();
+						lista = notificacionDao.getListaNotificacion(username, null);
+					}
+				} else {
+					lista = notificacionDao.getListaNotificacion(username, null);
+				}
+				
+				//pasamos cada notificacion a JSON
+				JSONArray retorno = new JSONArray();
+				for(int k=0; k<lista.size(); k++){
+					JSONObject temp = new JSONObject();
+					temp.put("id", lista.get(k).getIdNotificacion());
+					temp.put("tipo", lista.get(k).getTipoNotificacion());
+					temp.put("mensaje", lista.get(k).getMensaje());
+					temp.put("fecha", lista.get(k).getFechaCreacionNotificacion());
+					if(lista.get(k).getCampanha() != null){
+						temp.put("campanha", campanhaDao.getJSONFromCampanha(lista.get(k).getCampanha(), username));
+					}
+					if(lista.get(k).getVoluntarioCreadorNotificacion() != null){
+						//TODO se puede pasar solo el usernameString y el nombre?
+						temp.put("creador", voluntarioDao.getJSONFromVoluntario(lista.get(k).getVoluntarioCreadorNotificacion()));
+					}
+					retorno.put(temp);
+				}
+				return Utiles.retornarSalida(false, retorno.toString());
 			}
 		}
 	}

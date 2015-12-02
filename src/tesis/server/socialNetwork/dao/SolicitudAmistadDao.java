@@ -34,7 +34,7 @@ public class SolicitudAmistadDao extends GenericDao<SolicitudAmistadEntity, Inte
 	
 	
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void guadar(SolicitudAmistadEntity solicitudAmistadEntity){
+	public void guardar(SolicitudAmistadEntity solicitudAmistadEntity){
 		//por defecto el valor de 'aceptada' sera FALSE
 		solicitudAmistadEntity.setAceptada(false);
 		this.save(solicitudAmistadEntity);
