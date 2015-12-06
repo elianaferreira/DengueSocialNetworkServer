@@ -86,6 +86,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 	}
 	
 	
+	
 	//TODO metodo a ser utilizado directamente por el cliente android
 	/**
 	 * Metodo que verifica si un nombre de usuario ya esta en la Base de Datos

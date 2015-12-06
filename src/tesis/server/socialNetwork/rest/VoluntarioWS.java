@@ -123,7 +123,7 @@ public class VoluntarioWS {
 		VoluntarioEntity voluntario = new VoluntarioEntity();
 		voluntario.setUserName(username);
 		voluntario.setUsernameString(username);
-		//el password ya viene encriptado
+		//el password ya viene encriptado //la validacion se debe hacer en el cliente
 		voluntario.setPassword(password);
 		voluntario.setNombreReal(nombre);
 		if(ci != null){
@@ -182,7 +182,6 @@ public class VoluntarioWS {
 	@ResponseBody
 	public String userUpdate(@PathParam("username") String username,
 							 @FormParam("newUserName") String newUserName,
-							 @FormParam("password") String password,
 							 @FormParam("nombre") String nombre,
 							 @FormParam("apellido") String apellido,
 							 @FormParam("ci") Integer ci,
@@ -209,10 +208,6 @@ public class VoluntarioWS {
 					//cambiamos el ID del usuario, que anteriormente se verifico que no exista ya
 					voluntario.setUserName(newUserName.toLowerCase());
 					voluntario.setUsernameString(newUserName);
-				}
-				//el password ya viene encriptado, si es que viene.
-				if(password != null){
-					voluntario.setPassword(password);
 				}
 				if(nombre != null){
 					voluntario.setNombreReal(nombre);
@@ -271,7 +266,7 @@ public class VoluntarioWS {
 		//buscamos el usuario en la base de datos
 		VoluntarioEntity voluntario = voluntarioDao.verificarUsuario(username, password);
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "El usuario o el password no es válido");
+			return Utiles.retornarSalida(true, "El usuario o el password no es válido.");
 		} else{
 			if(voluntario.getActivo() == false){
 				return Utiles.retornarSalida(true, "El Administrador ha dado de baja tu cuenta.");
@@ -280,6 +275,7 @@ public class VoluntarioWS {
 				voluntario.setLogged(true);
 				voluntarioDao.modificar(voluntario);
 				JSONObject retorno = voluntarioDao.getJSONFromVoluntario(voluntario);
+				retorno.put("password", voluntario.getPassword());
 				return Utiles.retornarSalida(false, retorno.toString());
 			}
 		}
@@ -301,15 +297,15 @@ public class VoluntarioWS {
 		//traemos el usuario de la BD y cambiamos el campo logged
 		VoluntarioEntity voluntario = voluntarioDao.verificarUsuario(username, password);
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "El usuario o el password no es válido");
+			return Utiles.retornarSalida(true, "El usuario o el password no es válido.");
 		}else{
 			try{
 				voluntario.setLogged(false);
 				voluntarioDao.modificar(voluntario);
-				return Utiles.retornarSalida(false, "Sesión cerrada");
+				return Utiles.retornarSalida(false, "Sesión cerrada.");
 			} catch (Exception ex){
 				ex.printStackTrace();
-				return Utiles.retornarSalida(true, "Error al cerrar la sesión");
+				return Utiles.retornarSalida(true, "Error al cerrar la sesión.");
 			}
 		}
 	}
@@ -645,12 +641,49 @@ public class VoluntarioWS {
 				return Utiles.retornarSalida(true, "No has iniciado sesión.");
 			} else {
 					JSONObject retorno = voluntarioDao.getJSONFromVoluntario(voluntario);
-					retorno.put("password", voluntario.getPassword());
 					if(voluntario.getFotoDePerfil() != null){
 						retorno.put("fotoPerfil", Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
 					}
 					return Utiles.retornarSalida(false, retorno.toString());
-				
+			}
+		}
+	}
+	
+	
+	@POST
+	@Path("/user/newPassword/{username}")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String changePassword(@PathParam("username") String username,
+								@FormParam("password") String password, 
+								@FormParam("newPassword") String newPassword){
+		
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "El usuario no existe.");
+		} else {
+			//verificamos si ha iniciado sesion
+			if(voluntario.getLogged() == false){
+				//no ha iniciado sesion
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
+			} else {
+				//verificamos que el password sea el mismo que el actual
+				if(!password.equals(voluntario.getPassword())){
+					return Utiles.retornarSalida(true, "La contraseña no coincide.");
+				} else {
+					if(newPassword.equals(password)){
+						return Utiles.retornarSalida(true, "La nueva contraseña es igual a la anterior.");
+					} else {
+						try{
+							voluntario.setPassword(newPassword);
+							voluntarioDao.modificar(voluntario);
+							return Utiles.retornarSalida(false, "La contraseña ha sido cambiado con éxito.");
+						} catch(Exception e){
+							e.printStackTrace();
+							return Utiles.retornarSalida(true, "Ha ocurrido un error al actualizar la contraseña.");
+						}
+					}
+				}
 			}
 		}
 	}

@@ -86,7 +86,7 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 			try{
 				NotificacionEntity notificacion = new NotificacionEntity();
 				notificacion.setTipoNotificacion(Utiles.NOTIF_INVITADO_CAMPANHA);
-				notificacion.setMensaje("El Administrador te ha invitado a unirte a esta campaña.");
+				notificacion.setMensaje("El Administrador te ha invitado a unirte.");
 				notificacion.setVoluntarioTarget(listaInvitados.get(i));
 				notificacion.setCampanha(campanha);
 				notificacionDao.guardar(notificacion);
