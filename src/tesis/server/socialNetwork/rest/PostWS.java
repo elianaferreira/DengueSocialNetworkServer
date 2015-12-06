@@ -21,6 +21,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import org.jboss.logging.FormatWith;
@@ -82,6 +83,7 @@ public class PostWS {
 	@Path("/new")
 	@POST
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String newStatus(@FormParam("mensaje") String mensaje,
 							@FormParam("username") String username,
@@ -158,6 +160,7 @@ public class PostWS {
 	@Path("/updateAndResolve")
 	@POST
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String resolver(@FormParam("id") Integer idPost,
 						   @FormParam("username") String usernameEditor,
@@ -205,6 +208,7 @@ public class PostWS {
 	 */
 	@GET
 	@Path("/timeline/{username}")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String actualizarTimeline(@PathParam("username") String username,
 									@QueryParam("ultimaactualizacion") String ultimaActualizacionString,
@@ -255,6 +259,7 @@ public class PostWS {
 	@POST
 	@Path("/reply/{idPost}")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String responderPost(@PathParam("idPost") Integer idPostToReply,
 								@FormParam("respuesta") String respuesta,
@@ -292,6 +297,7 @@ public class PostWS {
 	
 	@GET
 	@Path("/answers/{idPost}")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String getComentarios(@PathParam("idPost") Integer idPost,
 								@QueryParam("username") String usernameSolicitante){
@@ -327,6 +333,7 @@ public class PostWS {
 	@POST
 	@Path("/favorito/{idPost}")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String marcarComoFavorito(@PathParam("idPost") Integer idPost,
 									 @FormParam("username") String usuarioQueMarca){
@@ -392,6 +399,7 @@ public class PostWS {
 	@POST
 	@Path("/noFavorito/{idPost}")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String marcarComoNoFavorito(@PathParam("idPost") Integer idPost,
 									   @FormParam("username") String usuarioQueMarca){
@@ -460,6 +468,7 @@ public class PostWS {
 	 */
 	@GET
 	@Path("/post/{idPost}")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String getPost(@PathParam("idPost") Integer idPost,
 						  @QueryParam("username") String usernameSolicitante){
@@ -504,6 +513,7 @@ public class PostWS {
 	@POST
 	@Path("/repost/{idPost}")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String repost(@PathParam("idPost") Integer idPost,
 						 @FormParam("username") String usernameRepost){
@@ -565,6 +575,7 @@ public class PostWS {
 	@GET
 	@Path("/relevantes/{username}")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String postsRelevantes(@PathParam("username") String usernameSolicitante){
 		
@@ -593,6 +604,7 @@ public class PostWS {
 	@GET
 	@Path("/cercanos")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String resportesCercanos(@QueryParam("username") String username,
 									@QueryParam("distancia") double distancia,
@@ -618,6 +630,7 @@ public class PostWS {
 	@GET
 	@Path("/photos")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String getPhoto(@QueryParam("username") String usernameSolicitante,
 							@QueryParam("idPost") Integer idPost,

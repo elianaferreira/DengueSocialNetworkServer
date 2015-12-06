@@ -22,6 +22,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import org.hibernate.Criteria;
@@ -106,6 +107,7 @@ public class VoluntarioWS {
 	@POST
 	@Path("/user/{username}")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String userCreation(@PathParam("username") String username,
 							   @FormParam("password") String password,
@@ -179,6 +181,7 @@ public class VoluntarioWS {
 	@POST
 	@Path("/user/update/{username}")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String userUpdate(@PathParam("username") String username,
 							 @FormParam("newUserName") String newUserName,
@@ -259,6 +262,7 @@ public class VoluntarioWS {
 	@POST
 	@Path("/user/auth")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String userAuth(@FormParam("username") String username,
 						   @FormParam("password") String password){		
@@ -266,7 +270,7 @@ public class VoluntarioWS {
 		//buscamos el usuario en la base de datos
 		VoluntarioEntity voluntario = voluntarioDao.verificarUsuario(username, password);
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "El usuario o el password no es válido.");
+			return Utiles.retornarSalida(true, "El usuario o la contraseña no es válida.");
 		} else{
 			if(voluntario.getActivo() == false){
 				return Utiles.retornarSalida(true, "El Administrador ha dado de baja tu cuenta.");
@@ -291,6 +295,7 @@ public class VoluntarioWS {
 	@POST
 	@Path("/user/loggout")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String userLoggout(@FormParam("username") String username,
 							  @FormParam("password") String password){
@@ -321,6 +326,7 @@ public class VoluntarioWS {
 	@POST
 	@Path("/user/contacts/new")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String enviarSolicitudAmistad(@FormParam("solicitante") String usuarioQueEnvia,
 										 @FormParam("solicitado") String usuarioSolicitado){
@@ -369,6 +375,7 @@ public class VoluntarioWS {
 	 */
 	@GET
 	@Path("/user/pendingFriendships/{username}")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String getSolicitudesPendientes(@PathParam("username") String username){
 		
@@ -406,6 +413,7 @@ public class VoluntarioWS {
 	@POST
 	@Path("/user/contacts/newFriendships/{idsolicitud}")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String aceptarRechazarSolicitud(@PathParam("idsolicitud") Integer idSolicitud,
 										   @FormParam("aceptar") Boolean aceptar,
@@ -458,6 +466,7 @@ public class VoluntarioWS {
 	
 	@GET
 	@Path("/user/search/{searchParam}")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String buscarUsuario(@PathParam("searchParam") String criterioBusqueda,
 			@QueryParam("username") String username){
@@ -507,6 +516,7 @@ public class VoluntarioWS {
 	
 	@GET
 	@Path("/contacts/{username}")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String getContacts(@PathParam("username") String username){
 		//verificaciones del usuario
@@ -556,6 +566,7 @@ public class VoluntarioWS {
 	
 	@GET
 	@Path("/user/homeTimeline/{username}")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String homeTimeline(@PathParam("username") String username,
 							@QueryParam("ultimaactualizacion") String ultimaActualizacionString){
@@ -592,6 +603,7 @@ public class VoluntarioWS {
 	@GET
 	@Path("/user/profile/{username}")
 	@ResponseBody
+	@Produces("text/html; charset=UTF-8")
 	public String getProfileData(@PathParam("username") String username, 
 			@QueryParam("usernameSolicitante") String usernameSolicitante){
 		
@@ -629,6 +641,7 @@ public class VoluntarioWS {
 	@GET
 	@Path("/user/myProfileToEdit/{username}")
 	@ResponseBody
+	@Produces("text/html; charset=UTF-8")
 	public String getMyProfileDataToEdit(@PathParam("username") String username){
 		
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
@@ -653,6 +666,7 @@ public class VoluntarioWS {
 	@POST
 	@Path("/user/newPassword/{username}")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String changePassword(@PathParam("username") String username,
 								@FormParam("password") String password, 
@@ -691,6 +705,7 @@ public class VoluntarioWS {
 	
 	@GET
 	@Path("/user/campaigns")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String getCampanhasActivas(@QueryParam("username") String username){
 		
@@ -715,6 +730,7 @@ public class VoluntarioWS {
 	
 	@GET
 	@Path("/user/campaign/adheridos/{id}")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String getAdheridosCampanha(@PathParam("id") Integer idCampanha,
 			@QueryParam("username") String username){
@@ -749,6 +765,7 @@ public class VoluntarioWS {
 	@POST
 	@Path("/user/campaign/adherirse")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String adherirme(@FormParam("campaign") Integer idCampanha, @FormParam("username") String username){
 		CampanhaEntity campanha = campanhaDao.findByClassAndID(CampanhaEntity.class, idCampanha);
@@ -780,6 +797,7 @@ public class VoluntarioWS {
 	@POST
 	@Path("/user/contacts/delete")
 	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String eliminarContacto(@FormParam("username") String username, @FormParam("eliminar") String usernameAEliminar){
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
@@ -809,6 +827,7 @@ public class VoluntarioWS {
 	
 	@GET
 	@Path("/user/notifications/{username}")
+	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String getNotificaciones(@PathParam("username") String username, @QueryParam("ultimaActualizacion") String ultimaActualizacionString){
 		
