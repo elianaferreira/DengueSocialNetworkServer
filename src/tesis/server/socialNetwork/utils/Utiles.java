@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,17 +25,20 @@ import tesis.server.socialNetwork.entity.VoluntarioEntity;
 public class Utiles {
 	
 	public static final String PHOTOS_FOLDER = "C://tesisPhotos/";
+	//si un post pasa de esta cantidad de dias ya no puede ser relevante
 	public static final long DIAS_PASADOS_RELEVANTE = 15;
 	//variables de puntajes y reputacion
 	public static final Integer PUNTAJE_POR_SOLUCIONAR = 5;
 	public static final Integer PUNTAJE_POR_REPORTAR = 1;
 	//por el momento tendremos que sea un tercio de la poblacion total de voluntarios
 	public static final Integer PARTE_POBLACIONAL_PARA_MEDIR_RELEVANTES = 3;
+	//tiempo pasado entre un post y su correspondiente repost
+	public static final Integer HORAS_ENTRE_POST_Y_REPOST = 4;
+	public static final Integer HORAS_ENTRE_MISMO_REPOST = 4;
 	
 	//tipos de notificacion
 	public static final String NOTIF_NUEVA_SOLICITUD_AMISTAD = "NUEVA_SOLICITUD_AMISTAD";
 	public static final String NOTIF_INVITADO_CAMPANHA = "INVITADO_CAMPANHA";
-	
 	
 	
 	

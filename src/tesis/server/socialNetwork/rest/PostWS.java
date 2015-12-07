@@ -24,7 +24,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import org.jboss.logging.FormatWith;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -238,8 +237,9 @@ public class PostWS {
 						retornoArray.add(postJSON);
 					}
 					List<RepostEntity> reposts = repostDao.getReposts(username, timestamp, top);
-					for(int j=0; j<reposts.size(); j++){
-						JSONObject repostJSON = repostDao.getJSONFromRepost(reposts.get(j), username);
+					List<RepostEntity> repostsFinales = repostDao.getRepostsMasDistantesDelPost(reposts);
+					for(int j=0; j<repostsFinales.size(); j++){
+						JSONObject repostJSON = repostDao.getJSONFromRepost(repostsFinales.get(j), username);
 						retornoArray.add(repostJSON);
 					}
 					
@@ -581,18 +581,18 @@ public class PostWS {
 		
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante);
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "No existe el usuario");
+			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
 			if(voluntario.getLogged() == false){
-				return Utiles.retornarSalida(true, "No has iniciado sesión");
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
 			} else {
 				List<PostEntity> listaRelevantes = postDao.getRelevantes();
 				JSONArray retorno = new JSONArray();
 				for(int i=0; i<listaRelevantes.size(); i++){
 					JSONObject postJSON = postDao.getJSONFromPost(usernameSolicitante, listaRelevantes.get(i));
-					if(listaRelevantes.get(i).getVoluntario().getFotoDePerfil() != null){
+					/*if(listaRelevantes.get(i).getVoluntario().getFotoDePerfil() != null){
 						postJSON.put("fotoPerfil", Base64.encodeToString(listaRelevantes.get(i).getVoluntario().getFotoDePerfil(), Base64.DEFAULT));
-					}
+					}*/
 					retorno.put(postJSON);
 				}
 				return Utiles.retornarSalida(false, retorno.toString());

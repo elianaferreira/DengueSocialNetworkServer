@@ -1,8 +1,10 @@
 package tesis.server.socialNetwork.dao;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -14,6 +16,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 
 import tesis.server.socialNetwork.entity.RepostEntity;
+import tesis.server.socialNetwork.utils.Utiles;
 
 @Controller
 @LocalBean
@@ -58,8 +61,12 @@ public class RepostDao extends GenericDao<RepostEntity, Integer> {
 		return lista;*/
 		System.out.println("Usario " + username + "; timestamp: " + ultimaActualizacion.toString() + "; son nuevos?: " + nuevos.toString());
 		String condicionActualizacion = "";
-		String condicionNuevos = " and rp.fechaRepost> :ultimaactualizacion order by rp.fechaRepost asc";
-		String condicionViejos = " and rp.fechaRepost< :ultimaactualizacion order by rp.fechaRepost desc";
+		//String condicionNuevos = " and rp.fechaRepost> :ultimaactualizacion order by rp.fechaRepost asc";
+		//String condicionViejos = " and rp.fechaRepost< :ultimaactualizacion order by rp.fechaRepost desc";
+		
+		//order doesn't matter
+		String condicionNuevos = " and rp.fechaRepost> :ultimaactualizacion";
+		String condicionViejos = " and rp.fechaRepost< :ultimaactualizacion";
 		if(nuevos){
 			condicionActualizacion = condicionNuevos;
 		} else {
@@ -132,4 +139,59 @@ public class RepostDao extends GenericDao<RepostEntity, Integer> {
 		return retorno;
 	}
 	
+	
+	/**
+	 * Metodo que retorna solo los posts cuya diferencia con el post original sea X tiempo,
+	 * si varios voluntarios repostearon el mismo post despues del lapso de tiempo, los mas cercanos
+	 * en fecha entre si son descartados tomando solo uno de ellos, y se mostraran solo dependiendo de la fecha entre los
+	 * reposts.
+	 * 
+	 * @param listaOriginal
+	 * @return
+	 */
+	public List<RepostEntity> getRepostsMasDistantesDelPost(List<RepostEntity> listaOriginal){
+		List<RepostEntity> listaFinalRetorno = new ArrayList<RepostEntity>();
+		/*
+		 * agregamos el repost a la lista final si entre la fecha del repost y el post paso X tiempo y
+		 * 1. la lista de reposts esta vacia o
+		 * 2. entre el ultimo respost de este post y este repost actual han pasado mas de X tiempo
+		 * 
+		 */
+		for(int i=0; i<listaOriginal.size(); i++){
+			RepostEntity repostPendiente = listaOriginal.get(i);
+			long diffEntreOriginalYRepost = repostPendiente.getFechaRepost().getTime() - repostPendiente.getPost().getFechaPost().getTime();
+			long horasPasadasEntreRepostYPost = TimeUnit.HOURS.convert(diffEntreOriginalYRepost, TimeUnit.MILLISECONDS);
+			//verificamos si es mayor a la diferencia aceptada (para no tener un post y su repost muy juntos)
+			if(horasPasadasEntreRepostYPost > Utiles.HORAS_ENTRE_POST_Y_REPOST){
+				//si la lista esta vacia lo agregamos
+				if(listaFinalRetorno.isEmpty()){
+					listaFinalRetorno.add(repostPendiente);
+				} else {
+					//verificamos si hay otros reposts en la lista pertenecientes al mismo post
+					//paso hacia atras
+					Boolean existeOtroRepostDelMismoPost = false;
+					for(int j=listaFinalRetorno.size()-1; j>=0; j--){
+						RepostEntity repostAgregado = listaFinalRetorno.get(j);
+						if(repostAgregado.getPost().getIdPost() == repostPendiente.getPost().getIdPost()){
+							existeOtroRepostDelMismoPost = true;
+							//lo agregamos solo si la fecha es superior al ultimo (en teoria esta ordenado ya que asi se guarda en la BD)
+							long diffEntreReposts = repostPendiente.getFechaRepost().getTime() - repostAgregado.getFechaRepost().getTime();
+							long horasPasadasEntreRepost = TimeUnit.HOURS.convert(diffEntreReposts, TimeUnit.MILLISECONDS);
+							if(horasPasadasEntreRepost > Utiles.HORAS_ENTRE_MISMO_REPOST){
+								listaFinalRetorno.add(repostPendiente);
+							}
+							//se va solo hasta el ultimo repost del mismo post, despues ya no avanza
+							break;
+						}
+					}
+					//si la lista ya esta cargada pero es el primer repost del post
+					if(!existeOtroRepostDelMismoPost){
+						listaFinalRetorno.add(repostPendiente);
+					}
+				}
+			}
+			
+		}
+		return listaFinalRetorno;
+	}	
 }
