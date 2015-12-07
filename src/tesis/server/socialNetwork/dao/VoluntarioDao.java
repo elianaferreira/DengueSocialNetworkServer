@@ -285,7 +285,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 	 * @param nuevoNoFavorito
 	 * @param quitoUnNoFavorito
 	 */
-	public void updateReputation(VoluntarioEntity voluntario, Boolean nuevoPost, Boolean solucionaste, Boolean nuevoFavorito, Boolean quitoUnFavorito, 
+	public void updateReputation(VoluntarioEntity voluntario, Boolean nuevoPost, Boolean solucionaste, Boolean esRelevante, Boolean nuevoFavorito, Boolean quitoUnFavorito, 
 			Boolean nuevoNoFavorito, Boolean quitoUnNoFavorito){
 		
 		Integer reputacion = voluntario.getReputacion();
@@ -294,6 +294,9 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		}
 		if(solucionaste){
 			reputacion += Utiles.PUNTAJE_POR_SOLUCIONAR;
+		}
+		if(esRelevante){
+			reputacion += Utiles.PUNTAJE_POR_RELEVANCIA;
 		}
 		if(nuevoFavorito){
 			reputacion += Utiles.PUNTAJE_FAVORITO;
@@ -313,6 +316,55 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		
 		voluntario.setReputacion(reputacion);
 		this.modificar(voluntario);
+	}
+	
+	
+	/**
+	 * Metodo que retorna la cantidad de reportes solucionados por el voluntario
+	 * @param voluntarioEntity
+	 * @return
+	 */
+	public Integer cantidadSolucionadosPorVoluntario(VoluntarioEntity voluntarioEntity){
+		String consulta = "select count(*) from PostEntity p where p.solucionado = true and p.voluntarioQueSoluciona = :voluntario";
+		Query query = this.getSession().createQuery(consulta);
+		query.setEntity("voluntario", voluntarioEntity);
+		Long cantidadLong = (Long) query.uniqueResult();
+		Integer cantidadTotal = cantidadLong.intValue();
+		
+		return cantidadTotal;
+	}
+	
+	
+	/**
+	 * Metodo que retorna la cantidad de favoritos recibidos por un voluntario
+	 * @param voluntarioEntity
+	 * @return
+	 */
+	public Integer cantidadFavoritosParaVoluntario(VoluntarioEntity voluntarioEntity){
+		String consulta = "select count(*) from FavoritoEntity f where f.post.voluntario = :voluntario";
+		Query query = this.getSession().createQuery(consulta);
+		query.setEntity("voluntario", voluntarioEntity);
+		Long cantidadLong = (Long) query.uniqueResult();
+		Integer cantidadTotal = cantidadLong.intValue();
+		
+		return cantidadTotal;
+	}
+	
+	
+	
+	/**
+	 * Metodo que retorna la cantidad de no favoritos recibidos por un voluntario
+	 * @param voluntarioEntity
+	 * @return
+	 */
+	public Integer cantidadNoFavoritosParaVoluntario(VoluntarioEntity voluntarioEntity){
+		String consulta = "select count(*) from NoFavoritoEntity nf where nf.post.voluntario = :voluntario";
+		Query query = this.getSession().createQuery(consulta);
+		query.setEntity("voluntario", voluntarioEntity);
+		Long cantidadLong = (Long) query.uniqueResult();
+		Integer cantidadTotal = cantidadLong.intValue();
+		
+		return cantidadTotal;
 	}
 		
 }

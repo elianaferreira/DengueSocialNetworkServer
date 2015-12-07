@@ -137,7 +137,7 @@ public class PostWS {
 						ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + String.valueOf(idGen) + "despues_image.png"));
 					}
 					
-					voluntarioDao.updateReputation(voluntarioEntity, true, solucionado, false, false, false, false);
+					voluntarioDao.updateReputation(voluntarioEntity, true, solucionado,false, false, false, false, false);
 					return Utiles.retornarSalida(false, "Guardado.");
 				} catch(Exception ex){
 					ex.printStackTrace();
@@ -188,7 +188,7 @@ public class PostWS {
 					BufferedImage img = ImageIO.read(new ByteArrayInputStream(aByteArray));
 					ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + String.valueOf(idPost) + "despues_image.png"));
 					
-					voluntarioDao.updateReputation(voluntarioEditor, false, true, false, false, false, false);
+					voluntarioDao.updateReputation(voluntarioEditor, false, true, false,false, false, false, false);
 					return Utiles.retornarSalida(false, "Reporte solucionado.");
 				} catch(Exception ex){
 					ex.printStackTrace();
@@ -381,7 +381,7 @@ public class PostWS {
 						Integer cantidadMalos = noFavoritoDao.cantidadNoFavoritosByPost(postSolicitado);
 						String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, true, false, false, previoMalo);
 						
-						voluntarioDao.updateReputation(postSolicitado.getVoluntario(), false, false, true, false, false, previoMalo);
+						voluntarioDao.updateReputation(postSolicitado.getVoluntario(), false, false, false, true, false, false, previoMalo);
 						return Utiles.retornarSalida(false, retorno);
 					} else {
 						//lo eliminamos
@@ -392,7 +392,7 @@ public class PostWS {
 						
 						String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, false, true, false, false);
 						
-						voluntarioDao.updateReputation(postSolicitado.getVoluntario(), false, false, false, true, false, false);
+						voluntarioDao.updateReputation(postSolicitado.getVoluntario(), false, false, false, false, true, false, false);
 						return Utiles.retornarSalida(false, retorno);
 					
 					}
@@ -449,7 +449,7 @@ public class PostWS {
 						Integer cantidadMalos = noFavoritoDao.cantidadNoFavoritosByPost(postSolicitado);
 						String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, false, previoBueno, true, false);
 						
-						voluntarioDao.updateReputation(postSolicitado.getVoluntario(), false, false, false, previoBueno, true, false);
+						voluntarioDao.updateReputation(postSolicitado.getVoluntario(), false, false, false, false, previoBueno, true, false);
 						return Utiles.retornarSalida(false, retorno);
 					} else {
 						//lo eliminamos
@@ -460,7 +460,7 @@ public class PostWS {
 						
 						String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, false, false, false, true);
 						
-						voluntarioDao.updateReputation(postSolicitado.getVoluntario(), false, false, false, false, false, true);
+						voluntarioDao.updateReputation(postSolicitado.getVoluntario(), false, false, false, false, false, false, true);
 						return Utiles.retornarSalida(false, retorno);
 					}
 				}

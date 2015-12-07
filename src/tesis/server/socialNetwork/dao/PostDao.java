@@ -307,6 +307,7 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 					//es un post relevante
 					posibleRelevante.setRelevante(true);
 					this.update(posibleRelevante);
+					//agregamos al voluntario los puntos por relevancia
 				}
 			}
 		}

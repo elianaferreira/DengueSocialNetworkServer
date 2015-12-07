@@ -30,6 +30,7 @@ public class Utiles {
 	//variables de puntajes y reputacion
 	public static final Integer PUNTAJE_POR_REPORTAR = 1;
 	public static final Integer PUNTAJE_POR_SOLUCIONAR = 5;
+	public static final Integer PUNTAJE_POR_RELEVANCIA = 2;
 	public static final Integer PUNTAJE_FAVORITO = 3;
 	public static final Integer PUNTAJE_NO_FAVORITO = -2;
 	//por el momento tendremos que sea un tercio de la poblacion total de voluntarios

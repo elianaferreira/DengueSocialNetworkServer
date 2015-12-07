@@ -875,4 +875,53 @@ public class VoluntarioWS {
 			}
 		}
 	}
+	
+	
+	@GET
+	@Path("/user/statusDetails/{username}")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String getStatusDetail(@PathParam("username") String username){
+		
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "El usuario no existe.");
+		} else {
+			if(!voluntario.getLogged()){
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
+			} else {
+				JSONObject retorno = new JSONObject();
+				//reportes
+				Integer cantidadPosts = voluntarioDao.cantidadPosts(voluntario);
+				JSONObject reportes = new JSONObject();
+				reportes.put("cantidad", cantidadPosts);
+				reportes.put("puntaje", Utiles.PUNTAJE_POR_REPORTAR);
+				
+				//solucionados
+				Integer cantidadSolucionados = voluntarioDao.cantidadSolucionadosPorVoluntario(voluntario);
+				JSONObject solucionados = new JSONObject();
+				solucionados.put("cantidad", cantidadSolucionados);
+				solucionados.put("puntaje", Utiles.PUNTAJE_POR_SOLUCIONAR);
+				
+				//favoritos
+				Integer cantidadFavoritos = voluntarioDao.cantidadFavoritosParaVoluntario(voluntario);
+				JSONObject favoritos = new JSONObject();
+				favoritos.put("cantidad", cantidadFavoritos);
+				favoritos.put("puntaje", Utiles.PUNTAJE_FAVORITO);
+				
+				//noFavoritos
+				Integer cantidadNoFavoritos = voluntarioDao.cantidadNoFavoritosParaVoluntario(voluntario);
+				JSONObject noFavoritos = new JSONObject();
+				noFavoritos.put("cantidad", cantidadNoFavoritos);
+				noFavoritos.put("puntaje", Utiles.PUNTAJE_NO_FAVORITO);
+				
+				retorno.put("activo", 1);
+				retorno.put("reportes", reportes);
+				retorno.put("solucionados", solucionados);
+				retorno.put("favoritos", favoritos);
+				retorno.put("noFavoritos", noFavoritos);
+				return Utiles.retornarSalida(false, retorno.toString());
+			}
+		}
+	}
 }
