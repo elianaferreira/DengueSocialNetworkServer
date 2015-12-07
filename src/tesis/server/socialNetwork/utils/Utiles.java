@@ -28,8 +28,10 @@ public class Utiles {
 	//si un post pasa de esta cantidad de dias ya no puede ser relevante
 	public static final long DIAS_PASADOS_RELEVANTE = 15;
 	//variables de puntajes y reputacion
-	public static final Integer PUNTAJE_POR_SOLUCIONAR = 5;
 	public static final Integer PUNTAJE_POR_REPORTAR = 1;
+	public static final Integer PUNTAJE_POR_SOLUCIONAR = 5;
+	public static final Integer PUNTAJE_FAVORITO = 3;
+	public static final Integer PUNTAJE_NO_FAVORITO = -2;
 	//por el momento tendremos que sea un tercio de la poblacion total de voluntarios
 	public static final Integer PARTE_POBLACIONAL_PARA_MEDIR_RELEVANTES = 3;
 	//tiempo pasado entre un post y su correspondiente repost

@@ -137,10 +137,11 @@ public class PostWS {
 						ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + String.valueOf(idGen) + "despues_image.png"));
 					}
 					
-					return Utiles.retornarSalida(false, "Guardado");
+					voluntarioDao.updateReputation(voluntarioEntity, true, solucionado, false, false, false, false);
+					return Utiles.retornarSalida(false, "Guardado.");
 				} catch(Exception ex){
 					ex.printStackTrace();
-					return Utiles.retornarSalida(true, "Error al guardar el reporte");
+					return Utiles.retornarSalida(true, "Error al guardar el reporte.");
 				}
 			}
 		}
@@ -169,12 +170,12 @@ public class PostWS {
 		//verificamos que el post exista en la Base de Datos
 		PostEntity postEntity = postDao.findByClassAndID(PostEntity.class, idPost);
 		if(postEntity == null){
-			return Utiles.retornarSalida(true, "El reporte no existe");
+			return Utiles.retornarSalida(true, "El reporte no existe.");
 		} else {
 			//verificamos que el voluntario exista
 			VoluntarioEntity voluntarioEditor = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameEditor.toLowerCase());
 			if(voluntarioEditor == null){
-				return Utiles.retornarSalida(true, "No existe el usuario");
+				return Utiles.retornarSalida(true, "No existe el usuario.");
 			} else {
 				try{
 					//actualizamos el post
@@ -187,10 +188,11 @@ public class PostWS {
 					BufferedImage img = ImageIO.read(new ByteArrayInputStream(aByteArray));
 					ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + String.valueOf(idPost) + "despues_image.png"));
 					
-					return Utiles.retornarSalida(false, "Reporte solucionado");
+					voluntarioDao.updateReputation(voluntarioEditor, false, true, false, false, false, false);
+					return Utiles.retornarSalida(false, "Reporte solucionado.");
 				} catch(Exception ex){
 					ex.printStackTrace();
-					return Utiles.retornarSalida(true, "Error al solucionar el reporte");
+					return Utiles.retornarSalida(true, "Error al solucionar el reporte.");
 				}
 			}
 		}
@@ -216,12 +218,12 @@ public class PostWS {
 		//verificaciones del usuario
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "No existe el usuario");
+			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {
 			//verificamos si ha iniciado sesion
 			if(voluntario.getLogged() == false){
 				//no ha iniciado sesion
-				return Utiles.retornarSalida(true, "No has iniciado sesión");
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
 			} else {
 				//existe el usuario y ha iniciado sesion
 				Timestamp timestamp;
@@ -268,16 +270,16 @@ public class PostWS {
 		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameQuienResponde);
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "No existe el usuario");
+			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
 			if(voluntario.getLogged() == false){
 				//no ha iniciado sesion
-				return Utiles.retornarSalida(true, "No has iniciado sesión");
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
 			} else {
 				//buscamos el post
 				PostEntity postARepsonder = postDao.findByClassAndID(PostEntity.class, idPostToReply);
 				if(postARepsonder == null){
-					return Utiles.retornarSalida(true, "El reporte no existe");
+					return Utiles.retornarSalida(true, "El reporte no existe.");
 				} else {
 					//verificamos que la respuesta no sea un cadena vacia
 					if(!respuesta.isEmpty()){
@@ -287,7 +289,7 @@ public class PostWS {
 						comentario.setPost(postARepsonder);
 						comentario.setCuerpoDelComentario(respuesta);
 						comentarioDao.guardar(comentario);
-						return Utiles.retornarSalida(false, "Comentario agregado");
+						return Utiles.retornarSalida(false, "Comentario agregado.");
 					}
 				}
 			}
@@ -304,16 +306,16 @@ public class PostWS {
 		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante);
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "No existe el usuario");
+			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
 			if(voluntario.getLogged() == false){
 				//no ha iniciado sesion
-				return Utiles.retornarSalida(true, "No has iniciado sesión");
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
 			} else {
 				//buscamos el post
 				PostEntity postSolicitadp = postDao.findByClassAndID(PostEntity.class, idPost);
 				if(postSolicitadp == null){
-					return Utiles.retornarSalida(true, "El reporte no existe");
+					return Utiles.retornarSalida(true, "El reporte no existe.");
 				} else {
 					//retornamos la lista de JSON de los comentarios
 					JSONArray listaRetorno = new JSONArray();
@@ -341,16 +343,16 @@ public class PostWS {
 		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioQueMarca);
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "No existe el usuario");
+			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
 			if(voluntario.getLogged() == false){
 				//no ha iniciado sesion
-				return Utiles.retornarSalida(true, "No has iniciado sesión");
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
 			} else {
 				//buscamos el post
 				PostEntity postSolicitado = postDao.findByClassAndID(PostEntity.class, idPost);
 				if(postSolicitado == null){
-					return Utiles.retornarSalida(true, "El reporte no existe");
+					return Utiles.retornarSalida(true, "El reporte no existe.");
 				} else {
 					//verificamos si es de marcado o desmarcado
 					//buscamos la entidad FAV perteneciente al usuario y al post
@@ -379,6 +381,7 @@ public class PostWS {
 						Integer cantidadMalos = noFavoritoDao.cantidadNoFavoritosByPost(postSolicitado);
 						String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, true, false, false, previoMalo);
 						
+						voluntarioDao.updateReputation(postSolicitado.getVoluntario(), false, false, true, false, false, previoMalo);
 						return Utiles.retornarSalida(false, retorno);
 					} else {
 						//lo eliminamos
@@ -388,6 +391,8 @@ public class PostWS {
 						Integer cantidadMalos = noFavoritoDao.cantidadNoFavoritosByPost(postSolicitado);
 						
 						String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, false, true, false, false);
+						
+						voluntarioDao.updateReputation(postSolicitado.getVoluntario(), false, false, false, true, false, false);
 						return Utiles.retornarSalida(false, retorno);
 					
 					}
@@ -406,16 +411,16 @@ public class PostWS {
 		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioQueMarca);
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "No existe el usuario");
+			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
 			if(voluntario.getLogged() == false){
 				//no ha iniciado sesion
-				return Utiles.retornarSalida(true, "No has iniciado sesión");
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
 			} else {
 				//buscamos el post
 				PostEntity postSolicitado = postDao.findByClassAndID(PostEntity.class, idPost);
 				if(postSolicitado == null){
-					return Utiles.retornarSalida(true, "El reporte no existe");
+					return Utiles.retornarSalida(true, "El reporte no existe.");
 				} else {
 					//verificamos si es de marcado o desmarcado
 					//buscamos la entidad FAV perteneciente al usuario y al post
@@ -443,6 +448,8 @@ public class PostWS {
 						Integer cantidadBuenos = favoritoDao.cantidadFavoritosByPost(postSolicitado);
 						Integer cantidadMalos = noFavoritoDao.cantidadNoFavoritosByPost(postSolicitado);
 						String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, false, previoBueno, true, false);
+						
+						voluntarioDao.updateReputation(postSolicitado.getVoluntario(), false, false, false, previoBueno, true, false);
 						return Utiles.retornarSalida(false, retorno);
 					} else {
 						//lo eliminamos
@@ -452,6 +459,8 @@ public class PostWS {
 						Integer cantidadMalos = noFavoritoDao.cantidadNoFavoritosByPost(postSolicitado);
 						
 						String retorno = postDao.getJSONFromMarcaciones(cantidadBuenos, cantidadMalos, false, false, false, true);
+						
+						voluntarioDao.updateReputation(postSolicitado.getVoluntario(), false, false, false, false, false, true);
 						return Utiles.retornarSalida(false, retorno);
 					}
 				}
@@ -476,16 +485,16 @@ public class PostWS {
 		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante);
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "No existe el usuario");
+			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
 			if(voluntario.getLogged() == false){
 				//no ha iniciado sesion
-				return Utiles.retornarSalida(true, "No has iniciado sesión");
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
 			} else {
 				//buscamos el post
 				PostEntity postSolicitado = postDao.findByClassAndID(PostEntity.class, idPost);
 				if(postSolicitado == null){
-					return Utiles.retornarSalida(true, "El reporte no existe");
+					return Utiles.retornarSalida(true, "El reporte no existe.");
 				} else {
 					//lo pasamos a JSON
 					JSONObject jsonPost = postDao.getJSONFromPost(usernameSolicitante, postSolicitado);
@@ -520,20 +529,20 @@ public class PostWS {
 		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameRepost);
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "No existe el usuario");
+			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
 			if(voluntario.getLogged() == false){
-				return Utiles.retornarSalida(true, "No has iniciado sesión");
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
 			} else {
 				PostEntity postSolicitado = postDao.findByClassAndID(PostEntity.class, idPost);
 				if(postSolicitado == null){
-					return Utiles.retornarSalida(true, "El reporte no existe");
+					return Utiles.retornarSalida(true, "El reporte no existe.");
 				} else {
 					RepostEntity repost = new RepostEntity();
 					repost.setPost(postSolicitado);
 					repost.setAutorRepost(voluntario);
 					repostDao.guardar(repost);
-					return Utiles.retornarSalida(false, "Repost realizado");
+					return Utiles.retornarSalida(false, "Repost realizado.");
 				}
 			}
 		}
@@ -639,10 +648,10 @@ public class PostWS {
 		
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante);
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "No existe el usuario");
+			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
 			if(voluntario.getLogged() == false){
-				return Utiles.retornarSalida(true, "No has iniciado sesión");
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
 			} else {
 				String flagTipoFoto = "";
 				if(fotoAntes != null){
@@ -667,7 +676,7 @@ public class PostWS {
 				}
 				
 				if(img == null){
-					return Utiles.retornarSalida(true, "Sin foto o error al retornar la foto");
+					return Utiles.retornarSalida(true, "Sin foto o error al retornar la foto.");
 				} else {
 					return Utiles.retornarSalida(false, Base64.encodeToString(imageInByte, Base64.DEFAULT));
 				}

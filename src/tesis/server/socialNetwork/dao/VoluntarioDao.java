@@ -2,29 +2,22 @@ package tesis.server.socialNetwork.dao;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.ejb.EJB;
 import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 
-import com.sun.xml.rpc.processor.modeler.j2ee.xml.constructorParameterOrderType;
-
 import tesis.server.socialNetwork.entity.ContactoEntity;
-import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
+import tesis.server.socialNetwork.utils.Utiles;
 
 
 @Controller
@@ -272,6 +265,54 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		query.setMaxResults(50);
 		List listaSimple = query.list();
 		return listaSimple;
+	}
+	
+	
+	/**
+	 * Metodo que calcula y actualiza la reputacion de un voluntario dependiendo de si:
+	 * 1. posteo un nuevo reporte.
+	 * 2. soluciono un reporte.
+	 * 3. otro voluntario marco como FAV un reporte suyo.
+	 * 4. otro voluntario quito su marca de FAV a un reporte suyo.
+	 * 5. otro voluntario marco como NOFAV un reporte suyo.
+	 * 6. otro voluntario quito su marca de NOFAV a un reporte suyo.
+	 * 
+	 * @param voluntario
+	 * @param nuevoPost
+	 * @param solucionaste
+	 * @param nuevoFavorito
+	 * @param quitoUnFavorito
+	 * @param nuevoNoFavorito
+	 * @param quitoUnNoFavorito
+	 */
+	public void updateReputation(VoluntarioEntity voluntario, Boolean nuevoPost, Boolean solucionaste, Boolean nuevoFavorito, Boolean quitoUnFavorito, 
+			Boolean nuevoNoFavorito, Boolean quitoUnNoFavorito){
+		
+		Integer reputacion = voluntario.getReputacion();
+		if(nuevoPost){
+			reputacion += Utiles.PUNTAJE_POR_REPORTAR;
+		}
+		if(solucionaste){
+			reputacion += Utiles.PUNTAJE_POR_SOLUCIONAR;
+		}
+		if(nuevoFavorito){
+			reputacion += Utiles.PUNTAJE_FAVORITO;
+		}
+		if(quitoUnFavorito){
+			reputacion -= Utiles.PUNTAJE_FAVORITO;
+		}
+		if(nuevoNoFavorito){
+			//es puntaje es negativo
+			reputacion += Utiles.PUNTAJE_NO_FAVORITO;
+		}
+		if(quitoUnNoFavorito){
+			//doble negativo suma
+			reputacion -= Utiles.PUNTAJE_NO_FAVORITO;
+		}
+		
+		
+		voluntario.setReputacion(reputacion);
+		this.modificar(voluntario);
 	}
 		
 }
