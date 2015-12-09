@@ -97,11 +97,11 @@ public class PostWS {
 		VoluntarioEntity voluntarioEntity = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		//verificamos que el usuario exista
 		if(voluntarioEntity == null){
-			return Utiles.retornarSalida(true, "El usuario no existe");
+			return Utiles.retornarSalida(true, "El usuario no existe.");
 		} else {
 			//verificamos que haya iniciado sesion
 			if(!Utiles.haIniciadoSesion(voluntarioEntity)){
-				return Utiles.retornarSalida(true, "No has iniciado sesión");
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
 			} else {
 				//intentamos guardar en la Base de Datos
 				try {
@@ -115,6 +115,7 @@ public class PostWS {
 						postEntity.setLatitud(Double.parseDouble(latitud));
 						postEntity.setLongitud(Double.parseDouble(longitud));
 					}
+					postEntity.setSolucionado(solucionado);
 					if(solucionado){
 						postEntity.setVoluntarioQueSoluciona(voluntarioEntity);
 						if(fotoDespues == null){

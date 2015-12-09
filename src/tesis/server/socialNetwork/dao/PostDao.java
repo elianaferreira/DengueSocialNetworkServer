@@ -43,8 +43,6 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 	
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Integer guardar(PostEntity postEntity){
-		//para un nuevo post es necesario agregar el campo 'solucionado' a FALSE
-		postEntity.setSolucionado(false);
 		postEntity.setRelevante(false);
 		//agregamos la fecha en formato timestamp
 		Date date = new Date();

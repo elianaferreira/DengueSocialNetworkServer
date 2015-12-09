@@ -105,6 +105,30 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 	 * @return
 	 */
 	public JSONObject getJSONFromVoluntario(VoluntarioEntity voluntarioEntity){
+		/*
+		 * antes de enviar verificamos la reputacion del voluntario
+		 */
+		Integer currentReputation = 1;
+		//reportes
+		Integer cantidadPosts = this.cantidadPosts(voluntarioEntity);
+		currentReputation += (cantidadPosts*Utiles.PUNTAJE_POR_REPORTAR);
+		
+		//solucionados
+		Integer cantidadSolucionados = this.cantidadSolucionadosPorVoluntario(voluntarioEntity);
+		currentReputation += (cantidadSolucionados*Utiles.PUNTAJE_POR_SOLUCIONAR);
+		
+		//favoritos
+		Integer cantidadFavoritos = this.cantidadFavoritosParaVoluntario(voluntarioEntity);
+		currentReputation += (cantidadFavoritos*Utiles.PUNTAJE_FAVORITO);
+		
+		//noFavoritos
+		Integer cantidadNoFavoritos = this.cantidadNoFavoritosParaVoluntario(voluntarioEntity);
+		currentReputation += (cantidadNoFavoritos*Utiles.PUNTAJE_NO_FAVORITO);
+		if(currentReputation != voluntarioEntity.getReputacion()){
+			voluntarioEntity.setReputacion(currentReputation);
+			this.modificar(voluntarioEntity);
+		}
+		
 		JSONObject retorno = new JSONObject();
 		//cuando un dato no esta cargado simplemente no lo agrega
 		retorno.put("username", voluntarioEntity.getUserName());
