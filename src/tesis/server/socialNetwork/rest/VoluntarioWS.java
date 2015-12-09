@@ -543,7 +543,9 @@ public class VoluntarioWS {
 	}
 	
 	
+	//esto es exclusivo para el administrador
 	@GET
+	@Path("/user/profilePhoto/{username}")
 	@ResponseBody
 	public String photoProfile(@PathParam("username") String usernameFoto){
 		
