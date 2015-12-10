@@ -1,5 +1,20 @@
 var arrayUsuariosInvitados = [];
 
+
+
+function populateListOfUsers(arrayUsuarios){
+	$('#listaUsuarios').empty();
+	$('#perfiles').empty();
+	for(var i=0; i<arrayUsuarios.length; i++){
+		$('#listaUsuarios').append('\
+			<a id="'+arrayUsuarios[i]["username"]+'" class="list-group-item">\
+				<span class="badge">'+arrayUsuarios[i]["reputacion"]+'</span>\
+				<span class="badge">'+arrayUsuarios[i]["categoria"]+'</span>\
+				<i class="fa fa-fw fa-user"></i> '+arrayUsuarios[i]["nombre"] + ": " + arrayUsuarios[i]["usernamestring"]+'\
+			</a>');
+}
+}
+
 $(document).ready(function(){
 
 	$('#voluntarios').addClass("active");
@@ -47,18 +62,10 @@ $(document).ready(function(){
 			};
 			ajaxRequest("/admin/search", "GET", paramsSearch, function(responseSearch){
 				var respuestaJson = JSON.parse(responseSearch);
-				$('#listaUsuarios').empty();
-				//si es igual a true no mostramos nada
 				if(respuestaJson.error == false) {
-					$('#perfiles').empty();
 					var arrayUsuarios = JSON.parse(respuestaJson.msj);
-					for(var i=0; i<arrayUsuarios.length; i++){
-						$('#listaUsuarios').append('\
-							<a id="'+arrayUsuarios[i]["username"]+'" class="list-group-item">\
-								<span class="badge">'+arrayUsuarios[i]["reputacion"]+'</span>\
-								<i class="fa fa-fw fa-user"></i> '+arrayUsuarios[i]["nombre"] + ": " + arrayUsuarios[i]["usernamestring"]+'\
-							</a>');
-					}
+					populateListOfUsers(arrayUsuarios);
+					
 				}
 			});
 		}
@@ -73,21 +80,64 @@ $(document).ready(function(){
 		};
 		ajaxRequest("/admin/usersByRanking", "GET", params, function(responseReputacion){
 			var respuestaJson = JSON.parse(responseReputacion);
-			$('#listaUsuarios').empty();
-			//si es igual a true no mostramos nada
 			if(respuestaJson.error == false) {
-				$('#perfiles').empty();
 				var arrayUsuarios = JSON.parse(respuestaJson.msj);
-				for(var i=0; i<arrayUsuarios.length; i++){
-					$('#listaUsuarios').append('\
-						<a id="'+arrayUsuarios[i]["username"]+'" class="list-group-item">\
-							<span class="badge">'+arrayUsuarios[i]["reputacion"]+'</span>\
-							<i class="fa fa-fw fa-user"></i> '+arrayUsuarios[i]["nombre"] + ": " + arrayUsuarios[i]["usernamestring"]+'\
-						</a>');
-				}
+				populateListOfUsers(arrayUsuarios);
+				
 			}
 		});
 	});
+
+
+	$('#btnBuscarCategoriaA').click(function(event){
+		event.preventDefault();
+		var params = {
+			admin: getAdminUser(),
+			password: getAdminPass()
+		};
+		ajaxRequest("/admin/usersByCatA", "GET", params, function(responseA){
+			var respuestaJson = JSON.parse(responseA);
+			if(respuestaJson.error == false) {
+				var arrayUsuarios = JSON.parse(respuestaJson.msj);
+				populateListOfUsers(arrayUsuarios);
+				
+			}
+		});
+	});
+
+	$('#btnBuscarCategoriaB').click(function(event){
+		event.preventDefault();
+		var params = {
+			admin: getAdminUser(),
+			password: getAdminPass()
+		};
+		ajaxRequest("/admin/usersByCatB", "GET", params, function(responseB){
+			var respuestaJson = JSON.parse(responseB);
+			if(respuestaJson.error == false) {
+				var arrayUsuarios = JSON.parse(respuestaJson.msj);
+				populateListOfUsers(arrayUsuarios);
+				
+			}
+		});
+	});
+
+	$('#btnBuscarTodos').click(function(event){
+		event.preventDefault();
+		var params = {
+			admin: getAdminUser(),
+			password: getAdminPass()
+		};
+		ajaxRequest("/admin/allContacts", "GET", params, function(responseB){
+			var respuestaJson = JSON.parse(responseB);
+			if(respuestaJson.error == false) {
+				var arrayUsuarios = JSON.parse(respuestaJson.msj);
+				populateListOfUsers(arrayUsuarios);
+				
+			}
+		});
+	});
+
+
 	
 
 	$(document).on('click', 'a', function() {
@@ -105,6 +155,7 @@ $(document).ready(function(){
 			arrayUsuariosInvitados.push(idUser);
 			//ocultamos ese usuario de manera que no pueda ser agregado nuevamente
 			$(this).hide();
+			$('#listaUsuariosAdheridos').append('<li><span style="margin-right: 5px;"><i class="fa fa-fw fa-user"></i>    '+idUser+'</span></li>');
 			//mostrar toast
 			toastr["success"]("Usuario agregado a la lista de invitados.", "Exito");
 			toastr.options = {
@@ -259,4 +310,47 @@ $(document).ready(function(){
 	        container.hide();
 	    }
 	});
+
+	$('#btnAddAll').click(function (event) {
+		event.stopPropagation();
+		//se agregan todos los que actualmente estan en la lista de 'listaUsuarios' mas lo que ya estaban
+		var tempArray = $('#listaUsuarios').children();
+		if(tempArray.length > 0){
+			for(var k=0; k<tempArray.length; k++){
+				var tempUser = tempArray[k].id;
+				var yaExiste = false;
+				for(var j=0; j<arrayUsuariosInvitados.length; j++){
+					if(tempUser == arrayUsuariosInvitados[j]){
+						yaExiste = true;
+						break;
+					}
+				}
+				if(!yaExiste){
+					arrayUsuariosInvitados.push(tempUser);
+					$('#listaUsuariosAdheridos').append('<li><span style="margin-right: 5px;"><i class="fa fa-fw fa-user"></i>    '+tempUser+'</span></li>');
+				}
+				//si ya esta en la lista no hacemos nada
+			}
+			$('#listaUsuarios').empty();
+			toastr["success"]("Todos los usuarios han sido agregados a la lista de invitadso.", "Exito");
+			toastr.options = {
+				"closeButton": false,
+				"debug": false,
+				"newestOnTop": false,
+				"progressBar": false,
+				"positionClass": "toast-top-right",
+				"preventDuplicates": false,
+				"onclick": null,
+				"showDuration": "30",
+				"hideDuration": "1000",
+				"timeOut": "1000",
+				"extendedTimeOut": "1000",
+				"showEasing": "swing",
+				"hideEasing": "linear",
+				"showMethod": "fadeIn",
+				"hideMethod": "fadeOut"
+			}
+		}
+	});
+
 });

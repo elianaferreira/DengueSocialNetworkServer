@@ -128,7 +128,7 @@ public class AdministradorWS {
 		
 		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
 		if(admin == null){
-			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos");
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
 		} else {
 			//array de JSON
 			JSONArray retornoNoAgregados = new JSONArray();
@@ -188,8 +188,7 @@ public class AdministradorWS {
 				JSONArray retorno = new JSONArray();
 				//a cada usuario le agregamos la cantidad de amigos que tiene y un boolean de si son amigos
 				for(int j=0; j<listaResultado.size(); j++){
-					//lo agregamos a la lista solo si no se trata del mismo usuario que solicta la busqueda
-					JSONObject jsonFromVoluntario = voluntarioDao.getJSONFromVoluntario(listaResultado.get(j));
+					JSONObject jsonFromVoluntario = voluntarioDao.getSimpleJSONFromVoluntario(listaResultado.get(j));
 					retorno.put(jsonFromVoluntario);
 				}
 				return Utiles.retornarSalida(false, retorno.toString());
@@ -439,7 +438,7 @@ public class AdministradorWS {
 	@GET
 	@Path("/allNodeContacts")
 	@ResponseBody
-	public String getAllContacts(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
+	public String getAllNodeContacts(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
 		
 		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
 		JSONObject retorno = new JSONObject();
@@ -570,7 +569,7 @@ public class AdministradorWS {
 			//traemos la lista completa de voluntarios
 			List<VoluntarioEntity> lista = voluntarioDao.getListUsersByRanking();
 			for(VoluntarioEntity v: lista){
-				retorno.put(voluntarioDao.getJSONFromVoluntario(v));
+				retorno.put(voluntarioDao.getSimpleJSONFromVoluntario(v));
 			}
 			return Utiles.retornarSalida(false, retorno.toString());
 		}
@@ -663,6 +662,60 @@ public class AdministradorWS {
 					}
 				}
 			}
+		}
+	}
+	
+	@GET
+	@Path("/usersByCatA")
+	@ResponseBody
+	public String getUsersCatA(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		JSONArray retorno = new JSONArray();
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			List<VoluntarioEntity> lista = voluntarioDao.getListCategoryA();
+			for(VoluntarioEntity v: lista){
+				retorno.put(voluntarioDao.getSimpleJSONFromVoluntario(v));
+			}
+			return Utiles.retornarSalida(false, retorno.toString());
+		}
+	}
+	
+	
+	@GET
+	@Path("/usersByCatB")
+	@ResponseBody
+	public String getUsersCatB(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		JSONArray retorno = new JSONArray();
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			//traemos la lista completa de voluntarios
+			List<VoluntarioEntity> lista = voluntarioDao.getListCategoryB();
+			for(VoluntarioEntity v: lista){
+				retorno.put(voluntarioDao.getSimpleJSONFromVoluntario(v));
+			}
+			return Utiles.retornarSalida(false, retorno.toString());
+		}
+	}
+	
+	@GET
+	@Path("/allContacts")
+	@ResponseBody
+	public String getAllContacts(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		JSONArray retorno = new JSONArray();
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			//traemos la lista completa de voluntarios
+			List<VoluntarioEntity> lista = voluntarioDao.getListAllUsers();
+			for(VoluntarioEntity v: lista){
+				retorno.put(voluntarioDao.getSimpleJSONFromVoluntario(v));
+			}
+			return Utiles.retornarSalida(false, retorno.toString());
 		}
 	}
 }

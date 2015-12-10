@@ -272,7 +272,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 	 * @return
 	 */
 	public List<VoluntarioEntity> getListAllUsers(){
-		String consulta = "from VoluntarioEntity v";
+		String consulta = "from VoluntarioEntity v order by nombreReal";
 		Query query = getSession().createQuery(consulta);
 		List listaSimple = query.list();
 		return listaSimple;
@@ -286,7 +286,6 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 	public List<VoluntarioEntity> getListUsersByRanking(){
 		String consulta = "from VoluntarioEntity v order by v.reputacion desc";
 		Query query = getSession().createQuery(consulta);
-		query.setMaxResults(50);
 		List listaSimple = query.list();
 		return listaSimple;
 	}
@@ -389,6 +388,67 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		Integer cantidadTotal = cantidadLong.intValue();
 		
 		return cantidadTotal;
+	}
+	
+	
+	public JSONObject getSimpleJSONFromVoluntario(VoluntarioEntity voluntarioEntity){
+		/*
+		 * antes de enviar verificamos la reputacion del voluntario
+		 */
+		Integer currentReputation = 1;
+		//reportes
+		Integer cantidadPosts = this.cantidadPosts(voluntarioEntity);
+		currentReputation += (cantidadPosts*Utiles.PUNTAJE_POR_REPORTAR);
+		
+		//solucionados
+		Integer cantidadSolucionados = this.cantidadSolucionadosPorVoluntario(voluntarioEntity);
+		currentReputation += (cantidadSolucionados*Utiles.PUNTAJE_POR_SOLUCIONAR);
+		
+		//favoritos
+		Integer cantidadFavoritos = this.cantidadFavoritosParaVoluntario(voluntarioEntity);
+		currentReputation += (cantidadFavoritos*Utiles.PUNTAJE_FAVORITO);
+		
+		//noFavoritos
+		Integer cantidadNoFavoritos = this.cantidadNoFavoritosParaVoluntario(voluntarioEntity);
+		currentReputation += (cantidadNoFavoritos*Utiles.PUNTAJE_NO_FAVORITO);
+		if(currentReputation != voluntarioEntity.getReputacion()){
+			voluntarioEntity.setReputacion(currentReputation);
+			this.modificar(voluntarioEntity);
+		}
+		
+		JSONObject retorno = new JSONObject();
+		//cuando un dato no esta cargado simplemente no lo agrega
+		retorno.put("username", voluntarioEntity.getUserName());
+		retorno.put("usernamestring", voluntarioEntity.getUsernameString());
+		retorno.put("nombre", voluntarioEntity.getNombreReal());
+		retorno.put("reputacion", voluntarioEntity.getReputacion());
+		retorno.put("categoria", voluntarioEntity.getCategoria());
+		
+		return retorno;
+	}
+	
+	
+	/**
+	 * Metodo que retorna la lista completa de voluntarios de categoria A
+	 * @return
+	 */
+	public List<VoluntarioEntity> getListCategoryA(){
+		String consulta = "from VoluntarioEntity v where v.categoria = 'A'";
+		Query query = getSession().createQuery(consulta);
+		List listaSimple = query.list();
+		return listaSimple;
+	}
+	
+	
+	/**
+	 * Metodo que retorna la lista completa de voluntarios de Categoria B
+	 * @return
+	 */
+	public List<VoluntarioEntity> getListCategoryB(){
+		String consulta = "from VoluntarioEntity v where v.categoria = 'B'";
+		Query query = getSession().createQuery(consulta);
+		List listaSimple = query.list();
+		return listaSimple;
 	}
 		
 }

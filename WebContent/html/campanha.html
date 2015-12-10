@@ -26,11 +26,15 @@
 	                        <h1 class="page-header">
 	                            Campa&ntilde;a <small>Crear Campa&ntilde;a</small>
 	                        </h1>
-	                        
+	                        <div class="dropdown">
+			                    <button id="btnVerIntegrantes" type="submit" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="margin-bottom:7px;">ver integrantes</button>
+			                    <ul  id="listaUsuariosAdheridos" class="dropdown-menu">
+			                    </ul>
+							</div>
 	                    </div>
 	                </div>	                   
 	                <!-- /.row -->
-
+	                <div  class="row" style="margin-top:20px">
 	                <div class="col-lg-6">
 		                <form role="form">
 		                    <div id="divNombreCamp" class="form-group">
@@ -59,22 +63,28 @@
 
 		            <div class="col-lg-6">
 		            	<form role="form" id="formUsuarios">
-		            		<table class="table" style="margin-top: 15px;">
+		            		<label>buscar por</label>
+		            		<table class="table">
 								<tr>
 									<th style="border-top:none">
 										<div class="form-group input-group">
-			                                <input id="inputBuscar" type="text" class="form-control" placeholder="buscar por nombre">
+			                                <input id="inputBuscar" type="text" class="form-control" placeholder="nombre">
 			                                <span id="btnBuscarPorNombre" class="input-group-btn"><button class="btn btn-default" type="button"><i class="fa fa-search"></i></button></span>
 			                            </div>
 			                        </th>
-									<th style="border-top:none"><button id="btnBuscarPorReputacion" type="submit" class="btn btn-primary">buscar por reputaci&oacute;n</button></th>
+									<th style="border-top:none"><button id="btnBuscarPorReputacion" type="submit" class="btn btn-primary">reputaci&oacute;n</button></th>
+									<th style="border-top:none"><button id="btnBuscarCategoriaA" type="submit" class="btn btn-primary">Categor&iacute;a A</button></th>
+									<th style="border-top:none"><button id="btnBuscarCategoriaB" type="submit" class="btn btn-primary">Categor&iacute;a B</button></th>
+									<th style="border-top:none"><button id="btnBuscarTodos" type="submit" class="btn btn-primary">todos</button></th>
 								</tr>
 							</table>
 		            	</form>
+		            	<button id="btnAddAll" type="submit" class="btn btn-primary">agregar a todos</button>
 		            	<div class="panel-body">
 							<div id="listaUsuarios" class="list-group">
 							</div>
 						</div>
+		            </div>
 		            </div>
 	            </div>
 	        </div>

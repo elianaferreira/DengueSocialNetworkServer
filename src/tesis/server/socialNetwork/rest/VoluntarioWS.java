@@ -144,7 +144,7 @@ public class VoluntarioWS {
 		// lo pasamos a minuscula y verificamos si no existe ya
 		String usernameLower = username.toLowerCase();
 		if(voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameLower) != null){
-			return Utiles.retornarSalida(true, "El usuario ya existe");
+			return Utiles.retornarSalida(true, "El usuario ya existe.");
 		} else{
 			try{
 				if(fotoPerfil != null){
@@ -157,9 +157,9 @@ public class VoluntarioWS {
 				//los de categoria A son agregados por el administrador
 				voluntario.setCategoria("B");
 				voluntarioDao.guardar(voluntario);
-				return Utiles.retornarSalida(false, "Voluntario registrado con éxito");
+				return Utiles.retornarSalida(false, "Voluntario registrado con éxito.");
 			}catch(Exception ex){
-				return Utiles.retornarSalida(true, "Error al guardar los datos del voluntario");
+				return Utiles.retornarSalida(true, "Error al guardar los datos del voluntario.");
 			}
 		}		
 	}
