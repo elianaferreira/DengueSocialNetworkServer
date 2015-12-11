@@ -81,7 +81,8 @@ $(document).ready(function(){
 		$('#perfiles').append('\
 				<div class="col-lg-4">\
 	                <div class="panel panel-default">\
-	                	<a class="activateInvalidate" data-username="'+usuarioJSON.username+'" style="cursor:pointer; padding-left:16px;">'+msjActivateInvalidate+'</a>\
+	                	<a class="activateInvalidate" data-username="'+usuarioJSON.username+'" style="cursor:pointer; padding-left:16px; font-weight: bold;">'+msjActivateInvalidate+'</a>\
+	                	<a class="sendAlert" data-username="'+usuarioJSON.username+'" style="cursor:pointer; padding-left:16px; margin-left:25px; font-weight: bold;">enviar alerta</a>\
 	                	<div data-username="'+usuarioJSON.username+'" class="perfil panel-heading">\
 	                		<h3 style="cursor:pointer" class="panel-title">\
 	                			<i id="iFotoPerfil_'+usuarioJSON.username+'" class="fa fa-user fa-fw fa-5x"></i>\
@@ -159,6 +160,52 @@ $(document).ready(function(){
 					//cambiamos el color del panel para indicar que hay que actualizar para ver los cambios
 					elementoSeleccionado.parent().removeClass("panel-default");
 					elementoSeleccionado.parent().addClass("panel-warning");
+				}
+			});
+		});
+	});
+
+	$(document).on('click', '.sendAlert', function(event){
+		event.preventDefault();
+		var usernameSelected = $(this).data('username');
+		elementoSeleccionado = $(this);
+		mostrarAlertaConfirmacion("Atenci&oacute;n", "Est&aacute; seguro que desea enviar una alerta al voluntario?", "S&iacute;", function(e){
+			e.preventDefault();
+			$('#myModal').modal('hide');
+			//eliminamos el div de modal porque se puede querer volver a mostrar en el alert a exito/error
+			var el2 = document.getElementById("myModal");
+			el2.parentElement.removeChild(el2);
+
+			borrarVestigiosModal();
+
+			var parametros = {
+				adminName: getAdminUser(),
+				password: getAdminPass(),
+				username: usernameSelected
+			}
+			ajaxRequest("/admin/alert", "POST", parametros, function(reponseInvalidate){
+				reponseInvalidate = JSON.parse(reponseInvalidate);
+				if(reponseInvalidate.error == true){
+					mostrarAlerta('Error', reponseInvalidate.msj);
+				} else {
+					toastr["success"]("Alerta enviado al usuario.", "&Eacute;xito");
+					toastr.options = {
+						"closeButton": false,
+						"debug": false,
+						"newestOnTop": false,
+						"progressBar": false,
+						"positionClass": "toast-top-center",
+						"preventDuplicates": false,
+						"onclick": null,
+						"showDuration": "30",
+						"hideDuration": "1000",
+						"timeOut": "1000",
+						"extendedTimeOut": "1000",
+						"showEasing": "swing",
+						"hideEasing": "linear",
+						"showMethod": "fadeIn",
+						"hideMethod": "fadeOut"
+					}
 				}
 			});
 		});

@@ -188,7 +188,7 @@ public class AdministradorWS {
 				JSONArray retorno = new JSONArray();
 				//a cada usuario le agregamos la cantidad de amigos que tiene y un boolean de si son amigos
 				for(int j=0; j<listaResultado.size(); j++){
-					JSONObject jsonFromVoluntario = voluntarioDao.getSimpleJSONFromVoluntario(listaResultado.get(j));
+					JSONObject jsonFromVoluntario = voluntarioDao.getJSONFromVoluntario(listaResultado.get(j));
 					retorno.put(jsonFromVoluntario);
 				}
 				return Utiles.retornarSalida(false, retorno.toString());
@@ -717,5 +717,54 @@ public class AdministradorWS {
 			}
 			return Utiles.retornarSalida(false, retorno.toString());
 		}
+	}
+	
+	
+	@POST
+	@Path("/alert")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String lanzarAlertaAVoluntario(@FormParam("adminName") String adminName, 
+											@FormParam("password") String password,
+											@FormParam("username") String username,
+											@FormParam("mensaje") String mensajeAlerta){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		JSONArray retorno = new JSONArray();
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son inválidos.");
+		} else {
+			//puede ser el mensaje del Administrador o uno por default
+			String mensajeAMostrar;
+			if(mensajeAlerta == null){
+				mensajeAMostrar = Utiles.MENSAJE_DE_ALERTA;
+			} else {
+				if(mensajeAlerta.trim().equals("")){
+					mensajeAMostrar = Utiles.MENSAJE_DE_ALERTA;
+				} else {
+					mensajeAMostrar = mensajeAlerta;
+				}
+			}
+			if(username.trim().equals("")){
+				Utiles.retornarSalida(true, "El nombre de usuario debe ser válido.");
+			} else if(!username.matches(Utiles.REGEX_ALFANUMERIC)){
+				Utiles.retornarSalida(true, "El nombre de usuario debe ser válido.");
+			} else {
+				VoluntarioEntity voluntarioEntity = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+				if(voluntarioEntity == null){
+					return Utiles.retornarSalida(true, "El voluntario no existe.");
+				} else {
+					try{
+						voluntarioEntity.setMsjAlerta(mensajeAMostrar);
+						voluntarioDao.modificar(voluntarioEntity);
+						return Utiles.retornarSalida(false, "Alerta enviado.");
+					} catch(Exception e){
+						e.printStackTrace();
+						return Utiles.retornarSalida(true, "Ha ocurrido un error.");
+					}
+				}
+			}
+		}
+		return "";
 	}
 }

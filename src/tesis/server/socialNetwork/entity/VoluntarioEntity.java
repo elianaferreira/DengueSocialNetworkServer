@@ -51,6 +51,8 @@ public class VoluntarioEntity {
 	
 	private Boolean activo;
 	
+	private String msjAlerta;
+	
 	
 	//constructor
 	public VoluntarioEntity(){
@@ -185,6 +187,15 @@ public class VoluntarioEntity {
 
 	public void setActivo(Boolean activo) {
 		this.activo = activo;
+	}
+
+	@Column(name="MSJ_ALERTA")
+	public String getMsjAlerta() {
+		return msjAlerta;
+	}
+
+	public void setMsjAlerta(String msjAlerta) {
+		this.msjAlerta = msjAlerta;
 	}
 	
 	

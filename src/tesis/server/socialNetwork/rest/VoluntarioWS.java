@@ -280,6 +280,9 @@ public class VoluntarioWS {
 				voluntarioDao.modificar(voluntario);
 				JSONObject retorno = voluntarioDao.getJSONFromVoluntario(voluntario);
 				retorno.put("password", voluntario.getPassword());
+				if(voluntario.getMsjAlerta() != null){
+					retorno.put("alerta", voluntario.getMsjAlerta());
+				}
 				return Utiles.retornarSalida(false, retorno.toString());
 			}
 		}

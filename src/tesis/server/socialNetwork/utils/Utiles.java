@@ -43,7 +43,11 @@ public class Utiles {
 	public static final String NOTIF_NUEVA_SOLICITUD_AMISTAD = "NUEVA_SOLICITUD_AMISTAD";
 	public static final String NOTIF_INVITADO_CAMPANHA = "INVITADO_CAMPANHA";
 	
+	public static final String MENSAJE_DE_ALERTA = "Esta es una advertencia, se ha detectado un mal uso de la aplicación por parte tuya.";
 	
+	public static final String REGEX_ALFANUMERIC = "^[a-zA-Z0-9]*$";
+    public static final String REGEX_EMAIL = "^[_A-Za-z0-9-\\\\+]+(\\\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\\\.[A-Za-z0-9]+)*(\\\\.[A-Za-z]{2,})$";
+
 	
 	//acceso a Base de Datos
 	@Autowired
