@@ -196,7 +196,5 @@ public class VoluntarioEntity {
 
 	public void setMsjAlerta(String msjAlerta) {
 		this.msjAlerta = msjAlerta;
-	}
-	
-	
+	}	
 }

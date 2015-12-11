@@ -282,6 +282,12 @@ public class VoluntarioWS {
 				retorno.put("password", voluntario.getPassword());
 				if(voluntario.getMsjAlerta() != null){
 					retorno.put("alerta", voluntario.getMsjAlerta());
+					try{
+						voluntario.setMsjAlerta(null);
+						voluntarioDao.modificar(voluntario);
+					} catch(Exception e){
+						e.printStackTrace();
+					}
 				}
 				return Utiles.retornarSalida(false, retorno.toString());
 			}
