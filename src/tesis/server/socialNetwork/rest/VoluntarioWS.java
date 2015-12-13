@@ -505,11 +505,11 @@ public class VoluntarioWS {
 							if(voluntarioQueSolicita.getUserName().toLowerCase() != voluntario1.getUserName().toLowerCase()){
 								//verificamos si ambos voluntarios ya son amigos, luego lo pasamos a JSON y agregamos el nuevo campo
 								JSONObject jsonFromVoluntario = voluntarioDao.getJSONFromVoluntario(listaResultado.get(j));
-								if(voluntarioDao.yaEsContacto(voluntarioQueSolicita, listaResultado.get(j))){
+								/*if(voluntarioDao.yaEsContacto(voluntarioQueSolicita, listaResultado.get(j))){
 									jsonFromVoluntario.put("yaEsAmigo", true);
 								} else {
 									jsonFromVoluntario.put("yaEsAmigo", false);
-								}
+								}*/
 								retorno.put(jsonFromVoluntario);
 							}
 						}
@@ -945,7 +945,8 @@ public class VoluntarioWS {
 		
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
 		if(voluntario != null){
-			JSONArray retorno = new JSONArray();
+			JSONObject retorno = new JSONObject();
+			JSONArray arrayRetorno = new JSONArray();
 			//verificamos si tiene amigos
 			List<VoluntarioEntity> listaContactos = voluntarioDao.getListaContactos(voluntario);
 			if(listaContactos == null || listaContactos.size() == 0){
@@ -959,10 +960,14 @@ public class VoluntarioWS {
 					tempCantidad = listaPorReputacion.size();
 				}
 				for(int j=0; j<tempCantidad; j++){
-					JSONObject vTemp = voluntarioDao.getJSONFromVoluntario(listaPorReputacion.get(j));
-					retorno.put(vTemp);
+					if(listaPorReputacion.get(j).getUserName() != voluntario.getUserName()){
+						JSONObject vTemp = voluntarioDao.getJSONFromVoluntario(listaPorReputacion.get(j));
+						arrayRetorno.put(vTemp);
+					}
 				}
-				Utiles.retornarSalida(false, retorno.toString());
+				retorno.put("destacados", true);
+				retorno.put("lista", arrayRetorno);
+				return Utiles.retornarSalida(false, retorno.toString());
 			} else {
 				//enviar los amigos de amigos
 				//obtenemos la lista de contactos
@@ -970,9 +975,11 @@ public class VoluntarioWS {
 				for(int k=0; k<amigosDeAmigos.size(); k++){
 					if(amigosDeAmigos.get(k).getUserName() != voluntario.getUserName()){
 						JSONObject aTemp = voluntarioDao.getJSONFromVoluntario(amigosDeAmigos.get(k));
-						retorno.put(aTemp);
+						arrayRetorno.put(aTemp);
 					}
 				}
+				retorno.put("destacados", false);
+				retorno.put("lista", arrayRetorno);
 				return Utiles.retornarSalida(false, retorno.toString());				
 			}
 		}
