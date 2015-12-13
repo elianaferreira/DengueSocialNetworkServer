@@ -935,4 +935,48 @@ public class VoluntarioWS {
 			}
 		}
 	}
+	
+	
+	@GET
+	@Path("/user/recommendations")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String getListOfPrincipalsOrFriendsOfFriends(@QueryParam("username") String username){
+		
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		if(voluntario != null){
+			JSONArray retorno = new JSONArray();
+			//verificamos si tiene amigos
+			List<VoluntarioEntity> listaContactos = voluntarioDao.getListaContactos(voluntario);
+			if(listaContactos == null || listaContactos.size() == 0){
+				//enviar los sobresalientes
+				List<VoluntarioEntity> listaPorReputacion = voluntarioDao.getListUsersByRanking();
+				int tempCantidad;
+				//maximo se enviaran 10 resultados
+				if(listaPorReputacion.size() > 10){
+					tempCantidad = 10;
+				} else {
+					tempCantidad = listaPorReputacion.size();
+				}
+				for(int j=0; j<tempCantidad; j++){
+					JSONObject vTemp = voluntarioDao.getJSONFromVoluntario(listaPorReputacion.get(j));
+					retorno.put(vTemp);
+				}
+				Utiles.retornarSalida(false, retorno.toString());
+			} else {
+				//enviar los amigos de amigos
+				//obtenemos la lista de contactos
+				List<VoluntarioEntity> amigosDeAmigos = contactoDao.getListOfFriendOfFriend(voluntario);
+				for(int k=0; k<amigosDeAmigos.size(); k++){
+					if(amigosDeAmigos.get(k).getUserName() != voluntario.getUserName()){
+						JSONObject aTemp = voluntarioDao.getJSONFromVoluntario(amigosDeAmigos.get(k));
+						retorno.put(aTemp);
+					}
+				}
+				return Utiles.retornarSalida(false, retorno.toString());				
+			}
+		}
+		//en teoria no deberia llegar aca
+		return Utiles.retornarSalida(true, "Error");
+	}
 }

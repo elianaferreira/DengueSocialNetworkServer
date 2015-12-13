@@ -96,5 +96,74 @@ public class ContactoDao extends GenericDao<ContactoEntity, Integer> {
 		query.setEntity("voluntario2", v2);
 		ContactoEntity contacto = (ContactoEntity) query.uniqueResult();
 		return contacto;
-	}	
+	}
+	
+	
+	
+	/**
+	 * Metodo que retorna la lista de entidades VoluntarioEntity que son contactos de un voluntario dado.
+	 * 
+	 * @param voluntario
+	 * @return
+	 */
+	public List<VoluntarioEntity> getListVolunteersContactsOrderByRanking(VoluntarioEntity voluntario){
+		
+		/*
+		 * select * from voluntario v where v.username in (select case 
+				when c.contacto = 'eferreira' then c.voluntario
+				when c.voluntario = 'eferreira' then c.contacto 
+				else null end as columna from contactos c) order by v.reputacion desc
+		 * 
+		 * */
+		String consulta = "from VoluntarioEntity v where v.userName in ("
+				+ "select case "
+				+ "when c.contacto = :voluntario then c.voluntario.userName "
+				+ "when c.voluntario = :voluntario then c.contacto.userName "
+				+ "else null "
+				+ "end as columna from ContactoEntity c) order by v.reputacion desc";
+		Query query = this.getSession().createQuery(consulta);
+		query.setEntity("voluntario", voluntario);
+		List lista = query.list();
+		return lista;
+	}
+	
+	
+	/**
+	 * Metodo que retorna los amigos de mis amigos (incluyendome)
+	 * 
+	 * @param voluntario
+	 * @return
+	 */
+	public List<VoluntarioEntity> getListOfFriendOfFriend(VoluntarioEntity voluntario){
+		/*
+		 * select * from voluntario v where v.username in (
+				select case when c3.contacto in (select case 
+					when c.contacto = 'susana' then c.voluntario
+					when c.voluntario = 'susana' then c.contacto 
+					else null end from contactos c) then c3.voluntario
+			
+				when c3.voluntario in (select case 
+					when c2.contacto = 'susana' then c2.voluntario
+					when c2.voluntario = 'susana' then c2.contacto 
+					else null end from contactos c2) then c3.contacto
+				else null end from contactos c3) order by v.reputacion desc
+		 * */
+		String consulta = ""
+				+ "from VoluntarioEntity v where v in ("
+					+ "select case "
+						+ "when c3.contacto in (select case "
+							+ "when c.contacto = :voluntario then c.voluntario "
+							+ "when c.voluntario = :voluntario then c.contacto "
+							+ "else null end from ContactoEntity c) then c3.voluntario "
+						+ "when c3.voluntario in (select case "
+							+ "when c2.contacto = :voluntario then c2.voluntario "
+							+ "when c2.voluntario = :voluntario then c2.contacto "
+							+ "else null end from ContactoEntity c2) then c3.contacto "
+						+ "else null end from ContactoEntity c3) order by v.reputacion desc";
+		Query query = this.getSession().createQuery(consulta);
+		query.setEntity("voluntario", voluntario);
+		query.setMaxResults(10);
+		List lista = query.list();
+		return lista;
+	}
 }
