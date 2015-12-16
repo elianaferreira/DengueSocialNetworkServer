@@ -52,6 +52,8 @@ public class PostEntity {
 	
 	private Integer rankingEstado;
 	
+	private String quienDebeSolucionar;
+	
 	
 	//getters y setters
 	@Id
@@ -193,6 +195,14 @@ public class PostEntity {
 	}
 	public void setRankingEstado(Integer rankingEstado) {
 		this.rankingEstado = rankingEstado;
+	}
+	
+	@Column(name="QUIEN_DEBE_SOLUCIONAR", nullable=true)
+	public String getQuienDebeSolucionar() {
+		return quienDebeSolucionar;
+	}
+	public void setQuienDebeSolucionar(String quienDebeSolucionar) {
+		this.quienDebeSolucionar = quienDebeSolucionar;
 	}
 	
 	

@@ -91,7 +91,8 @@ public class PostWS {
 							@FormParam("fotoAntes") String fotoAntes,
 							@FormParam("fotoDespues") String fotoDespues,
 							@FormParam("solucionado") Boolean solucionado,
-							@FormParam("ranking") Integer rankingEstado){
+							@FormParam("ranking") Integer rankingEstado,
+							@FormParam("quienDebeSolucionar") String quienDebeSolucionar){
 		
 		//traemos el usuario de la Base de Datos
 		VoluntarioEntity voluntarioEntity = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
@@ -122,6 +123,8 @@ public class PostWS {
 							return Utiles.retornarSalida(true, "No puede ser un reporte solucionado sin fotografía que lo pruebe.");
 						}
 					}
+					postEntity.setQuienDebeSolucionar(quienDebeSolucionar);
+					
 					Integer idGen = postDao.guardar(postEntity);
 					//una vez que se ha guardado se asocian las fotos con le ID del post en la BD
 					if(fotoAntes != null){
