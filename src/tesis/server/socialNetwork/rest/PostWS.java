@@ -687,5 +687,50 @@ public class PostWS {
 			}
 		}
 	}
+	
+	
+	@GET
+	@Path("/photo")
+	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String getOnePhoto(@QueryParam("usernameProfile") String usernameProfile,
+								@QueryParam("idPost") Integer idPost,
+								@QueryParam("antes") Boolean fotoAntes){
+		
+		if(usernameProfile != null){
+			//retornamos la foto de perfil
+			VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameProfile);
+			if(voluntario.getFotoDePerfil() != null){
+				return Utiles.retornarSalida(false, Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
+			}
+		} else if(idPost != null){
+			String antesDespues = "antes_image.png";
+			if(fotoAntes == false){
+				antesDespues = "antes_image.png";
+			}
+			
+			BufferedImage img = null;
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] imageInByte = null;
+			
+			try {
+				img = ImageIO.read(new File(Utiles.PHOTOS_FOLDER + String.valueOf(idPost) + antesDespues));
+				ImageIO.write(img, "png", baos);
+				baos.flush();
+				imageInByte = baos.toByteArray();
+				baos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				img = null;
+			}
+			
+			if(img != null) {
+				return Utiles.retornarSalida(false, Base64.encodeToString(imageInByte, Base64.DEFAULT));
+			}
+		}
+		
+		return Utiles.retornarSalida(true, "Nada que retornar.");
+	}
 
 }
