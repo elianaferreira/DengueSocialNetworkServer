@@ -702,12 +702,13 @@ public class PostWS {
 			//retornamos la foto de perfil
 			VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameProfile);
 			if(voluntario.getFotoDePerfil() != null){
+				System.out.println("FOTO DE PERFIL DE " + usernameProfile);
 				return Utiles.retornarSalida(false, Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
 			}
 		} else if(idPost != null){
 			String antesDespues = "antes_image.png";
 			if(fotoAntes == false){
-				antesDespues = "antes_image.png";
+				antesDespues = "despues_image.png";
 			}
 			
 			BufferedImage img = null;
@@ -721,11 +722,12 @@ public class PostWS {
 				imageInByte = baos.toByteArray();
 				baos.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				img = null;
 			}
 			
 			if(img != null) {
+				System.out.println("FOTO " + String.valueOf(idPost) + antesDespues);
 				return Utiles.retornarSalida(false, Base64.encodeToString(imageInByte, Base64.DEFAULT));
 			}
 		}
