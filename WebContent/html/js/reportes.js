@@ -19,10 +19,8 @@ $(document).ready(function(){
 						<div class="panel-heading">\
 							<h3 class="panel-title"><i class="fa fa-pencil fa-fw"></i>Reportes</h3>\
 						</div>\
-						<div class="panel-body">\
 							<div id="lista-reportes" class="list-group">\
 							</div>\
-						</div>\
 					</div>\
 				</div>');
 

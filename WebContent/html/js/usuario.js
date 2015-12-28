@@ -86,7 +86,7 @@ $(document).ready(function(){
 	                	<div data-username="'+usuarioJSON.username+'" class="perfil panel-heading">\
 	                		<h3 style="cursor:pointer" class="panel-title">\
 	                			<i id="iFotoPerfil_'+usuarioJSON.username+'" class="fa fa-user fa-fw fa-5x"></i>\
-	                			<img id="fotoReal_'+usuarioJSON.username+'" style="display: none; width:60px; height:80px;"/>\
+	                			<img id="fotoReal_'+usuarioJSON.username+'" style="display: none; width:80px; height:80px; border-radius:50%;"/>\
 	                			<span style="vertical-align: bottom">'+ usuarioJSON.nombre + '</span>\
 	                		</h3>\
 	                	</div>\

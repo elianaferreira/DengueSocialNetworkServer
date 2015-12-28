@@ -35,7 +35,7 @@ $(document).ready(function(){
 	            <div class="collapse navbar-collapse navbar-ex1-collapse">\
 	                <ul class="nav navbar-nav side-nav">\
 	                    <li class="opcion" id="dashboard" data-url="admin.html">\
-	                        <a href=""><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>\
+	                        <a href=""><i class="fa fa-fw fa-pencil"></i> Reportes</a>\
 	                    </li>\
 	                    <li class="opcion" id="charts" data-url="estadisticas.html">\
 	                        <a href=""><i class="fa fa-fw fa-bar-chart-o"></i> Estad&iacute;sticas</a>\
