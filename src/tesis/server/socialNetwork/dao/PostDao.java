@@ -242,6 +242,7 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		String consulta = "from PostEntity p where p.voluntario = :usuario";
 		Query query = this.getSession().createQuery(consulta);
 		query.setEntity("usuario", voluntario);
+		query.setMaxResults(100);
 		List lista = query.list();
 		
 		return lista;
@@ -368,5 +369,16 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		boolean reposteo = (Long) query.uniqueResult() > 0;
 		//boolean exists = (Long) session.createQuery("select count(*) from PersistentEntity where ...").uniqueResult() > 0
 		return reposteo;
+	}
+	
+	
+	public List<PostEntity> getAdminTimeline(Timestamp ultimaActualizacion){
+		//and p.fechaPost< :ultimaactualizacion
+		String consulta = "from PostEntity p where p.fechaPost< :ultimaactualizacion order by p.fechaPost desc";
+		Query query = getSession().createQuery(consulta);
+		query.setParameter("ultimaactualizacion", ultimaActualizacion);
+		query.setMaxResults(5);
+		List<PostEntity> lista = query.list();
+		return lista;
 	}
 }

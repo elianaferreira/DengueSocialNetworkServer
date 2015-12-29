@@ -22,6 +22,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import org.json.JSONArray;
@@ -766,5 +767,40 @@ public class AdministradorWS {
 			}
 		}
 		return "";
+	}
+	
+	
+	@GET
+	@Path("/timeline")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	
+	public String getTimeline(@QueryParam("admin") String adminName,
+			 @QueryParam("password") String password,
+			 @QueryParam("ultimaActualizacion") String ultimaActualizacionString){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			Timestamp timestamp;
+			try{
+			    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+			    Date parsedDate = dateFormat.parse(ultimaActualizacionString);
+			    timestamp = new java.sql.Timestamp(parsedDate.getTime());
+			    
+			    List<PostEntity> listaRetorno = postDao.getAdminTimeline(timestamp);
+			    JSONArray retorno = new JSONArray();
+			    for(int j=0; j<listaRetorno.size(); j++){
+			    	retorno.put(postDao.getJSONFromPost("", listaRetorno.get(j)));
+			    }
+			    
+			    return Utiles.retornarSalida(false, retorno.toString());
+			    
+			}catch(Exception e){
+				e.printStackTrace();
+				return Utiles.retornarSalida(true, "Ha ocurrido un error.");
+			}
+		}
 	}
 }

@@ -75,7 +75,7 @@ public class Utiles {
 		retorno.put("msj", mensaje);
 		
 		//escribimos en la consola
-		//System.out.println("MENSAJE RETORNO: " + mensaje);
+		System.out.println("MENSAJE RETORNO: " + mensaje);
 		return retorno.toString();
 	}
 	

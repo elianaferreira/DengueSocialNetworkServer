@@ -117,3 +117,14 @@ function borrarVestigiosModal(){
 		}
 	}
 }
+
+
+/**
+	Metodo que retorna el timestamp actual en el formato yyyy-MM-dd hh:mm:ss.SSS
+*/
+function getCurrentTimestampWithFormat(){
+	var d = new Date();
+	var mes = d.getMonth()+1;
+	var dateString = d.getFullYear()+'-'+mes+'-'+d.getDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds()+'.'+d.getTimezoneOffset();
+	return dateString;
+}
