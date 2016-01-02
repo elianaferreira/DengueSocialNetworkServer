@@ -55,9 +55,17 @@ $(document).ready(function(){
 				//post
 				$('#listaRelevantes').append('\
 					<a id="'+reporte.id+'" class="list-group-item">\
-						<span class="badge">'+reporte.fecha+'</span>\
-						<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
-					</a>');
+							<span class="badge">'+reporte.fecha+'</span>\
+							<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
+							<div class="row">\
+                                <div id="div_antes'+reporte.id+'" class="col-lg-4">\
+                                </div>\
+                                <div id="div_despues'+reporte.id+'" class="col-lg-4">\
+                                </div>\
+                            </div>\
+						</a>');
+				loadPhoto(reporte.id, true);
+				loadPhoto(reporte.id, false);
 			}
 		}
 	});
