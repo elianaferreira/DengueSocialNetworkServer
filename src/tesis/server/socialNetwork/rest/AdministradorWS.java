@@ -365,7 +365,7 @@ public class AdministradorWS {
 			retorno.put("antes", retornoAntes);
 			retorno.put("despues", retornoDespues);
 			
-			return Utiles.retornarSalida(false, retorno.toString());
+			return Utiles.retornarImagen(false, retorno.toString());
 		}
 	}
 	

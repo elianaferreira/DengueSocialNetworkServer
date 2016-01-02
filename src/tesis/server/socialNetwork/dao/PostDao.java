@@ -372,12 +372,18 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 	}
 	
 	
+	/**
+	 * Metodo que retorna el timeline para el administrador: solo posts y de todos los voluntarios
+	 * 
+	 * @param ultimaActualizacion
+	 * @return
+	 */
 	public List<PostEntity> getAdminTimeline(Timestamp ultimaActualizacion){
 		//and p.fechaPost< :ultimaactualizacion
 		String consulta = "from PostEntity p where p.fechaPost< :ultimaactualizacion order by p.fechaPost desc";
 		Query query = getSession().createQuery(consulta);
 		query.setParameter("ultimaactualizacion", ultimaActualizacion);
-		query.setMaxResults(5);
+		query.setMaxResults(3);
 		List<PostEntity> lista = query.list();
 		return lista;
 	}

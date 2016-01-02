@@ -569,7 +569,7 @@ public class VoluntarioWS {
 				//enviamos un array vacio
 				return Utiles.retornarSalida(true, "No tiene foto de perfil");
 			} else {
-				return Utiles.retornarSalida(false,Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
+				return Utiles.retornarImagen(false,Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
 			}
 		}
 	}

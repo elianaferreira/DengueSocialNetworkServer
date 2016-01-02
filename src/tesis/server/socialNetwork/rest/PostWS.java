@@ -682,7 +682,7 @@ public class PostWS {
 				if(img == null){
 					return Utiles.retornarSalida(true, "Sin foto o error al retornar la foto.");
 				} else {
-					return Utiles.retornarSalida(false, Base64.encodeToString(imageInByte, Base64.DEFAULT));
+					return Utiles.retornarImagen(false, Base64.encodeToString(imageInByte, Base64.DEFAULT));
 				}
 			}
 		}
@@ -703,7 +703,7 @@ public class PostWS {
 			VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameProfile);
 			if(voluntario.getFotoDePerfil() != null){
 				System.out.println("FOTO DE PERFIL DE " + usernameProfile);
-				return Utiles.retornarSalida(false, Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
+				return Utiles.retornarImagen(false, Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
 			}
 		} else if(idPost != null){
 			String antesDespues = "antes_image.png";
@@ -728,7 +728,7 @@ public class PostWS {
 			
 			if(img != null) {
 				System.out.println("FOTO " + String.valueOf(idPost) + antesDespues);
-				return Utiles.retornarSalida(false, Base64.encodeToString(imageInByte, Base64.DEFAULT));
+				return Utiles.retornarImagen(false, Base64.encodeToString(imageInByte, Base64.DEFAULT));
 			}
 		}
 		

@@ -21,11 +21,19 @@ $(document).ready(function(){
 				globalArrayReportes.push(reporte);
 				//post
 				$('#listaReportes').append('\
-					<a id="'+reporte.id+'" class="list-group-item">\
-						<span class="badge">'+reporte.fecha+'</span>\
-						<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
-					</a>');
-
+						<a id="'+reporte.id+'" class="list-group-item">\
+							<span class="badge">'+reporte.fecha+'</span>\
+							<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
+							<div class="row">\
+                                <div id="div_antes'+reporte.id+'" class="col-lg-4">\
+                                </div>\
+                                <div id="div_despues'+reporte.id+'" class="col-lg-4">\
+                                </div>\
+                            </div>\
+						</a>');
+				loadPhoto(reporte.id, true);
+				loadPhoto(reporte.id, false);
+				//document.getElementById("1251_antes").setAttribute( 'src', 'data:image/png;base64,'+dataIMGSRC);
 			}
 			$('#btnCargarMasReportes').show();
 		}
@@ -50,7 +58,6 @@ $(document).ready(function(){
 						<span class="badge">'+reporte.fecha+'</span>\
 						<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
 					</a>');
-
 			}
 		}
 	});
@@ -81,12 +88,53 @@ $(document).ready(function(){
 						<a id="'+reporte.id+'" class="list-group-item">\
 							<span class="badge">'+reporte.fecha+'</span>\
 							<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
+							<div class="row">\
+                                <div id="div_antes'+reporte.id+'" class="col-lg-4">\
+                                </div>\
+                                <div id="div_despues'+reporte.id+'" class="col-lg-4">\
+                                </div>\
+                            </div>\
 						</a>');
-
+					loadPhoto(reporte.id, true);
+					loadPhoto(reporte.id, false);
 				}
-				$('#btnCargarMasReportes').show();
+				
+				//$('#btnCargarMasReportes').show();
 			}
 		});
 	});
-	
 });
+
+
+function loadPhoto(idPostInt, antesBoolean){
+	var photoParams = {
+		idPost: idPostInt,
+		antes: antesBoolean
+	}
+
+	ajaxRequest("/statuses/photo", "GET", photoParams, function(responsePhoto){
+		var responseJSON = JSON.parse(responsePhoto);
+		if(responseJSON.error == false){
+			var stringFlagAntes = "";
+			if(antesBoolean){
+				stringFlagAntes = "_antes";
+			} else {
+				stringFlagAntes = "_despues";
+			}
+			/*
+<div class="row">
+                                		<div class="col-lg-2">
+                                			<img id="1251_antes"></a>
+                                		</div>
+                                		<div class="col-lg-2">
+                                			<img id="1251_antes"></a>
+                                		</div>
+                                	</div>
+			*/
+			$('#div'+stringFlagAntes+idPostInt).append('<img id="'+idPostInt+stringFlagAntes+'" style="border-radius: 0.5rem;">');
+
+			document.getElementById(idPostInt+stringFlagAntes).setAttribute( 'src', 'data:image/png;base64,'+responseJSON.msj);
+	    	//document.getElementById(idPostInt+'_antes').setAttribute( 'src', 'data:image/png;base64,'+rpp.msj);
+		}
+	});
+}

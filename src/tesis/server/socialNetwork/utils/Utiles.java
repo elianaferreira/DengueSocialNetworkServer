@@ -79,6 +79,22 @@ public class Utiles {
 		return retorno.toString();
 	}
 	
+	/**
+	 * Metodo que retorna un JSON con la imagen en String
+	 * no se muestra la salida
+	 * 
+	 * @param errorStatus
+	 * @param imagenString
+	 * @return
+	 */
+	public static String retornarImagen(boolean errorStatus, String imagenString){
+		JSONObject retorno = new JSONObject();
+		retorno.put("error", errorStatus);
+		retorno.put("msj", imagenString);
+		
+		return retorno.toString();
+	}
+	
 	
 	/**
 	 * Metodo que verifica que un voluntario haya iniciado sesion
