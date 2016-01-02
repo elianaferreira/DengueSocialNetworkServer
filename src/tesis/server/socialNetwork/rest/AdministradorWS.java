@@ -202,7 +202,8 @@ public class AdministradorWS {
 	@ResponseBody
 	public String getReportsOfVoluntiers(@QueryParam("admin") String adminName,
 			 @QueryParam("password") String password,
-			 @QueryParam("username") String username){
+			 @QueryParam("username") String username,
+			 @QueryParam("ultimaActualizacion") String ultimaActualizacionString){
 		
 		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
 		if(admin == null){
@@ -219,12 +220,17 @@ public class AdministradorWS {
 					arrayRetorno.add(postJSON);
 				}
 				try{
-					Date date = new Date();
+					/*Date date = new Date();
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
 					String formattedDate = sdf.format(date);
 					Timestamp timestamp;
 				    Date parsedDate = sdf.parse(formattedDate);
-				    timestamp = new java.sql.Timestamp(parsedDate.getTime());
+				    timestamp = new java.sql.Timestamp(parsedDate.getTime());*/
+					
+					Timestamp timestamp;
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+					Date parsedDate = dateFormat.parse(ultimaActualizacionString);
+					timestamp = new java.sql.Timestamp(parsedDate.getTime());
 					List<RepostEntity> reposts = repostDao.getOwnReposts(username, timestamp, false);
 					for(int j=0; j<reposts.size(); j++){
 						JSONObject repostJSON = repostDao.getJSONFromRepost(reposts.get(j), username);

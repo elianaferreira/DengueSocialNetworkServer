@@ -129,20 +129,9 @@ function loadPhoto(idPostInt, antesBoolean){
 			} else {
 				stringFlagAntes = "_despues";
 			}
-			/*
-<div class="row">
-                                		<div class="col-lg-2">
-                                			<img id="1251_antes"></a>
-                                		</div>
-                                		<div class="col-lg-2">
-                                			<img id="1251_antes"></a>
-                                		</div>
-                                	</div>
-			*/
 			$('#div'+stringFlagAntes+idPostInt).append('<img id="'+idPostInt+stringFlagAntes+'" style="border-radius: 0.5rem;">');
 
 			document.getElementById(idPostInt+stringFlagAntes).setAttribute( 'src', 'data:image/png;base64,'+responseJSON.msj);
-	    	//document.getElementById(idPostInt+'_antes').setAttribute( 'src', 'data:image/png;base64,'+rpp.msj);
 		}
 	});
 }
