@@ -49,6 +49,59 @@ $(document).ready(function(){
 		}
 	});
 
+	//subtotalesNoSolucionadosPie
+
+	ajaxRequest("/admin/quienDebeSolucionar", "GET", params, function(responseSubtotales){
+		responseSubtotales = JSON.parse(responseSubtotales);
+		if(responseSubtotales.error == true){
+			//TODO mostrar un mensaje de error solo en el div correspondiente al chart
+		} else {
+			var datosJSON = JSON.parse(responseSubtotales.msj);
+			var dataArray = [];
+			for(key in datosJSON){
+				var jsonTemp = {};
+				jsonTemp["label"] = key;
+				jsonTemp["data"] = datosJSON[key];
+				dataArray.push(jsonTemp);
+			}
+
+
+			/*var data = [{
+		        label: "Solucionados",
+		        data: datosJSON.solucionados,
+		        color: "#66BB6A"
+		    }, {
+		        label: "No Solucionados",
+		        data: datosJSON.noSolucionados,
+		        color: "#FF5252"
+		    }];*/
+
+		    //mostrar el porcentaje: content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
+		    //mostrar el valor: http://stackoverflow.com/a/24413739/4173916
+		    var plotObj = $.plot($("#subtotalesNoSolucionadosPie"), dataArray, {
+		        series: {
+		            pie: {
+		                show: true
+		            }
+		        },
+		        grid: {
+		            hoverable: true
+		        },
+		        tooltip: true,
+		        tooltipOpts: {
+		            content: function(label,x,y){
+                        return y+" "+label;
+                    },
+		            shifts: {
+		                x: 20,
+		                y: 0
+		            },
+		            defaultTheme: false
+		        }
+		    });
+		}
+	});
+
 
 	ajaxRequest("/admin/usuariosPorMes", "GET", params, function(responseUsers){
 		responseUsers = JSON.parse(responseUsers);

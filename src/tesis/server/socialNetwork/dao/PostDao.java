@@ -387,4 +387,18 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		List<PostEntity> lista = query.list();
 		return lista;
 	}
+	
+	
+	/**
+	 * Metodo que retona los posts que no pueden ser solucionados por los voluntarios
+	 * 
+	 * @return
+	 */
+	public List<PostEntity> listaQuienDebeSolucionar(){
+		String consulta = "from PostEntity p where p.quienDebeSolucionar != ''";
+		Query query = getSession().createQuery(consulta);
+		List<PostEntity> lista = query.list();
+		
+		return lista;
+	}
 }

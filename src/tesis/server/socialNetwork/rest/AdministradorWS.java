@@ -774,7 +774,6 @@ public class AdministradorWS {
 	@Path("/timeline")
 	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
-	
 	public String getTimeline(@QueryParam("admin") String adminName,
 			 @QueryParam("password") String password,
 			 @QueryParam("ultimaActualizacion") String ultimaActualizacionString){
@@ -801,6 +800,45 @@ public class AdministradorWS {
 				e.printStackTrace();
 				return Utiles.retornarSalida(true, "Ha ocurrido un error.");
 			}
+		}
+	}
+	
+	
+	/**
+	 * Metodo que retorna las cantidades de reportes que los voluntarios creen que su resolucion no esta en sus manos
+	 * 
+	 * @param adminName
+	 * @param password
+	 * @return
+	 */
+	@GET
+	@Path("/quienDebeSolucionar")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String getEstadisticasNoSolucionados(@QueryParam("admin") String adminName,
+			 @QueryParam("password") String password){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			try{
+				List<PostEntity> listaNoSolucionados = postDao.listaQuienDebeSolucionar();
+				JSONObject retorno = new JSONObject();
+				for(int i=0; i<listaNoSolucionados.size(); i++){
+					PostEntity p = listaNoSolucionados.get(i);
+					if(retorno.has(p.getQuienDebeSolucionar())){
+						Integer actualVal = retorno.getInt(p.getQuienDebeSolucionar());
+						retorno.put(p.getQuienDebeSolucionar(), actualVal+1);
+					} else {
+						retorno.put(p.getQuienDebeSolucionar(), 1);
+					}
+				}
+				return Utiles.retornarSalida(false, retorno.toString());
+			} catch(Exception e){
+				e.printStackTrace();
+				return Utiles.retornarSalida(true, "Ha ocurrido un error.");
+			}	
 		}
 	}
 }
