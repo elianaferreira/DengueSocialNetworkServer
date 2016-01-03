@@ -2,114 +2,120 @@
 var globalArrayReportes = [];
 
 $(document).ready(function(){
-
-	$('#dashboard').addClass("active");
-	$('#btnCargarMasReportes').hide();
-	
-	var params = {
-		admin: getAdminUser(),
-		password: getAdminPass(),
-		ultimaActualizacion: getCurrentTimestampWithFormat()
-	}
-	ajaxRequest("/admin/timeline", "GET", params, function(responseTimeline){
-		var responseJSON = JSON.parse(responseTimeline);
-		if(responseJSON.error == false){
-			var reportesArray = JSON.parse(responseJSON.msj);
-
-			for(var i = 0; i<reportesArray.length; i++){
-				var reporte = reportesArray[i];
-				globalArrayReportes.push(reporte);
-				//post
-				$('#listaReportes').append('\
-						<a id="'+reporte.id+'" class="list-group-item">\
-							<span class="badge">'+reporte.fecha+'</span>\
-							<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
-							<div class="row">\
-                                <div id="div_antes'+reporte.id+'" class="col-lg-4">\
-                                </div>\
-                                <div id="div_despues'+reporte.id+'" class="col-lg-4">\
-                                </div>\
-                            </div>\
-						</a>');
-				loadPhoto(reporte.id, true);
-				loadPhoto(reporte.id, false);
-				//document.getElementById("1251_antes").setAttribute( 'src', 'data:image/png;base64,'+dataIMGSRC);
+	ajaxRequest("/admin/validateAccessToken", "POST", getAccessToken, function(responseValidateAccessToken){
+		responseValidateAccessToken = JSON.parse(responseValidateAccessToken);
+		if(responseValidateAccessToken.error == true){
+			window.open("login.html", "_self");
+		} else {
+			$('#dashboard').addClass("active");
+			$('#btnCargarMasReportes').hide();
+			
+			var params = {
+				admin: getAdminUser(),
+				password: getAdminPass(),
+				ultimaActualizacion: getCurrentTimestampWithFormat()
 			}
-			$('#btnCargarMasReportes').show();
-		}
-	});
+			ajaxRequest("/admin/timeline", "GET", params, function(responseTimeline){
+				var responseJSON = JSON.parse(responseTimeline);
+				if(responseJSON.error == false){
+					var reportesArray = JSON.parse(responseJSON.msj);
 
-
-	var params = {
-		admin: getAdminUser(),
-		password: getAdminPass()
-	}
-
-	ajaxRequest("/admin/reportesRelevantes", "GET", params, function(responseRelevantes){
-		var responseJSON = JSON.parse(responseRelevantes);
-		if(responseJSON.error == false){
-			var reportesArray = JSON.parse(responseJSON.msj);
-
-			for(var i = 0; i<reportesArray.length; i++){
-				var reporte = reportesArray[i];
-				//post
-				$('#listaRelevantes').append('\
-					<a id="'+reporte.id+'" class="list-group-item">\
-							<span class="badge">'+reporte.fecha+'</span>\
-							<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
-							<div class="row">\
-                                <div id="div_antes'+reporte.id+'" class="col-lg-4">\
-                                </div>\
-                                <div id="div_despues'+reporte.id+'" class="col-lg-4">\
-                                </div>\
-                            </div>\
-						</a>');
-				loadPhoto(reporte.id, true);
-				loadPhoto(reporte.id, false);
-			}
-		}
-	});
-
-
-	$('#btnCargarMasReportes').click(function (event){
-		event.preventDefault();
-
-		//obtenemos el ultimo reporte de la lista
-		var ultimoReporte = {};
-		ultimoReporte = globalArrayReportes[globalArrayReportes.length-1];
-
-		var params = {
-			admin: getAdminUser(),
-			password: getAdminPass(),
-			ultimaActualizacion: ultimoReporte.fecha
-		}
-		ajaxRequest("/admin/timeline", "GET", params, function(responseTimeline){
-			var responseJSON = JSON.parse(responseTimeline);
-			if(responseJSON.error == false){
-				var reportesArray = JSON.parse(responseJSON.msj);
-
-				for(var i = 0; i<reportesArray.length; i++){
-					var reporte = reportesArray[i];
-					globalArrayReportes.push(reporte);
-					//post
-					$('#listaReportes').append('\
-						<a id="'+reporte.id+'" class="list-group-item">\
-							<span class="badge">'+reporte.fecha+'</span>\
-							<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
-							<div class="row">\
-                                <div id="div_antes'+reporte.id+'" class="col-lg-4">\
-                                </div>\
-                                <div id="div_despues'+reporte.id+'" class="col-lg-4">\
-                                </div>\
-                            </div>\
-						</a>');
-					loadPhoto(reporte.id, true);
-					loadPhoto(reporte.id, false);
+					for(var i = 0; i<reportesArray.length; i++){
+						var reporte = reportesArray[i];
+						globalArrayReportes.push(reporte);
+						//post
+						$('#listaReportes').append('\
+								<a id="'+reporte.id+'" class="list-group-item">\
+									<span class="badge">'+reporte.fecha+'</span>\
+									<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
+									<div class="row">\
+		                                <div id="div_antes'+reporte.id+'" class="col-lg-4">\
+		                                </div>\
+		                                <div id="div_despues'+reporte.id+'" class="col-lg-4">\
+		                                </div>\
+		                            </div>\
+								</a>');
+						loadPhoto(reporte.id, true);
+						loadPhoto(reporte.id, false);
+						//document.getElementById("1251_antes").setAttribute( 'src', 'data:image/png;base64,'+dataIMGSRC);
+					}
+					$('#btnCargarMasReportes').show();
 				}
-				
-				//$('#btnCargarMasReportes').show();
+			});
+
+
+			var params = {
+				admin: getAdminUser(),
+				password: getAdminPass()
 			}
-		});
+
+			ajaxRequest("/admin/reportesRelevantes", "GET", params, function(responseRelevantes){
+				var responseJSON = JSON.parse(responseRelevantes);
+				if(responseJSON.error == false){
+					var reportesArray = JSON.parse(responseJSON.msj);
+
+					for(var i = 0; i<reportesArray.length; i++){
+						var reporte = reportesArray[i];
+						//post
+						$('#listaRelevantes').append('\
+							<a id="'+reporte.id+'" class="list-group-item">\
+									<span class="badge">'+reporte.fecha+'</span>\
+									<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
+									<div class="row">\
+		                                <div id="div_antes'+reporte.id+'" class="col-lg-4">\
+		                                </div>\
+		                                <div id="div_despues'+reporte.id+'" class="col-lg-4">\
+		                                </div>\
+		                            </div>\
+								</a>');
+						loadPhoto(reporte.id, true);
+						loadPhoto(reporte.id, false);
+					}
+				}
+			});
+
+
+			$('#btnCargarMasReportes').click(function (event){
+				event.preventDefault();
+
+				//obtenemos el ultimo reporte de la lista
+				var ultimoReporte = {};
+				ultimoReporte = globalArrayReportes[globalArrayReportes.length-1];
+
+				var params = {
+					admin: getAdminUser(),
+					password: getAdminPass(),
+					ultimaActualizacion: ultimoReporte.fecha
+				}
+				ajaxRequest("/admin/timeline", "GET", params, function(responseTimeline){
+					var responseJSON = JSON.parse(responseTimeline);
+					if(responseJSON.error == false){
+						var reportesArray = JSON.parse(responseJSON.msj);
+
+						for(var i = 0; i<reportesArray.length; i++){
+							var reporte = reportesArray[i];
+							globalArrayReportes.push(reporte);
+							//post
+							$('#listaReportes').append('\
+								<a id="'+reporte.id+'" class="list-group-item">\
+									<span class="badge">'+reporte.fecha+'</span>\
+									<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
+									<div class="row">\
+		                                <div id="div_antes'+reporte.id+'" class="col-lg-4">\
+		                                </div>\
+		                                <div id="div_despues'+reporte.id+'" class="col-lg-4">\
+		                                </div>\
+		                            </div>\
+								</a>');
+							loadPhoto(reporte.id, true);
+							loadPhoto(reporte.id, false);
+						}
+						
+						//$('#btnCargarMasReportes').show();
+					}
+				});
+			});
+		}
 	});
 });
 

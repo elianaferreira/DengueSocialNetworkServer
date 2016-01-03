@@ -1,4 +1,5 @@
 //agregar el header, y el menu
+
 $(document).ready(function(){
 	$('#wrapper').prepend('\
 		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">\

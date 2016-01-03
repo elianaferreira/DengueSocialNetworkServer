@@ -5,6 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -238,6 +241,30 @@ public class Utiles {
 	private static double rad2deg(double rad) {
 		return (rad * 180 / Math.PI);
 	}
+	
+	
+	/**
+	 * Metodo que retorna el md5 de una cadena de texto
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public static String getMD5(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(input.getBytes());
+            BigInteger number = new BigInteger(1, messageDigest);
+            String hashtext = number.toString(16);
+            // Now we need to zero pad it if you actually want the full 32 chars.
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
 	
 	
 	

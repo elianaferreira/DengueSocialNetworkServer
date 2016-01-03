@@ -96,6 +96,13 @@ function mostrarConfirmacionDosOpciones(titulo, mensaje, primerBoton, segundoBot
 }
 
 
+function getAccessToken(){
+	if(localStorage.getItem("accessToken") == undefined){
+		return "";
+	} else {
+		return localStorage.getItem("accessToken");
+	}
+}
 
 function getAdminUser(){
 	return localStorage.getItem("adminUser");

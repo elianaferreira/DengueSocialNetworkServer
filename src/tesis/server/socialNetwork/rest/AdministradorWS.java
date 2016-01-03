@@ -25,6 +25,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import org.jboss.logging.FormatWith;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
@@ -32,12 +33,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
 
+import tesis.server.socialNetwork.dao.AdminAccessTokenDao;
 import tesis.server.socialNetwork.dao.AdministradorDao;
 import tesis.server.socialNetwork.dao.CampanhaDao;
 import tesis.server.socialNetwork.dao.ContactoDao;
 import tesis.server.socialNetwork.dao.PostDao;
 import tesis.server.socialNetwork.dao.RepostDao;
 import tesis.server.socialNetwork.dao.VoluntarioDao;
+import tesis.server.socialNetwork.entity.AdminAccessTokenEntity;
 import tesis.server.socialNetwork.entity.AdminEntity;
 import tesis.server.socialNetwork.entity.CampanhaEntity;
 import tesis.server.socialNetwork.entity.ContactoEntity;
@@ -55,6 +58,9 @@ public class AdministradorWS {
 	
 	@Inject
 	private AdministradorDao administradorDao;
+	
+	@Inject
+	private AdminAccessTokenDao adminAccessTokenDao;
 	
 	@Inject
 	private VoluntarioDao voluntarioDao;
@@ -83,14 +89,20 @@ public class AdministradorWS {
 		//verificamos si el administrador existe
 		AdminEntity administrador = administradorDao.verificarAdministrador(adminName, password);
 		if(administrador == null){
-			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos");
+			return Utiles.retornarSalida(true, "El nombre o la contrase&ntilde;a son inv&aacute;lidos");
 		} else {
 			//iniciamos sesion para el administrador
 			if(administradorDao.iniciarSesionAdmin(administrador)){
+				//guardamos el accessToken
+				String accessToken = adminAccessTokenDao.guardar(adminName);
+				if(accessToken == null){
+					return Utiles.retornarSalida(true, "Error al iniciar sesi&oacute;n.");
+				}
 				JSONObject admin = administradorDao.getJsonFromAdmin(administrador);
+				admin.put("accessToken", accessToken);
 				return Utiles.retornarSalida(false, admin.toString());
 			} else {
-				return Utiles.retornarSalida(true, "Error al iniciar sesion");
+				return Utiles.retornarSalida(true, "Error al iniciar sesi&oacute;n.");
 			}
 		}
 	}
@@ -845,6 +857,25 @@ public class AdministradorWS {
 				e.printStackTrace();
 				return Utiles.retornarSalida(true, "Ha ocurrido un error.");
 			}	
+		}
+	}
+	
+	
+	@POST
+	@Path("/validateAccessToken")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String validateAuthentication(@FormParam("accessToken") String accessToken){
+		
+		if(accessToken == null){
+			return Utiles.retornarSalida(true, "No autenticado.");
+		} else {
+			AdminAccessTokenEntity entity = adminAccessTokenDao.findByClassAndID(AdminAccessTokenEntity.class, accessToken);
+			if(entity == null){
+				return Utiles.retornarSalida(true, "No autenticado.");
+			} else {
+				return Utiles.retornarSalida(false, "Autenticado.");
+			}
 		}
 	}
 }

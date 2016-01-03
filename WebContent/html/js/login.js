@@ -22,6 +22,7 @@ $(document).ready(function(){
 					mostrarAlerta('Error', jsonResponse.msj);
 				} else {
 					var adminJson = JSON.parse(jsonResponse.msj);
+					localStorage.setItem("accessToken", adminJson["accessToken"]);
 					localStorage.setItem("adminUser", adminJson["adminname"]);
 					localStorage.setItem("admiPass", adminJson["password"]);
 					localStorage.setItem("adminNombre", adminJson["nombre"]);
