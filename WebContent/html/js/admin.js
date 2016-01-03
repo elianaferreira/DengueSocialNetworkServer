@@ -2,11 +2,16 @@
 var globalArrayReportes = [];
 
 $(document).ready(function(){
-	ajaxRequest("/admin/validateAccessToken", "POST", getAccessToken, function(responseValidateAccessToken){
+	$('#wrapper').hide();
+	var paramValidate = {
+		accessToken: getAccessToken()
+	}
+	ajaxRequest("/admin/validateAccessToken", "POST", paramValidate, function(responseValidateAccessToken){
 		responseValidateAccessToken = JSON.parse(responseValidateAccessToken);
 		if(responseValidateAccessToken.error == true){
 			window.open("login.html", "_self");
 		} else {
+			$('#wrapper').show();
 			$('#dashboard').addClass("active");
 			$('#btnCargarMasReportes').hide();
 			
