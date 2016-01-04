@@ -878,4 +878,30 @@ public class AdministradorWS {
 			}
 		}
 	}
+	
+	@GET
+	@Path("/activeCampaigns")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String getCampanhasActivas(@QueryParam("admin") String adminName, @QueryParam("password") String password){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+			
+		} else {
+			try{
+				//buscamos todas las campanhas
+				List<CampanhaEntity> lista = campanhaDao.getAll();
+				JSONArray retorno = new JSONArray();
+				for(int i=0; i<lista.size(); i++){
+					retorno.put(campanhaDao.getJSONFromCampanha(lista.get(i), ""));
+				}
+				return Utiles.retornarSalida(false, retorno.toString());
+			} catch(Exception e){
+				e.printStackTrace();
+				return Utiles.retornarSalida(true, "Ha ocurrido un error al obtener las campañas lanzadas.");
+			}
+		}
+	}
 }

@@ -81,11 +81,12 @@ $(document).ready(function(){
 
 	$('.opcion').click(function (event) {
 		event.preventDefault();
-		for(key in localStorage){
-			if(key != "admiPass" && key != "adminApellido" && key != "adminName" && key != "adminNombre" && key != "adminUser"){
+		/*for(key in localStorage){
+			if(key != "admiPass" && key != "adminApellido" && key != "adminName" && key != "adminNombre" && key != "adminUser" && key != "accessToken"){
 				localStorage.removeItem(key);
 			}
-		}
+		}*/
+		removeDataFromLocalStorage();
 		//abrimos la vista correspondiente
 		var url = $(this).data("url");
 		window.open(url, "_self");
@@ -95,7 +96,7 @@ $(document).ready(function(){
 
 function removeDataFromLocalStorage(){
 	for(key in localStorage){
-		if(key != "admiPass" && key != "adminApellido" && key != "adminName" && key != "adminNombre" && key != "adminUser"){
+		if(key != "admiPass" && key != "adminApellido" && key != "adminName" && key != "adminNombre" && key != "adminUser"  && key != "accessToken"){
 			localStorage.removeItem(key);
 		}
 	}

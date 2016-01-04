@@ -734,7 +734,7 @@ public class VoluntarioWS {
 				return Utiles.retornarSalida(false, retorno.toString());
 			} catch(Exception e){
 				e.printStackTrace();
-				return Utiles.retornarSalida(true, "Ha ocurrido un error al obtener las campanhas lanzadas.");
+				return Utiles.retornarSalida(true, "Ha ocurrido un error al obtener las campañas lanzadas.");
 			}
 		}
 	}

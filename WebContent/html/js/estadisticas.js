@@ -75,17 +75,6 @@ $(document).ready(function(){
 						dataArray.push(jsonTemp);
 					}
 
-
-					/*var data = [{
-				        label: "Solucionados",
-				        data: datosJSON.solucionados,
-				        color: "#66BB6A"
-				    }, {
-				        label: "No Solucionados",
-				        data: datosJSON.noSolucionados,
-				        color: "#FF5252"
-				    }];*/
-
 				    //mostrar el porcentaje: content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
 				    //mostrar el valor: http://stackoverflow.com/a/24413739/4173916
 				    var plotObj = $.plot($("#subtotalesNoSolucionadosPie"), dataArray, {
@@ -145,6 +134,60 @@ $(document).ready(function(){
 					});
 				}
 			});
+
+			ajaxRequest("/admin/activeCampaigns", "GET", params, function(responseCampaings){
+				responseCampaings = JSON.parse(responseCampaings);
+				if(responseCampaings.error == true){
+					//no hacer nada
+				} else {
+					var arrayData = JSON.parse(responseCampaings.msj);
+
+					new Morris.Bar({
+				        element: 'morris-bar-chart',
+				        data: arrayData,
+				        xkey: 'nombre',
+				        ykeys: ['cantAdheridos'],
+				        labels: ['Adheridos'],
+				        barRatio: 0.4,
+				        xLabelAngle: 35,
+				        hideHover: 'auto',
+				        resize: true
+	    			});
+				}
+			});
+
+			/*
+				// Bar Chart
+			    Morris.Bar({
+			        element: 'morris-bar-chart',
+			        data: [{
+			            device: 'iPhone',
+			            geekbench: 136
+			        }, {
+			            device: 'iPhone 3G',
+			            geekbench: 137
+			        }, {
+			            device: 'iPhone 3GS',
+			            geekbench: 275
+			        }, {
+			            device: 'iPhone 4',
+			            geekbench: 380
+			        }, {
+			            device: 'iPhone 4S',
+			            geekbench: 655
+			        }, {
+			            device: 'iPhone 5',
+			            geekbench: 1571
+			        }],
+			        xkey: 'device',
+			        ykeys: ['geekbench'],
+			        labels: ['Geekbench'],
+			        barRatio: 0.4,
+			        xLabelAngle: 35,
+			        hideHover: 'auto',
+			        resize: true
+    			});
+			*/
 		}
 	});
 });
