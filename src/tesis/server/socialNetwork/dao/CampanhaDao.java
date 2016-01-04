@@ -60,6 +60,7 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 		jsonRetorno.put("fechaInicio", c.getFechaLanzamiento());
 		jsonRetorno.put("fechaFin", c.getFechaFinalizacion());
 		jsonRetorno.put("cantAdheridos", c.getVoluntariosAdheridos().size());
+		jsonRetorno.put("cantInvitados", c.getVoluntariosInvitados().size());
 		
 		//verificamos si es un usuario el que lo solicita
 		if(username != ""){

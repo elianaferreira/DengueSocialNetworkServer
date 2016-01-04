@@ -143,11 +143,11 @@ $(document).ready(function(){
 					var arrayData = JSON.parse(responseCampaings.msj);
 
 					new Morris.Bar({
-				        element: 'morris-bar-chart',
+				        element: 'bar-chart-campaigns',
 				        data: arrayData,
 				        xkey: 'nombre',
-				        ykeys: ['cantAdheridos'],
-				        labels: ['Adheridos'],
+				        ykeys: ['cantInvitados', 'cantAdheridos'],
+				        labels: ['Invitados', 'Adheridos'],
 				        barRatio: 0.4,
 				        xLabelAngle: 35,
 				        hideHover: 'auto',
