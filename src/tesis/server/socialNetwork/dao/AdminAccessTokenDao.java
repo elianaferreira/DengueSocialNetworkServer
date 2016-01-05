@@ -1,6 +1,6 @@
 package tesis.server.socialNetwork.dao;
 
-import java.security.MessageDigest;
+
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -17,6 +17,11 @@ public class AdminAccessTokenDao extends GenericDao<AdminAccessTokenEntity, Stri
 	}
 
 	//solo puede haber una accessToken activo a la vez, por ello para guardar uno se debe eliminar el anterior
+	/**
+	 * Metodo que crea y guarda un accessToken para el administrador
+	 * @param adminUsername
+	 * @return
+	 */
 	public String guardar(String adminUsername){
 		//obtenemos el timeStamp actual
 		Date date = new Date();
@@ -33,6 +38,7 @@ public class AdminAccessTokenDao extends GenericDao<AdminAccessTokenEntity, Stri
 			return null;
 		}
 	}
+	
 	
 	private void deleteExistingAccessToken(){
 		String consulta = "delete from AdminAccessTokenEntity a";

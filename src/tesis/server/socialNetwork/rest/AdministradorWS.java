@@ -85,25 +85,12 @@ public class AdministradorWS {
 	@ResponseBody
 	public String adminAuth(@FormParam("name") String adminName,
 							@FormParam("password") String password){
-		
-		//verificamos si el administrador existe
-		AdminEntity administrador = administradorDao.verificarAdministrador(adminName, password);
-		if(administrador == null){
-			return Utiles.retornarSalida(true, "El nombre o la contrase&ntilde;a son inv&aacute;lidos");
+				
+		JSONObject retorno = administradorDao.iniciarSesionAdmin(adminName, password);
+		if(retorno.has("error")){
+			return Utiles.retornarSalida(true, retorno.getString("error"));
 		} else {
-			//iniciamos sesion para el administrador
-			if(administradorDao.iniciarSesionAdmin(administrador)){
-				//guardamos el accessToken
-				String accessToken = adminAccessTokenDao.guardar(adminName);
-				if(accessToken == null){
-					return Utiles.retornarSalida(true, "Error al iniciar sesi&oacute;n.");
-				}
-				JSONObject admin = administradorDao.getJsonFromAdmin(administrador);
-				admin.put("accessToken", accessToken);
-				return Utiles.retornarSalida(false, admin.toString());
-			} else {
-				return Utiles.retornarSalida(true, "Error al iniciar sesi&oacute;n.");
-			}
+			return Utiles.retornarSalida(false, retorno.toString());
 		}
 	}
 	
