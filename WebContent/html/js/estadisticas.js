@@ -14,7 +14,7 @@ $(document).ready(function(){
 
 			var params = {
 				admin: getAdminUser(),
-				password: getAdminPass(),
+				accessToken: getAccessToken(),
 			}
 
 			ajaxRequest("/admin/subtotalesReportes", "GET", params, function(responseSubtotales){

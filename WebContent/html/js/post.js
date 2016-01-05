@@ -14,7 +14,7 @@ $(document).ready(function(){
 
         	var params = {
         		admin: getAdminUser(),
-        		password: getAdminPass(),
+        		accessToken: getAccessToken(),
         		idPost: parseInt(localStorage.getItem("idPost"))
         	};
 

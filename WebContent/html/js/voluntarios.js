@@ -79,7 +79,7 @@ $(document).ready(function(){
 				//console.log(JSON.stringify(listaVoluntarios));
 				var params = {
 					admin: getAdminUser(),
-					password: getAdminPass(),
+					accessToken: getAccessToken(),
 					voluntarios: JSON.stringify(listaVoluntarios)
 				}
 

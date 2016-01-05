@@ -64,7 +64,7 @@ $(document).ready(function(){
 
 				var params = {
 					admin: getAdminUser(),
-					password: getAdminPass()
+					accessToken: getAccessToken()
 				};
 
 				ajaxRequest("/admin/allPosts", "GET", params, function(response){

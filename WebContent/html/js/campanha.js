@@ -68,7 +68,7 @@ $(document).ready(function(){
 					//hacemos la llamada al servicio
 					var paramsSearch = {
 						admin: getAdminUser(),
-						password: getAdminPass(),
+						accessToken: getAccessToken(),
 						criterio: $('#inputBuscar').val()
 					};
 					ajaxRequest("/admin/search", "GET", paramsSearch, function(responseSearch){
@@ -87,7 +87,7 @@ $(document).ready(function(){
 				event.preventDefault();
 				var params = {
 					admin: getAdminUser(),
-					password: getAdminPass()
+					accessToken: getAccessToken()
 				};
 				ajaxRequest("/admin/usersByRanking", "GET", params, function(responseReputacion){
 					var respuestaJson = JSON.parse(responseReputacion);
@@ -104,7 +104,7 @@ $(document).ready(function(){
 				event.preventDefault();
 				var params = {
 					admin: getAdminUser(),
-					password: getAdminPass()
+					accessToken: getAccessToken()
 				};
 				ajaxRequest("/admin/usersByCatA", "GET", params, function(responseA){
 					var respuestaJson = JSON.parse(responseA);
@@ -120,7 +120,7 @@ $(document).ready(function(){
 				event.preventDefault();
 				var params = {
 					admin: getAdminUser(),
-					password: getAdminPass()
+					accessToken: getAccessToken()
 				};
 				ajaxRequest("/admin/usersByCatB", "GET", params, function(responseB){
 					var respuestaJson = JSON.parse(responseB);
@@ -136,7 +136,7 @@ $(document).ready(function(){
 				event.preventDefault();
 				var params = {
 					admin: getAdminUser(),
-					password: getAdminPass()
+					accessToken: getAccessToken()
 				};
 				ajaxRequest("/admin/allContacts", "GET", params, function(responseB){
 					var respuestaJson = JSON.parse(responseB);
@@ -259,7 +259,7 @@ $(document).ready(function(){
 											borrarVestigiosModal();*/
 											var params = {
 												adminName: getAdminUser(),
-												password: getAdminPass(),
+												accessToken: getAccessToken(),
 												nombre: nombreCampanha,
 												mensaje: mensajeCampanha,
 												fechaLanzamiento: fechaInicio,

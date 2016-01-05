@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 
+import tesis.server.socialNetwork.entity.AdminAccessTokenEntity;
 import tesis.server.socialNetwork.entity.AdminEntity;
 
 @Controller
@@ -26,11 +27,11 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 	
 
 	
-	public AdminEntity verificarAdministrador(String adminName, String password){
+	public AdminEntity verificarAdministrador(String adminName, String accessToken){
 		//String consulta = "from AdminEntity ad where ad.adminName = :adminName and ad.password = :password";
 		
 		
-		//creamos el JSON de restricciones que sera en base al username
+		/*/creamos el JSON de restricciones que sera en base al username
 		JSONObject restriccion = new JSONObject();
 		restriccion.put("adminName", adminName);
 		List<AdminEntity> lista = this.getListOfEntitiesWithRestrictionsLike(AdminEntity.class, restriccion);
@@ -43,6 +44,27 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 				return admin;
 			} else {
 				return null;
+			}
+		}*/
+		
+		JSONObject restriccion = new JSONObject();
+		restriccion.put("adminName", adminName);
+		List<AdminEntity> lista = this.getListOfEntitiesWithRestrictionsLike(AdminEntity.class, restriccion);
+		//la lista en teoria seria de un solo elemento
+		if(lista == null || lista.size() == 0){
+			return null;
+		} else{
+			AdminEntity admin = lista.get(0);
+			//verificamos el accessToken
+			AdminAccessTokenEntity accessTokenEntity = adminAccessTokenDao.findByClassAndID(AdminAccessTokenEntity.class, accessToken);
+			if(accessTokenEntity == null){
+				return null;
+			} else {
+				if(admin.getLogged()){
+					return admin;
+				} else {
+					return null;
+				}
 			}
 		}
 	}

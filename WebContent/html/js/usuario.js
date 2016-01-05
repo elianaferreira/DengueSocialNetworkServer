@@ -27,7 +27,7 @@ $(document).ready(function(){
 				if(usuarioBuscar.trim() != ""){
 					var params = {
 						admin: getAdminUser(),
-						password: getAdminPass(),
+						accessToken: getAccessToken(),
 						criterio: usuarioBuscar
 					}
 
@@ -159,7 +159,7 @@ $(document).ready(function(){
 
 					var parametros = {
 						admin: getAdminUser(),
-						password: getAdminPass(),
+						accessToken: getAccessToken(),
 						username: usernameSelected
 					}
 					ajaxRequest(pathActivateInvalidate, "POST", parametros, function(reponseInvalidate){
@@ -191,7 +191,7 @@ $(document).ready(function(){
 
 					var parametros = {
 						adminName: getAdminUser(),
-						password: getAdminPass(),
+						accessToken: getAccessToken(),
 						username: usernameSelected
 					}
 					ajaxRequest("/admin/alert", "POST", parametros, function(reponseInvalidate){

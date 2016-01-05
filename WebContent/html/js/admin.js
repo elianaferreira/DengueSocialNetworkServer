@@ -17,7 +17,7 @@ $(document).ready(function(){
 			
 			var params = {
 				admin: getAdminUser(),
-				password: getAdminPass(),
+				accessToken: getAccessToken(),
 				ultimaActualizacion: getCurrentTimestampWithFormat()
 			}
 			ajaxRequest("/admin/timeline", "GET", params, function(responseTimeline){
@@ -51,7 +51,7 @@ $(document).ready(function(){
 
 			var params = {
 				admin: getAdminUser(),
-				password: getAdminPass()
+				accessToken: getAccessToken()
 			}
 
 			ajaxRequest("/admin/reportesRelevantes", "GET", params, function(responseRelevantes){
@@ -89,7 +89,7 @@ $(document).ready(function(){
 
 				var params = {
 					admin: getAdminUser(),
-					password: getAdminPass(),
+					accessToken: getAccessToken(),
 					ultimaActualizacion: ultimoReporte.fecha
 				}
 				ajaxRequest("/admin/timeline", "GET", params, function(responseTimeline){

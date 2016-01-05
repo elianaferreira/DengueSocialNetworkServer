@@ -53,7 +53,7 @@ $(document).ready(function(){
 
 			var params = {
 				admin: getAdminUser(),
-				password: getAdminPass(),
+				accessToken: getAccessToken(),
 			}
 			ajaxRequest("/admin/allNodeContacts", "GET", params, function(response){
 				response = JSON.parse(response);
@@ -320,7 +320,7 @@ $(document).ready(function(){
 
 						var params = {
 							adminName: getAdminUser(),
-							password: getAdminPass(),
+							accessToken: getAccessToken(),
 							nombre: tempJson.nombre,
 							mensaje: tempJson.mensaje,
 							fechaLanzamiento: tempJson.fechaInicio,

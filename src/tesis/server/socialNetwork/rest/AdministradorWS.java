@@ -100,16 +100,16 @@ public class AdministradorWS {
 	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String adminLogout(@FormParam("name") String adminName,
-							@FormParam("password") String password){
+							@FormParam("accessToken") String accessToken){
 		
 		//verificamos si el administrador existe
-		AdminEntity administrador = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity administrador = administradorDao.verificarAdministrador(adminName, accessToken);
 		if(administrador == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos");
 		} else {
 			//iniciamos sesion para el administrador
 			if(administradorDao.cerrarSesionAdmin(administrador)){
-				return Utiles.retornarSalida(false, "Sesion cerrada");
+				return Utiles.retornarSalida(false, "Sesion cerrada.");
 			} else {
 				return Utiles.retornarSalida(true, "Error al cerrar la sesion");
 			}
@@ -123,10 +123,10 @@ public class AdministradorWS {
 	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String addVoluntiersACategory(@FormParam("admin") String adminName,
-										 @FormParam("password") String password,
+										 @FormParam("accessToken") String accessToken,
 										 @FormParam("voluntarios") String voluntarios){
 		
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
 		} else {
@@ -173,10 +173,10 @@ public class AdministradorWS {
 	@Path("/search")
 	@ResponseBody
 	public String searchVoluntiers(@QueryParam("admin") String adminName,
-			 @QueryParam("password") String password,
+			 @QueryParam("accessToken") String accessToken,
 			 @QueryParam("criterio") String criterioBusqueda){
 		
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos");
 		} else {
@@ -200,11 +200,11 @@ public class AdministradorWS {
 	@Path("/reports")
 	@ResponseBody
 	public String getReportsOfVoluntiers(@QueryParam("admin") String adminName,
-			 @QueryParam("password") String password,
+			 @QueryParam("accessToken") String accessToken,
 			 @QueryParam("username") String username,
 			 @QueryParam("ultimaActualizacion") String ultimaActualizacionString){
 		
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos");
 		} else {
@@ -257,9 +257,9 @@ public class AdministradorWS {
 	@Path("/allPosts")
 	@ResponseBody
 	public String getAllPosts(@QueryParam("admin") String adminName,
-								@QueryParam("password") String password){
+								@QueryParam("accessToken") String accessToken){
 		
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos");
 		} else {
@@ -294,10 +294,10 @@ public class AdministradorWS {
 	@Path("/post")
 	@ResponseBody
 	public String getPost(@QueryParam("admin") String adminName,
-							@QueryParam("password") String password,
+							@QueryParam("accessToken") String accessToken,
 							@QueryParam("idPost") Integer idPost){
 		
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos");
 		} else {
@@ -317,10 +317,10 @@ public class AdministradorWS {
 	@Path("/photos")
 	@ResponseBody
 	public String getPhotos(@QueryParam("admin") String adminName,
-							@QueryParam("password") String password,
+							@QueryParam("accessToken") String accessToken,
 							@QueryParam("idPost") Integer idPost){
 		
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos");
 		} else {
@@ -380,10 +380,10 @@ public class AdministradorWS {
 	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String desactivarCuentaVoluntario(@FormParam("adminName") String adminName,
-												@FormParam("password") String password,
+												@FormParam("accessToken") String accessToken,
 												@FormParam("username") String username){
 		
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos");
 		} else {
@@ -410,10 +410,10 @@ public class AdministradorWS {
 	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String activarCuentaUsuario(@FormParam("adminName") String adminName,
-										@FormParam("password") String password,
+										@FormParam("accessToken") String accessToken,
 										@FormParam("username") String username){
 		
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
 		} else {
@@ -444,9 +444,9 @@ public class AdministradorWS {
 	@GET
 	@Path("/allNodeContacts")
 	@ResponseBody
-	public String getAllNodeContacts(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
+	public String getAllNodeContacts(@QueryParam("adminName") String adminName, @QueryParam("accessToken") String accessToken){
 		
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		JSONObject retorno = new JSONObject();
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
@@ -495,9 +495,9 @@ public class AdministradorWS {
 	@GET
 	@Path("/subtotalesReportes")
 	@ResponseBody
-	public String getSubtotalesReportes(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
+	public String getSubtotalesReportes(@QueryParam("adminName") String adminName, @QueryParam("accessToken") String accessToken){
 		
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		JSONObject retorno = new JSONObject();
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
@@ -516,8 +516,8 @@ public class AdministradorWS {
 	@GET
 	@Path("/reportesRelevantes")
 	@ResponseBody
-	public String getReportesRelevantes(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+	public String getReportesRelevantes(@QueryParam("adminName") String adminName, @QueryParam("accessToken") String accessToken){
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		JSONArray retorno = new JSONArray();
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
@@ -535,8 +535,8 @@ public class AdministradorWS {
 	@GET
 	@Path("/usuariosPorMes")
 	@ResponseBody
-	public String getCantUsuariosPorMes(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+	public String getCantUsuariosPorMes(@QueryParam("adminName") String adminName, @QueryParam("accessToken") String accessToken){
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		JSONObject retorno = new JSONObject();
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
@@ -566,8 +566,8 @@ public class AdministradorWS {
 	@GET
 	@Path("/usersByRanking")
 	@ResponseBody
-	public String getUsersByRanking(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+	public String getUsersByRanking(@QueryParam("adminName") String adminName, @QueryParam("accessToken") String accessToken){
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		JSONArray retorno = new JSONArray();
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
@@ -587,14 +587,14 @@ public class AdministradorWS {
 	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String iniciarCampanha(@FormParam("adminName") String adminName,
-									@FormParam("password") String password,
+									@FormParam("accessToken") String accessToken,
 									@FormParam("nombre") String nombreCampanha,
 									@FormParam("mensaje") String mensajeCampanha,
 									@FormParam("fechaLanzamiento") String fechaLanzamiento,
 									@FormParam("fechaFinalizacion") String fechaFinalizacion,
 									@FormParam("voluntariosInvitados") String voluntariosInvitados){
 		
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
 		} else {
@@ -674,8 +674,8 @@ public class AdministradorWS {
 	@GET
 	@Path("/usersByCatA")
 	@ResponseBody
-	public String getUsersCatA(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+	public String getUsersCatA(@QueryParam("adminName") String adminName, @QueryParam("accessToken") String accessToken){
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		JSONArray retorno = new JSONArray();
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
@@ -692,8 +692,8 @@ public class AdministradorWS {
 	@GET
 	@Path("/usersByCatB")
 	@ResponseBody
-	public String getUsersCatB(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+	public String getUsersCatB(@QueryParam("adminName") String adminName, @QueryParam("accessToken") String accessToken){
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		JSONArray retorno = new JSONArray();
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
@@ -710,8 +710,8 @@ public class AdministradorWS {
 	@GET
 	@Path("/allContacts")
 	@ResponseBody
-	public String getAllContacts(@QueryParam("adminName") String adminName, @QueryParam("password") String password){
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+	public String getAllContacts(@QueryParam("adminName") String adminName, @QueryParam("accessToken") String accessToken){
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		JSONArray retorno = new JSONArray();
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
@@ -731,11 +731,11 @@ public class AdministradorWS {
 	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String lanzarAlertaAVoluntario(@FormParam("adminName") String adminName, 
-											@FormParam("password") String password,
+											@FormParam("accessToken") String accessToken,
 											@FormParam("username") String username,
 											@FormParam("mensaje") String mensajeAlerta){
 		
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		JSONArray retorno = new JSONArray();
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son inválidos.");
@@ -780,10 +780,10 @@ public class AdministradorWS {
 	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String getTimeline(@QueryParam("admin") String adminName,
-			 @QueryParam("password") String password,
+			 @QueryParam("accessToken") String accessToken,
 			 @QueryParam("ultimaActualizacion") String ultimaActualizacionString){
 		
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
 		} else {
@@ -821,9 +821,9 @@ public class AdministradorWS {
 	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String getEstadisticasNoSolucionados(@QueryParam("admin") String adminName,
-			 @QueryParam("password") String password){
+			 @QueryParam("accessToken") String accessToken){
 		
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
 		} else {
@@ -870,9 +870,9 @@ public class AdministradorWS {
 	@Path("/activeCampaigns")
 	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
-	public String getCampanhasActivas(@QueryParam("admin") String adminName, @QueryParam("password") String password){
+	public String getCampanhasActivas(@QueryParam("admin") String adminName, @QueryParam("accessToken") String accessToken){
 		
-		AdminEntity admin = administradorDao.verificarAdministrador(adminName, password);
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
 			
