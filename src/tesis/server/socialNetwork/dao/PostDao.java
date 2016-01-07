@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import tesis.server.socialNetwork.entity.FavoritoEntity;
 import tesis.server.socialNetwork.entity.NoFavoritoEntity;
 import tesis.server.socialNetwork.entity.PostEntity;
+import tesis.server.socialNetwork.entity.RepostEntity;
 import tesis.server.socialNetwork.entity.VoluntarioEntity;
 import tesis.server.socialNetwork.utils.Utiles;
 
@@ -242,13 +243,13 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		String consulta = "from PostEntity p where p.voluntario = :usuario";
 		Query query = this.getSession().createQuery(consulta);
 		query.setEntity("usuario", voluntario);
-		query.setMaxResults(100);
+		query.setMaxResults(3);
 		List lista = query.list();
 		
 		return lista;
 	}
 	
-	
+
 	/**
 	 * Metodo que retorna la lista de posts relevantes, y hace una validacion previa de la fecha para descartar
 	 * lo que ya no pueden ser considerados relevantes.

@@ -2,6 +2,7 @@ package tesis.server.socialNetwork.dao;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +16,10 @@ import org.hibernate.Query;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 
+import tesis.server.socialNetwork.entity.PostEntity;
 import tesis.server.socialNetwork.entity.RepostEntity;
+import tesis.server.socialNetwork.entity.VoluntarioEntity;
+import tesis.server.socialNetwork.utils.SortedByDate;
 import tesis.server.socialNetwork.utils.Utiles;
 
 @Controller
@@ -116,7 +120,7 @@ public class RepostDao extends GenericDao<RepostEntity, Integer> {
 		query.setParameter("username", username);
 		query.setParameter("ultimaactualizacion", ultimaActualizacion);
 		//limitar la cantidad de registros
-		query.setMaxResults(5);
+		query.setMaxResults(3);
 		List lista = query.list();
 		
 		return lista;
@@ -193,5 +197,37 @@ public class RepostDao extends GenericDao<RepostEntity, Integer> {
 			
 		}
 		return listaFinalRetorno;
-	}	
+	}
+	
+	
+	public List<JSONObject> getHomeTimeline(VoluntarioEntity voluntario, Timestamp timestamp){
+		
+		String consultaPost = "from PostEntity p where p.voluntario = :usuario and p.fechaPost < :ultimaActualizacion";
+		Query queryPost = this.getSession().createQuery(consultaPost);
+		queryPost.setParameter("usuario", voluntario);
+		queryPost.setParameter("ultimaActualizacion", timestamp);
+		queryPost.setMaxResults(3);
+		List<PostEntity> listaPost = queryPost.list();
+		
+		String consultaRespost = "from RepostEntity r where r.autorRepost = :usuario and r.fechaRepost < :ultimaActualizacion";
+		Query queryRepost = this.getSession().createQuery(consultaRespost);
+		queryRepost.setParameter("usuario", voluntario);
+		queryRepost.setParameter("ultimaActualizacion", timestamp);
+		queryRepost.setMaxResults(3);
+		List<RepostEntity> listaRepost = queryRepost.list();
+		
+		
+		//creammos JSON de cada uno y lo seteamos a la lista de retorno
+		List<JSONObject> arrayRetorno = new ArrayList<JSONObject>();
+		for(int i=0; i<listaPost.size(); i++){
+			arrayRetorno.add(postDao.getJSONFromPost("", listaPost.get(i)));
+		}
+		for(int j=0; j<listaRepost.size(); j++){
+			arrayRetorno.add(this.getJSONFromRepost(listaRepost.get(j), ""));
+		}
+		
+		Collections.sort(arrayRetorno, new SortedByDate());
+		
+		return arrayRetorno;
+	}
 }

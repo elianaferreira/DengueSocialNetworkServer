@@ -585,9 +585,9 @@ public class VoluntarioWS {
 		//verificamos si existe un usuario con ese username
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "El usuario no existe");
+			return Utiles.retornarSalida(true, "El usuario no existe.");
 		} else {
-			JSONArray arrayRetorno = new JSONArray();
+			/*JSONArray arrayRetorno = new JSONArray();
 			List<PostEntity> postsPropios = postDao.getHomeTimeline(voluntario);
 			for(int i=0; i<postsPropios.size(); i++){
 				JSONObject postJSON = postDao.getJSONFromPost(username, postsPropios.get(i));
@@ -606,7 +606,19 @@ public class VoluntarioWS {
 			} catch(Exception e){
 				e.printStackTrace();
 			}
-			return Utiles.retornarSalida(false, arrayRetorno.toString());
+			return Utiles.retornarSalida(false, arrayRetorno.toString());*/
+			try{
+				Timestamp timestamp;
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+			    Date parsedDate = dateFormat.parse(ultimaActualizacionString);
+			    timestamp = new java.sql.Timestamp(parsedDate.getTime());
+			    List<JSONObject> retorno = repostDao.getHomeTimeline(voluntario, timestamp);
+			    return Utiles.retornarSalida(false, retorno.toString());
+			} catch(Exception e){
+				e.printStackTrace();
+				return Utiles.retornarSalida(true, "Hubo un error al obtener los reportes.");
+			}
+			
 		}
 	}
 	
