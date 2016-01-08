@@ -202,14 +202,14 @@ public class RepostDao extends GenericDao<RepostEntity, Integer> {
 	
 	public List<JSONObject> getHomeTimeline(VoluntarioEntity voluntario, Timestamp timestamp){
 		
-		String consultaPost = "from PostEntity p where p.voluntario = :usuario and p.fechaPost < :ultimaActualizacion";
+		String consultaPost = "from PostEntity p where p.voluntario = :usuario and p.fechaPost < :ultimaActualizacion order by p.fechaPost desc";
 		Query queryPost = this.getSession().createQuery(consultaPost);
 		queryPost.setParameter("usuario", voluntario);
 		queryPost.setParameter("ultimaActualizacion", timestamp);
 		queryPost.setMaxResults(3);
 		List<PostEntity> listaPost = queryPost.list();
 		
-		String consultaRespost = "from RepostEntity r where r.autorRepost = :usuario and r.fechaRepost < :ultimaActualizacion";
+		String consultaRespost = "from RepostEntity r where r.autorRepost = :usuario and r.fechaRepost < :ultimaActualizacion order by r.fechaRepost desc";
 		Query queryRepost = this.getSession().createQuery(consultaRespost);
 		queryRepost.setParameter("usuario", voluntario);
 		queryRepost.setParameter("ultimaActualizacion", timestamp);
