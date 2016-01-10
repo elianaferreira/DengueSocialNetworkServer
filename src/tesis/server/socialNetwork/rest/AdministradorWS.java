@@ -22,6 +22,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
@@ -888,6 +889,38 @@ public class AdministradorWS {
 			} catch(Exception e){
 				e.printStackTrace();
 				return Utiles.retornarSalida(true, "Ha ocurrido un error al obtener las campañas lanzadas.");
+			}
+		}
+	}
+	
+	@GET
+	@Path("/pendingSolutions/{ente}")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String getResponsablesPosts(@PathParam("ente") String ente,
+										@QueryParam("admin") String adminName, 
+										@QueryParam("accessToken") String accessToken,
+										@QueryParam("ultimaactualizacion") String ultimaActualizacionString){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			try{
+				Timestamp timestamp;
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+			    Date parsedDate = dateFormat.parse(ultimaActualizacionString);
+			    timestamp = new java.sql.Timestamp(parsedDate.getTime());
+			    
+				List<PostEntity> listaNoSolucionados = postDao.listaEnteDebeSolucionar(ente, timestamp);
+				JSONArray retorno = new JSONArray();
+				for(int j=0; j<listaNoSolucionados.size(); j++){
+					retorno.put(postDao.getJSONFromPost("", listaNoSolucionados.get(j)));
+				}
+				return Utiles.retornarSalida(false, retorno.toString());
+			} catch(Exception e){
+				e.printStackTrace();
+				return Utiles.retornarSalida(true, "Hubo un error al obtener la lista de reportes");
 			}
 		}
 	}

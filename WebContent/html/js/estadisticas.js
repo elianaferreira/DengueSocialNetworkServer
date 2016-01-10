@@ -84,7 +84,8 @@ $(document).ready(function(){
 				            }
 				        },
 				        grid: {
-				            hoverable: true
+				            hoverable: true,
+				            clickable:true
 				        },
 				        tooltip: true,
 				        tooltipOpts: {
@@ -99,6 +100,16 @@ $(document).ready(function(){
 				        }
 				    });
 				}
+
+				
+			});
+
+			$('#subtotalesNoSolucionadosPie').bind('plotclick', function(event, pos, item) {
+				//console.log(item)
+				console.log(item.series.label);
+				localStorage.setItem("ente", item.series.label);
+				window.open("reportesEnte.html", "_self");
+
 			});
 
 

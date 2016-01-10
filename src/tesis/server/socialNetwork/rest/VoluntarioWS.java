@@ -567,7 +567,7 @@ public class VoluntarioWS {
 			//verificamos si tiene foto de perfil
 			if(voluntario.getFotoDePerfil() == null){
 				//enviamos un array vacio
-				return Utiles.retornarSalida(true, "No tiene foto de perfil");
+				return Utiles.retornarSalida(true, "No tiene foto de perfil.");
 			} else {
 				return Utiles.retornarImagen(false,Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
 			}

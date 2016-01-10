@@ -402,4 +402,21 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		
 		return lista;
 	}
+	
+	
+	/**
+	 * Metodo que retorna la lista de posts que debe solucionar el ente especificado
+	 * @param ente
+	 * @return
+	 */
+	public List<PostEntity> listaEnteDebeSolucionar(String ente, Timestamp ultimaActualizacion){
+		String consulta = "from PostEntity p where p.quienDebeSolucionar = :ente and p.fechaPost < :ultimaActualizacion order by p.fechaPost desc";
+		Query query = getSession().createQuery(consulta);
+		query.setParameter("ente", ente);
+		query.setParameter("ultimaActualizacion", ultimaActualizacion);
+		query.setMaxResults(3);
+		List<PostEntity> lista = query.list();
+		
+		return lista;
+	}
 }
