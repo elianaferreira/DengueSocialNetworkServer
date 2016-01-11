@@ -920,7 +920,46 @@ public class AdministradorWS {
 				return Utiles.retornarSalida(false, retorno.toString());
 			} catch(Exception e){
 				e.printStackTrace();
-				return Utiles.retornarSalida(true, "Hubo un error al obtener la lista de reportes");
+				return Utiles.retornarSalida(true, "Hubo un error al obtener la lista de reportes.");
+			}
+		}
+	}
+	
+	
+	@POST
+	@Path("/resolveReport/{report}")
+	@Consumes("application/x-www-form-urlencoded")
+	@ResponseBody
+	public String resolveReport(@PathParam("report") Integer reporteId,
+								@QueryParam("admin") String adminName, 
+								@QueryParam("accessToken") String accessToken){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			//obtenemos el reporte
+			PostEntity post = postDao.findByClassAndID(PostEntity.class, reporteId);
+			if(post == null){
+				return Utiles.retornarSalida(true, "El reporte no existe.");
+			} else {
+				//verificamos si alguno de los voluntario no lo resolvio ya
+				if(post.getSolucionado()){
+					return Utiles.retornarSalida(true, "Este reporte ya ha sido solucionado por un voluntario.");
+				} else {
+					try{
+						post.setCerradoPorAdministrador(true);
+						post.setAdministradorQueCerro(admin);
+						Date date = new Date();
+						Timestamp timestamp = new Timestamp(date.getTime());
+						post.setFechaCerrado(timestamp);
+						postDao.guardar(post);
+						return Utiles.retornarSalida(false, "Reporte cerrado.");
+					} catch(Exception e){
+						e.printStackTrace();
+						return Utiles.retornarSalida(true, "Ha ocurrido un error al cerrar el reporte.");
+					}
+				}
 			}
 		}
 	}

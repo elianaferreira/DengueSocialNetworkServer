@@ -182,6 +182,9 @@ public class PostWS {
 				return Utiles.retornarSalida(true, "No existe el usuario.");
 			} else {
 				try{
+					if(postEntity.getCerradoPorAdministrador()){
+						return Utiles.retornarSalida(true, "Reporte cerrado por el Administrador.");
+					}
 					//actualizamos el post
 					postEntity.setPost(nuevoMensaje);
 					postEntity.setVoluntarioQueSoluciona(voluntarioEditor);

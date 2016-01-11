@@ -54,6 +54,10 @@ public class PostEntity {
 	
 	private String quienDebeSolucionar;
 	
+	private Boolean cerradoPorAdministrador;
+	private AdminEntity administradorQueCerro;
+	private Date fechaCerrado;
+	
 	
 	//getters y setters
 	@Id
@@ -168,7 +172,7 @@ public class PostEntity {
 		this.relevante = relevante;
 	}
 	
-	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="VOLUNTARIO_SOLUCIONA", nullable=true)
 	public VoluntarioEntity getVoluntarioQueSoluciona() {
 		return voluntarioQueSoluciona;
@@ -206,5 +210,30 @@ public class PostEntity {
 	}
 	
 	
+	@Column(name="CERRADO", nullable=true)
+	public Boolean getCerradoPorAdministrador() {
+		return cerradoPorAdministrador;
+	}
+	public void setCerradoPorAdministrador(Boolean cerradoPorAdministrador) {
+		this.cerradoPorAdministrador = cerradoPorAdministrador;
+	}
+	
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="ADMINISTRADOR_QUE_CERRO", nullable=true)
+	public AdminEntity getAdministradorQueCerro() {
+		return administradorQueCerro;
+	}
+	public void setAdministradorQueCerro(AdminEntity administradorQueCerro) {
+		this.administradorQueCerro = administradorQueCerro;
+	}
+	
+	@Column(name="FECHA_CERRADO", nullable=true, columnDefinition="TIMESTAMP WITHOUT TIME ZONE")
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getFechaCerrado() {
+		return fechaCerrado;
+	}
+	public void setFechaCerrado(Date fechaCerrado) {
+		this.fechaCerrado = fechaCerrado;
+	}
 	
 }

@@ -14,7 +14,7 @@ $(document).ready(function(){
 		} else {
 			$('#wrapper').show();
 
-			$('#voluntarios').addClass("active");
+			$('#charts').addClass("active");
 			
 			var params = {
 				admin: getAdminUser(),
@@ -31,7 +31,7 @@ $(document).ready(function(){
 						<div class="col-lg-6">\
 							<div class="panel panel-default">\
 								<div class="panel-heading">\
-									<h3 class="panel-title"><i class="fa fa-pencil fa-fw"></i>Reportes</h3>\
+							<h3 class="panel-title"><i class="fa fa-pencil fa-fw"></i>Reportes que debe solucionar '+localStorage.getItem("ente")+'</h3>\
 								</div>\
 								<div id="lista-reportes" class="list-group">\
 								</div>\
@@ -48,46 +48,12 @@ $(document).ready(function(){
 					for(var i = 0; i<reportesArray.length; i++){
 						var reporte = reportesArray[i];
 						globalArrayReportes.push(reporte);
-
-						//post
-						if(reporte.hasOwnProperty("id")){
-							$('#lista-reportes').append('\
-								<a id="'+reporte.id+'" class="list-group-item">\
-									<span class="badge">'+reporte.fecha+'</span>\
-									<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
-									<div class="row">\
-		                                <div id="div_antes'+reporte.id+'" class="col-lg-4">\
-		                                </div>\
-		                                <div id="div_despues'+reporte.id+'" class="col-lg-4">\
-		                                </div>\
-		                            </div>\
-								</a>');
-							loadPhoto(reporte.id, true);
-							loadPhoto(reporte.id, false);
-						} else if(reporte.hasOwnProperty("idRepost")){
-							//respost
-							var post = reporte.post;
-							$('#lista-reportes').append('\
-								<a id="'+post.id+'" class="list-group-item">\
-								<span style="font-size:12px">reposte&oacute; de <span style="font-weight:bold;">'+post.voluntario.nombre+'</span></span>\
-									<br>\
-									<span class="badge">'+reporte.fecha+'</span>\
-									<i class="fa fa-fw fa-mobile-phone"></i> '+post.mensaje+'\
-									<div class="row">\
-		                                <div id="div_antes'+post.id+'" class="col-lg-4">\
-		                                </div>\
-		                                <div id="div_despues'+post.id+'" class="col-lg-4">\
-		                                </div>\
-		                            </div>\
-								</a>');
-							loadPhoto(post.id, true);
-							loadPhoto(post.id, false);
-						}
+						appendRow(reporte);
 					}
 				}
 			});
 
-			$(document).on('click', 'a', function() {
+			$(document).on('click', 'a', function (event) {
 				event.stopPropagation();
 				var idPost = $(this).attr("id");
 				localStorage.setItem("idPost", idPost);
@@ -107,73 +73,36 @@ $(document).ready(function(){
 					accessToken: getAccessToken(),
 					ultimaactualizacion: ultimoReporte.fecha
 				};
-				aajaxRequest("/admin/pendingSolutions/"+localStorage.getItem("ente"), "GET", params, function(response){
+				ajaxRequest("/admin/pendingSolutions/"+localStorage.getItem("ente"), "GET", params, function(response){
 					var responseJSON = JSON.parse(response);
 					if(responseJSON.error == true){
 						mostrarAlerta('Error', responseJSON.msj);
 					} else {
 						var reportesArray = JSON.parse(responseJSON.msj);
-						$('#reportes').append('\
-							<div class="col-lg-6">\
-								<div class="panel panel-default">\
-									<div class="panel-heading">\
-										<h3 class="panel-title"><i class="fa fa-pencil fa-fw"></i>Reportes</h3>\
-									</div>\
-									<div id="lista-reportes" class="list-group">\
-									</div>\
-									<a id="btnCargarMasReportes" href="">\
-			                            <div class="panel-footer">\
-			                                <span class="pull-left">cargar m&aacute;s</span>\
-			                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>\
-			                                <div class="clearfix"></div>\
-			                            </div>\
-			                        </a>\
-								</div>\
-							</div>');
 
 						for(var i = 0; i<reportesArray.length; i++){
 							var reporte = reportesArray[i];
 							globalArrayReportes.push(reporte);
 
-							//post
-							if(reporte.hasOwnProperty("id")){
-								$('#lista-reportes').append('\
-									<a id="'+reporte.id+'" class="list-group-item">\
-										<span class="badge">'+reporte.fecha+'</span>\
-										<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
-										<div class="row">\
-			                                <div id="div_antes'+reporte.id+'" class="col-lg-4">\
-			                                </div>\
-			                                <div id="div_despues'+reporte.id+'" class="col-lg-4">\
-			                                </div>\
-			                            </div>\
-									</a>');
-								loadPhoto(reporte.id, true);
-								loadPhoto(reporte.id, false);
-							} else if(reporte.hasOwnProperty("idRepost")){
-								//respost
-								var post = reporte.post;
-								$('#lista-reportes').append('\
-									<a id="'+post.id+'" class="list-group-item">\
-									<span style="font-size:12px">reposte&oacute; de <span style="font-weight:bold;">'+post.voluntario.nombre+'</span></span>\
-										<br>\
-										<span class="badge">'+reporte.fecha+'</span>\
-										<i class="fa fa-fw fa-mobile-phone"></i> '+post.mensaje+'\
-										<div class="row">\
-			                                <div id="div_antes'+post.id+'" class="col-lg-4">\
-			                                </div>\
-			                                <div id="div_despues'+post.id+'" class="col-lg-4">\
-			                                </div>\
-			                            </div>\
-									</a>');
-								loadPhoto(post.id, true);
-								loadPhoto(post.id, false);
-							}
+							appendRow(reporte);
 						}
 					}
 				});
 			});
 		}
+
+		$(document).on('click', '.cerrar', function (event) {
+			event.stopPropagation();
+			var idReporteCerrar = $(this).attr("id");
+			console.log("cerrar el reporte " + idReporteCerrar);
+			var params = {
+				admin: getAdminUser(),
+				accessToken: getAccessToken()
+			}
+			ajaxRequest("/admin/resolveReport/"+idReporteCerrar, "POST", params, function(responsePhoto){
+				//TODO manejar la respuesta
+			});
+		});
 	});
 });
 
@@ -197,4 +126,28 @@ function loadPhoto(idPostInt, antesBoolean){
 			document.getElementById(idPostInt+stringFlagAntes).setAttribute( 'src', 'data:image/png;base64,'+responseJSON.msj);
 		}
 	});
+}
+
+function appendRow(reporte){
+	$('#lista-reportes').append('\
+			<div style="display: table;">\
+				<div style="display: table-cell; width:75%">\
+					<a id="'+reporte.id+'" class="list-group-item">\
+						<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
+						<div class="row">\
+	                        <div id="div_antes'+reporte.id+'" class="col-lg-4">\
+	                        </div>\
+	                        <div id="div_despues'+reporte.id+'" class="col-lg-4">\
+	                        </div>\
+	                    </div>\
+					</a>\
+				</div>\
+				<div style="display: table-cell; width:15%">\
+					<span class="badge">'+reporte.fecha+'</span>\
+					<br>\
+					<button id="'+reporte.id+'" type="button" class="cerrar btn btn-xs btn-link">cerrar reporte</button>\
+				</div>\
+			</div>');
+	loadPhoto(reporte.id, true);
+	loadPhoto(reporte.id, false);
 }
