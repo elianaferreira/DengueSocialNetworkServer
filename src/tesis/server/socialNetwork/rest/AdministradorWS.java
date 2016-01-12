@@ -931,8 +931,8 @@ public class AdministradorWS {
 	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String resolveReport(@PathParam("report") Integer reporteId,
-								@QueryParam("admin") String adminName, 
-								@QueryParam("accessToken") String accessToken){
+								@FormParam("admin") String adminName, 
+								@FormParam("accessToken") String accessToken){
 		
 		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		if(admin == null){

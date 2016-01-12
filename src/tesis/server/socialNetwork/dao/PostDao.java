@@ -163,6 +163,8 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 			retorno.put("reposteo", true);
 		}
 		
+		retorno.put("cerrado", postEntity.getCerradoPorAdministrador());
+		
 		return retorno;
 	}
 	

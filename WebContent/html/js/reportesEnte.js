@@ -93,14 +93,20 @@ $(document).ready(function(){
 
 		$(document).on('click', '.cerrar', function (event) {
 			event.stopPropagation();
-			var idReporteCerrar = $(this).attr("id");
+			var idReporteCerrar = $(this).data("id");
 			console.log("cerrar el reporte " + idReporteCerrar);
 			var params = {
 				admin: getAdminUser(),
 				accessToken: getAccessToken()
 			}
-			ajaxRequest("/admin/resolveReport/"+idReporteCerrar, "POST", params, function(responsePhoto){
-				//TODO manejar la respuesta
+			ajaxRequest("/admin/resolveReport/"+idReporteCerrar, "POST", params, function(responseCerrar){
+				var responseJSON = JSON.parse(responseCerrar);
+				if(responseJSON.error == true){
+					mostrarAlerta("Error", responseJSON.msj);
+				} else {
+					$('#btnCerrar'+idReporteCerrar).hide();
+					$('#cerrado'+idReporteCerrar).show();
+				}
 			});
 		});
 	});
@@ -145,9 +151,20 @@ function appendRow(reporte){
 				<div style="display: table-cell; width:15%">\
 					<span class="badge">'+reporte.fecha+'</span>\
 					<br>\
-					<button id="'+reporte.id+'" type="button" class="cerrar btn btn-xs btn-link">cerrar reporte</button>\
+					<button id="btnCerrar'+reporte.id+'" data-id="'+reporte.id+'" type="button" class="cerrar btn btn-xs btn-link">cerrar reporte</button>\
+					<div id="cerrado'+reporte.id+'" class="alert alert-success" style="margin-top: 0.5rem; margin-right: 0.5rem;">\
+                    	<strong>Cerrado.</strong>\
+                	</div>\
 				</div>\
 			</div>');
+	if(reporte.cerrado == true){
+		$('#btnCerrar'+reporte.id).hide();
+		$('#cerrado'+reporte.id).show();
+	} else {
+		$('#btnCerrar'+reporte.id).show();
+		$('#cerrado'+reporte.id).hide();
+	}
+
 	loadPhoto(reporte.id, true);
 	loadPhoto(reporte.id, false);
 }
