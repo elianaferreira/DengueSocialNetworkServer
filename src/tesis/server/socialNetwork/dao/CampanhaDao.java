@@ -1,5 +1,7 @@
 package tesis.server.socialNetwork.dao;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,7 +38,7 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 		String consulta = "from CampanhaEntity c where c.nombreCampanha=:nombre";
 		Query query = this.getSession().createQuery(consulta);
 		query.setString("nombre", nombreBuscar);
-		 CampanhaEntity c =  (CampanhaEntity) query.uniqueResult();
+		CampanhaEntity c =  (CampanhaEntity) query.uniqueResult();
 		 
 		 return c;
 		
@@ -95,5 +97,23 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	
+	/**
+	 * Metodo que retorna todas la campanhas de forma paginada en base a la fecha de lanzamiento
+	 * 
+	 * @param ultimaFecha
+	 * @return
+	 */
+	public List<CampanhaEntity> listaCampanhas(Date ultimaFecha){
+		
+		//"from PostEntity p where p.quienDebeSolucionar = :ente and p.fechaPost < :ultimaActualizacion order by p.fechaPost desc
+		String consulta = "from CampanhaEntity c where c.fechaLanzamiento < :ultimaActualizacion order by c.fechaLanzamiento desc";
+		Query query = this.getSession().createQuery(consulta);
+		query.setParameter("ultimaActualizacion", ultimaFecha);
+		List lista = query.list();
+		
+		return lista;
 	}
 }

@@ -599,7 +599,7 @@ public class AdministradorWS {
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
 		} else {
-			//buscamos la campanha por el nombre
+			//buscamos la `nha por el nombre
 			if(nombreCampanha.trim().equals("")){
 				return Utiles.retornarSalida(true, "La campanha debe contar con un nombre.");
 			} else {
@@ -960,6 +960,37 @@ public class AdministradorWS {
 						return Utiles.retornarSalida(true, "Ha ocurrido un error al cerrar el reporte.");
 					}
 				}
+			}
+		}
+	}
+	
+	
+	@GET
+	@Path("/listCampaigns")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String listaCampanhas(@QueryParam("admin") String adminName, 
+								@QueryParam("accessToken") String accessToken,
+								@QueryParam("ultimaactualizacion") String ultimaActualizacionString){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			try{
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			    Date parsedDate = dateFormat.parse(ultimaActualizacionString);
+			    
+			    List<CampanhaEntity> lista = campanhaDao.listaCampanhas(parsedDate);
+			    JSONArray retorno = new JSONArray();
+			    for(int k=0; k<lista.size(); k++){
+			    	retorno.put(campanhaDao.getJSONFromCampanha(lista.get(k), ""));
+			    }
+			    return Utiles.retornarSalida(false, retorno.toString());
+			    
+			} catch(Exception e){
+				e.printStackTrace();
+				return Utiles.retornarSalida(true, "Hubo un error al obtener la lista de reportes.");
 			}
 		}
 	}
