@@ -53,7 +53,7 @@ $(document).ready(function(){
 				}
 			});
 
-			$(document).on('click', 'a', function (event) {
+			$(document).on('click', '.postClass', function (event) {
 				event.stopPropagation();
 				var idPost = $(this).attr("id");
 				localStorage.setItem("idPost", idPost);
@@ -61,7 +61,8 @@ $(document).ready(function(){
 			});
 
 
-			$('#btnCargarMasReportes').click(function (event){
+			//TODO verificar este boton
+			$(document).on('click', '#btnCargarMasReportes', function (event){
 				event.preventDefault();
 
 				//obtenemos el ultimo reporte de la lista
@@ -137,8 +138,8 @@ function loadPhoto(idPostInt, antesBoolean){
 function appendRow(reporte){
 	$('#lista-reportes').append('\
 			<div style="display: table;">\
-				<div style="display: table-cell; width:75%">\
-					<a id="'+reporte.id+'" class="list-group-item">\
+				<div id="'+reporte.id+'" class="postClass" style="display: table-cell; width:75%">\
+					<a class="list-group-item">\
 						<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
 						<div class="row">\
 	                        <div id="div_antes'+reporte.id+'" class="col-lg-4">\
