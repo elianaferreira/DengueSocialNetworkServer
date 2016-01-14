@@ -79,8 +79,20 @@ $(document).ready(function(){
 							}
 						}
 					});
+			});
 
-			
+			$(document).on('click', '.campClass', function (event){
+				event.preventDefault();
+				var idCampanha = $(this).attr('id');
+				console.log(idCampanha);
+				//buscamos en el array
+				for(var i=0; i<globalArrayCampanhas.length; i++){
+					if(globalArrayCampanhas[i].id == idCampanha){
+						localStorage.setItem("campanhaSeleccionada", JSON.stringify(globalArrayCampanhas[i]));
+						break;
+					}
+				}
+				window.open("campanhaView.html", "_self");
 			});
 		}
 	});
@@ -89,7 +101,7 @@ $(document).ready(function(){
 
 function appendRow(campanha){
 	$('#lista').append('\
-		<div class="panel">\
+		<div id="'+campanha.id+'" class="campClass panel">\
 			<div class="panel-body">\
 				<h3 class="panel-title" style="font-weight: bold; color: #3c763d;">'+campanha.nombre+'</h3>\
 				<span>'+campanha.mensaje+'</span>\

@@ -994,4 +994,59 @@ public class AdministradorWS {
 			}
 		}
 	}
+	
+	
+	@GET
+	@Path("/campaign/adheridos/{id}")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String listaAdheridos(@PathParam("id") Integer idCampanha,
+								@QueryParam("admin") String adminName, 
+								@QueryParam("accessToken") String accessToken){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			CampanhaEntity campanha = campanhaDao.findByClassAndID(CampanhaEntity.class, idCampanha);
+			if(campanha == null){
+				return Utiles.retornarSalida(true, "La campanha no existe.");
+			} else {
+				List<VoluntarioEntity> adheridos = campanha.getVoluntariosAdheridos();
+				JSONArray retorno = new JSONArray();
+				for(int i=0; i<adheridos.size(); i++){
+					JSONObject v = voluntarioDao.getJSONFromVoluntario(adheridos.get(i));
+					retorno.put(v);
+				}
+				return Utiles.retornarSalida(false, retorno.toString());
+			}
+		}
+	}
+	
+	@GET
+	@Path("/campaign/invitados/{id}")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String listaInvitados(@PathParam("id") Integer idCampanha,
+								@QueryParam("admin") String adminName, 
+								@QueryParam("accessToken") String accessToken){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			CampanhaEntity campanha = campanhaDao.findByClassAndID(CampanhaEntity.class, idCampanha);
+			if(campanha == null){
+				return Utiles.retornarSalida(true, "La campanha no existe.");
+			} else {
+				List<VoluntarioEntity> invitados = campanha.getVoluntariosInvitados();
+				JSONArray retorno = new JSONArray();
+				for(int i=0; i<invitados.size(); i++){
+					JSONObject v = voluntarioDao.getJSONFromVoluntario(invitados.get(i));
+					retorno.put(v);
+				}
+				return Utiles.retornarSalida(false, retorno.toString());
+			}
+		}
+	}
 }
