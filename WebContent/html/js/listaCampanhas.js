@@ -21,52 +21,95 @@ $(document).ready(function(){
 				accessToken: getAccessToken(),
 				ultimaactualizacion: getCurrentTimestampWithFormat()
 			}
-		}
-
-		ajaxRequest("/admin/listCampaigns", "GET", params, function(response){
-			response = JSON.parse(response);
-			if(response.error == true){
-				mostrarAlerta("Error", response.msj);
-			} else {
-				var arrayCampanhas = JSON.parse(response.msj);
-				$('#campanhas').append('\
-						<div class="col-lg-6">\
-							<div class="panel panel-default">\
-								<div class="panel-heading">\
-									<h3 class="panel-title"><i class="fa fa-pencil fa-fw"></i>Campa&ntilde;as</h3>\
+		
+			ajaxRequest("/admin/listCampaigns", "GET", params, function(response){
+				response = JSON.parse(response);
+				if(response.error == true){
+					mostrarAlerta("Error", response.msj);
+				} else {
+					var arrayCampanhas = JSON.parse(response.msj);
+					$('#campanhas').append('\
+							<div class="col-lg-6">\
+								<div class="panel panel-default">\
+									<div class="panel-heading">\
+										<h3 class="panel-title"><i class="fa fa-pencil fa-fw"></i>Campa&ntilde;as</h3>\
+									</div>\
+									<div id="lista" class="list-group">\
+									</div>\
+									<a id="btnCargarMas" href="">\
+			                            <div class="panel-footer">\
+			                                <span class="pull-left">cargar m&aacute;s</span>\
+			                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>\
+			                                <div class="clearfix"></div>\
+			                            </div>\
+			                        </a>\
 								</div>\
-								<div id="lista" class="list-group">\
-								</div>\
-								<a id="btnCargarMas" href="">\
-		                            <div class="panel-footer">\
-		                                <span class="pull-left">cargar m&aacute;s</span>\
-		                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>\
-		                                <div class="clearfix"></div>\
-		                            </div>\
-		                        </a>\
-							</div>\
-						</div>');
+							</div>');
 
-				for(var i = 0; i<arrayCampanhas.length; i++){
-					var c = arrayCampanhas[i];
-					globalArrayCampanhas.push(c);
-					appendRow(c);
+					for(var i = 0; i<arrayCampanhas.length; i++){
+						var c = arrayCampanhas[i];
+						globalArrayCampanhas.push(c);
+						appendRow(c);
+					}
 				}
-			}
+			});
 
-		});
+			$(document).on('click', '#btnCargarMas', function (event){
+					event.preventDefault();
+
+					//obtenemos la ultima campanha de la lista
+					var ultimaCampanha = {};
+					ultimaCampanha = globalArrayCampanhas[globalArrayCampanhas.length-1];
+					var params = {
+						admin: getAdminUser(),
+						accessToken: getAccessToken(),
+						ultimaactualizacion: ultimaCampanha.fechaInicio
+					}
+				
+					ajaxRequest("/admin/listCampaigns", "GET", params, function(response){
+						response = JSON.parse(response);
+						if(response.error == true){
+							mostrarAlerta("Error", response.msj);
+						} else {
+							var arrayCampanhas = JSON.parse(response.msj);
+							for(var i = 0; i<arrayCampanhas.length; i++){
+								var c = arrayCampanhas[i];
+								globalArrayCampanhas.push(c);
+								appendRow(c);
+							}
+						}
+					});
+
+			
+			});
+		}
 	});
 });
 
 
 function appendRow(campanha){
 	$('#lista').append('\
-		<div class="panel panel-default">\
-			<div class="panel-heading">\
-				<h3 class="panel-title">'+campanha.nombre+'</h3>\
-			</div>\
+		<div class="panel">\
 			<div class="panel-body">\
-				'+campanha.mensaje+'\
+				<h3 class="panel-title" style="font-weight: bold; color: #3c763d;">'+campanha.nombre+'</h3>\
+				<span>'+campanha.mensaje+'</span>\
+				</br>\
+				<div style="display: table; color: #777;">\
+					<div style="display: table-cell;">\
+						<span><span style="font-weight:bold">fecha inicio: </span>'+campanha.fechaInicio+'</span>\
+					</div>\
+					<div style="display: table-cell; padding-left:2rem;">\
+						<span><span style="font-weight:bold">fecha fin: </span>'+campanha.fechaFin+'</span>\
+					</div>\
+				</div>\
+				<div style="display: table; color: #777;">\
+					<div style="display: table-cell;">\
+						<span><span style="font-weight:bold">invitados: </span>'+campanha.cantInvitados+'</span>\
+					</div>\
+					<div style="display: table-cell; padding-left:2rem;">\
+						<span><span style="font-weight:bold">adheridos: </span>'+campanha.cantAdheridos+'</span>\
+					</div>\
+				</div>\
 			</div>\
 		</div>');
 }

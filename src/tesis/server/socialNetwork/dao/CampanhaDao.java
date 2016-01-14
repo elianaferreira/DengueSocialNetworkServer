@@ -112,6 +112,7 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 		String consulta = "from CampanhaEntity c where c.fechaLanzamiento < :ultimaActualizacion order by c.fechaLanzamiento desc";
 		Query query = this.getSession().createQuery(consulta);
 		query.setParameter("ultimaActualizacion", ultimaFecha);
+		query.setMaxResults(2);
 		List lista = query.list();
 		
 		return lista;
