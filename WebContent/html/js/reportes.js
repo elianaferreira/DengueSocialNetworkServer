@@ -174,6 +174,7 @@ $(document).ready(function(){
 });
 
 function loadPhoto(idPostInt, antesBoolean){
+	return;
 	var photoParams = {
 		idPost: idPostInt,
 		antes: antesBoolean

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="js/jQuery/jquery-1.11.0.min.js"></script>
+		<script src="js/startbootstrap-sb-admin-1.0.3/js/bootstrap.min.js"></script>
+		<link href="js/startbootstrap-sb-admin-1.0.3/css/bootstrap.min.css" rel="stylesheet">
+		<link href="js/startbootstrap-sb-admin-1.0.3/css/sb-admin.css" rel="stylesheet">
+		<link href="js/startbootstrap-sb-admin-1.0.3/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+		<script src="js/principal.js"></script>
+		<script src="js/calls.js"></script>
+		<script src="js/utiles.js"></script>
+		<script src="js/userProfile.js"></script>
+		<script src="js/reportes.js"></script>
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="page-wrapper">
+				<div class="container-fluid">
+					<div id="userInfo" class="row">
+						<div class="panel-default" style="margin-bottom: 0px;">
+							<a class="activateInvalidate" style="cursor:pointer; padding-left:16px; font-weight: bold;">desactivar cuenta de usuario</a>
+							<a class="sendAlert"style="cursor:pointer; padding-left:16px; margin-left:25px; font-weight: bold;">enviar alerta</a>
+							<div class="perfil panel-heading">
+								<h3 class="panel-title">
+									<i class="fa fa-user fa-fw fa-4x"></i>
+									<span id="spanUsername" style="vertical-align: bottom; font-size: 2.7rem;"></span>
+								</h3>
+							</div>
+							<div class="panel panel-body">
+								<div class="col-lg-4" style="text-align: center;">
+									<h4>Reputaci&oacute;n</h4>
+									<span id="spanReputacion"></span>
+								</div>
+								<div class="col-lg-4" style="text-align: center;">
+									<h4>Amigos</h4>
+									<span id="spanAmigos"></span>
+								</div>
+								<div class="col-lg-4" style="text-align: center;">
+									<h4>Reportes</h4>
+									<span id="spanReportes"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- /row-->
+					<div class="row">
+						<div id="lista-reportes"></div>
+					</div>
+				</div>
+	        </div>
+	    </div>
+	</body>
+</html>

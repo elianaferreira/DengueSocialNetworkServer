@@ -1,5 +1,5 @@
 
-var globalArrayCampanhas = [];
+var globalJsonUsers = {};
 
 $(document).ready(function(){
 
@@ -43,14 +43,64 @@ $(document).ready(function(){
 					</div>\
 				</div>');
 
-
 			
 			var params = {
 				admin: getAdminUser(),
-				accessToken: getAccessToken(),
+				accessToken: getAccessToken()
 			}
+
+			ajaxRequest("/admin/campaign/invitados/"+campanha.id, "GET", params, function(responseInvitados){
+				responseInvitados = JSON.parse(responseInvitados);
+				if(responseInvitados.error == true){
+					mostrarAlerta("Error", responseInvitados.msj);
+				} else {
+					var arrayInvitados = JSON.parse(responseInvitados.msj);
+					for(var i=0; i<arrayInvitados.length; i++){
+						if(!globalJsonUsers.hasOwnProperty(arrayInvitados[i]["username"])){
+							globalJsonUsers[arrayInvitados[i]["username"]] = arrayInvitados[i];
+						}
+						appendUserRow(arrayInvitados[i], true);
+					}
+				}
+			});
+
+			ajaxRequest("/admin/campaign/adheridos/"+campanha.id, "GET", params, function(responseAdheridos){
+				responseAdheridos = JSON.parse(responseAdheridos);
+				if(responseAdheridos.error == true){
+					mostrarAlerta("Error", responseAdheridos.msj);
+				} else {
+					var arrayAdheridos = JSON.parse(responseAdheridos.msj);
+					for(var i=0; i<arrayAdheridos.length; i++){
+						if(!globalJsonUsers.hasOwnProperty(arrayAdheridos[i]["username"])){
+							globalJsonUsers[arrayAdheridos[i]["username"]] = arrayAdheridos[i];
+						}
+						appendUserRow(arrayAdheridos[i], false);
+					}
+				}
+			});
+
+			$(document).on('click', 'tr', function(event){
+				var selected = $(this).data("username");
+				console.log(selected);
+				localStorage.setItem("usuario", JSON.stringify(globalJsonUsers[selected]));
+				localStorage.setItem("usernameReportes", selected);
+				window.open("userProfile.html", "_self");
+			});
 		}
 	});
 });
 
 
+function appendUserRow(usuario, esInvitado){
+	var idToAppend = "#listaInvitados";
+	if(!esInvitado){
+		idToAppend = "#listaAdheridos";
+	}
+
+	$(idToAppend).append('\
+		<tr data-username="'+usuario.username+'">\
+			<td>'+usuario.nombre+'</td>\
+			<td>'+usuario.usernamestring+'</td>\
+			<td>'+usuario.reputacion+'</td>\
+		</tr>');
+}
