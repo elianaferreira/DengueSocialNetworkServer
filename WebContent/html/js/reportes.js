@@ -85,7 +85,7 @@ $(document).ready(function(){
 				}
 			});
 
-			$(document).on('click', 'a', function() {
+			$(document).on('click', '#lista-reportes a', function() {
 				event.stopPropagation();
 				var idPost = $(this).attr("id");
 				localStorage.setItem("idPost", idPost);

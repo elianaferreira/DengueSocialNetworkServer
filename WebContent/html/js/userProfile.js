@@ -14,7 +14,7 @@ $(document).ready(function(){
 		} else {
 			$('#wrapper').show();
 
-			$('#charts').addClass("active");
+			//$('#charts').addClass("active");
 
 
 			var usuario = JSON.parse(localStorage.getItem("usuario"));
