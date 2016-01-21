@@ -137,7 +137,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		
 		JSONObject retorno = new JSONObject();
 		//cuando un dato no esta cargado simplemente no lo agrega
-		retorno.put("username", voluntarioEntity.getUserName());
+		retorno.put("username", voluntarioEntity.getUsernameString());
 		retorno.put("usernamestring", voluntarioEntity.getUsernameString());
 		retorno.put("nombre", voluntarioEntity.getNombreReal());
 		retorno.put("telefono", voluntarioEntity.getTelefono());
@@ -424,7 +424,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		
 		JSONObject retorno = new JSONObject();
 		//cuando un dato no esta cargado simplemente no lo agrega
-		retorno.put("username", voluntarioEntity.getUserName());
+		retorno.put("username", voluntarioEntity.getUsernameString());
 		retorno.put("usernamestring", voluntarioEntity.getUsernameString());
 		retorno.put("nombre", voluntarioEntity.getNombreReal());
 		retorno.put("reputacion", voluntarioEntity.getReputacion());

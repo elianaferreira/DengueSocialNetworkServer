@@ -49,6 +49,7 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		Date date = new Date();
 		Timestamp timestamp = new Timestamp(date.getTime()); 
 		postEntity.setFechaPost(timestamp);
+		postEntity.setCerradoPorAdministrador(false);
 		
 		//si es un reporte solucionado debemos setear la fecha de solucion como la misma de guardado
 		if(postEntity.getSolucionado() == true){
@@ -106,7 +107,7 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 				+ "(select v.userName from VoluntarioEntity v where v.userName= :username))"
 				+ condicionActualizacion;
 		Query query = this.getSession().createQuery(consulta);
-		query.setParameter("username", username);
+		query.setParameter("username", username.toLowerCase());
 		query.setParameter("ultimaactualizacion", ultimaActualizacion);
 		//limitar la cantidad de registros
 		query.setMaxResults(5);
@@ -183,7 +184,7 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 			return false;
 		} else {
 			for(int i=0; i<listaFavs.size(); i++){
-				if(listaFavs.get(i).getAutor().getUserName() == usernameSolicitante){
+				if(listaFavs.get(i).getAutor().getUserName() == usernameSolicitante.toLowerCase()){
 					return true;
 				}
 			}
@@ -206,7 +207,7 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 			return false;
 		} else {
 			for(int i=0; i<listaNoFavs.size(); i++){
-				if(listaNoFavs.get(i).getAutor().getUserName() == usernameSolicitante){
+				if(listaNoFavs.get(i).getAutor().getUserName() == usernameSolicitante.toLowerCase()){
 					return true;
 				}
 			}
@@ -367,7 +368,7 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		
 		Query query = this.getSession().createQuery(consulta);
 		query.setInteger("idPost", idPost);
-		query.setString("username", username);
+		query.setString("username", username.toLowerCase());
 		
 		boolean reposteo = (Long) query.uniqueResult() > 0;
 		//boolean exists = (Long) session.createQuery("select count(*) from PersistentEntity where ...").uniqueResult() > 0

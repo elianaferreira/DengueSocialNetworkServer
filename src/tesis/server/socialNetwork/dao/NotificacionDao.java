@@ -44,7 +44,7 @@ public class NotificacionDao extends GenericDao<NotificacionEntity, Integer> {
 			consulta += " and n.fechaCreacionNotificacion > :ultimaActualizacion";
 		}
 		Query query = this.getSession().createQuery(consulta);
-		query.setParameter("username", username);
+		query.setParameter("username", username.toLowerCase());
 		if(ultimaActualizacion != null){
 			query.setParameter("ultimaActualizacion", ultimaActualizacion);
 		}

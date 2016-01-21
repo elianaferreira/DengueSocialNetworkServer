@@ -223,7 +223,7 @@ public class PostWS {
 									@QueryParam("top") Boolean top){
 		
 		//verificaciones del usuario
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {
@@ -275,7 +275,7 @@ public class PostWS {
 								@FormParam("username") String usernameQuienResponde){
 		
 		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameQuienResponde);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameQuienResponde.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
@@ -311,7 +311,7 @@ public class PostWS {
 	public String getComentarios(@PathParam("idPost") Integer idPost,
 								@QueryParam("username") String usernameSolicitante){
 		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
@@ -348,7 +348,7 @@ public class PostWS {
 									 @FormParam("username") String usuarioQueMarca){
 		
 		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioQueMarca);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioQueMarca.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
@@ -416,7 +416,7 @@ public class PostWS {
 	public String marcarComoNoFavorito(@PathParam("idPost") Integer idPost,
 									   @FormParam("username") String usuarioQueMarca){
 		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioQueMarca);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usuarioQueMarca.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
@@ -490,7 +490,7 @@ public class PostWS {
 						  @QueryParam("username") String usernameSolicitante){
 		
 		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
@@ -534,7 +534,7 @@ public class PostWS {
 	public String repost(@PathParam("idPost") Integer idPost,
 						 @FormParam("username") String usernameRepost){
 		//verificamos si el usuario que intenta responder existe y si ha iniciado sesion
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameRepost);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameRepost.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
@@ -595,7 +595,7 @@ public class PostWS {
 	@ResponseBody
 	public String postsRelevantes(@PathParam("username") String usernameSolicitante){
 		
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
@@ -653,7 +653,7 @@ public class PostWS {
 							@QueryParam("fotoAntes") String fotoAntes,
 							@QueryParam("fotoDespues") String fotoDespues){
 		
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {//verificamos si ha iniciado sesion
@@ -703,10 +703,12 @@ public class PostWS {
 		
 		if(usernameProfile != null){
 			//retornamos la foto de perfil
-			VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameProfile);
-			if(voluntario.getFotoDePerfil() != null){
-				System.out.println("FOTO DE PERFIL DE " + usernameProfile);
-				return Utiles.retornarImagen(false, Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
+			VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameProfile.toLowerCase());
+			if(voluntario != null){
+				if(voluntario.getFotoDePerfil() != null){
+					System.out.println("FOTO DE PERFIL DE " + usernameProfile);
+					return Utiles.retornarImagen(false, Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
+				}
 			}
 		} else if(idPost != null){
 			String antesDespues = "antes_image.png";

@@ -67,7 +67,7 @@ $(document).ready(function(){
 
 	$('#cerrarSesion').click(function (e) {
 		e.preventDefault();
-		ajaxRequest("/admin/logout", "POST", {name: getAdminUser, password: getAdminPass}, function(response){
+		ajaxRequest("/admin/logout", "POST", {name: getAdminUser, accessToken: getAccessToken()}, function(response){
 			var response = JSON.parse(response);
 			if(response.error == true){
 				mostrarAlerta("Error", "Hubo un error al cerrar la sesi&oacute;n. Int&eacute;ntelo m&aacute;s tarde.");

@@ -5,10 +5,14 @@ import java.util.List;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
+
+import com.sun.xml.ws.api.tx.at.Transactional;
 
 import tesis.server.socialNetwork.entity.AdminAccessTokenEntity;
 import tesis.server.socialNetwork.entity.AdminEntity;
@@ -77,6 +81,7 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 	 * @param admin
 	 * @return
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public JSONObject iniciarSesionAdmin(String adminName, String password){
 		JSONObject retorno = null;
 		JSONObject restriccion = new JSONObject();
@@ -126,6 +131,7 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 	 * @param admin
 	 * @return
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Boolean cerrarSesionAdmin(AdminEntity admin){
 		//cambiamos el estado del atributo logged a FALSE
 		admin.setLogged(false);

@@ -117,29 +117,7 @@ public class VoluntarioWS {
 							   @FormParam("telefono") String telefono,
 							   @FormParam("email") String email,
 							   @FormParam("fotoPerfil") String fotoPerfil){
-		/*
-		 * @FormDataParam("fotoPerfil") InputStream fileInputStream
-		 */
 		//verificar que ese nombre de usuario no exista ya en la Base de Datos
-		//generamos un ejemplo
-		VoluntarioEntity voluntario = new VoluntarioEntity();
-		voluntario.setUserName(username);
-		voluntario.setUsernameString(username);
-		//el password ya viene encriptado //la validacion se debe hacer en el cliente
-		voluntario.setPassword(password);
-		voluntario.setNombreReal(nombre);
-		if(ci != null){
-			voluntario.setCi(ci);
-		}
-		if(direccion != null){
-			voluntario.setDireccion(direccion);
-		}
-		if(telefono != null){
-			voluntario.setTelefono(telefono);
-		}
-		if(email != null){
-			voluntario.setEmail(email);
-		}
 		
 		// lo pasamos a minuscula y verificamos si no existe ya
 		String usernameLower = username.toLowerCase();
@@ -147,6 +125,25 @@ public class VoluntarioWS {
 			return Utiles.retornarSalida(true, "El usuario ya existe.");
 		} else{
 			try{
+				VoluntarioEntity voluntario = new VoluntarioEntity();
+				voluntario.setUserName(username.toLowerCase());
+				voluntario.setUsernameString(username);
+				//el password ya viene encriptado //la validacion se debe hacer en el cliente
+				voluntario.setPassword(password);
+				voluntario.setNombreReal(nombre);
+				if(ci != null){
+					voluntario.setCi(ci);
+				}
+				if(direccion != null){
+					voluntario.setDireccion(direccion);
+				}
+				if(telefono != null){
+					voluntario.setTelefono(telefono);
+				}
+				if(email != null){
+					voluntario.setEmail(email);
+				}
+				
 				if(fotoPerfil != null){
 					byte[] aByteArray = Base64.decode(fotoPerfil, Base64.DEFAULT);
 					voluntario.setFotoDePerfil(aByteArray);
@@ -203,10 +200,15 @@ public class VoluntarioWS {
 			if(Utiles.haIniciadoSesion(voluntario)){
 				//cargamos los cambios que envio el usuario
 				//verificamos que newUsername sea distinto de nulo y solo si es distinto del actual se valida
-				if(newUserName != null && !newUserName.toLowerCase().equals(usernameLower)){
-					//verificamos que no exista ya alguien con ese nombre de usuario
-					if(voluntarioDao.findByClassAndID(VoluntarioEntity.class, newUserName.toLowerCase()) != null){
-						return Utiles.retornarSalida(true, "Este nombre de usuario ya está registrado");
+				if(newUserName != null){
+					//verificamos que no exista ya lguien con ese nombre de usuario
+					VoluntarioEntity otroVoluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, newUserName.toLowerCase());
+					if(otroVoluntario != null){
+						//verificamos si soy yo mismo
+						if(!otroVoluntario.getUserName().equals(voluntario.getUserName())){
+							return Utiles.retornarSalida(true, "Este nombre de usuario ya está registrado.");
+						}
+						
 					}
 					//cambiamos el ID del usuario, que anteriormente se verifico que no exista ya
 					voluntario.setUserName(newUserName.toLowerCase());
@@ -397,7 +399,7 @@ public class VoluntarioWS {
 			if(!Utiles.haIniciadoSesion(voluntarioEntity)){
 				return Utiles.retornarSalida(true, "No has iniciado sesión");
 			} else{
-				List<SolicitudAmistadEntity> listaPendientes = solicitudAmistadDao.getListaSolicitudesPendientes(username);				
+				List<SolicitudAmistadEntity> listaPendientes = solicitudAmistadDao.getListaSolicitudesPendientes(username.toLowerCase());				
 				if(listaPendientes.isEmpty()){
 					List<SolicitudAmistadEntity> listaVacia = new ArrayList<SolicitudAmistadEntity>();
 					return Utiles.retornarSalida(false, solicitudAmistadDao.getListParsedFromSolicitudes(listaVacia));
@@ -529,7 +531,7 @@ public class VoluntarioWS {
 	@ResponseBody
 	public String getContacts(@PathParam("username") String username){
 		//verificaciones del usuario
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "No existe el usuario");
 		} else {
@@ -560,7 +562,7 @@ public class VoluntarioWS {
 		
 		//no verificamos el usuario solicitante
 		//verificamos si existe un usuario con ese username
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameFoto);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameFoto.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "El usuario no existe");
 		} else {
@@ -583,7 +585,7 @@ public class VoluntarioWS {
 							@QueryParam("ultimaactualizacion") String ultimaActualizacionString){
 		//no verificamos el usuario solicitante
 		//verificamos si existe un usuario con ese username
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "El usuario no existe.");
 		} else {
@@ -630,7 +632,7 @@ public class VoluntarioWS {
 	public String getProfileData(@PathParam("username") String username, 
 			@QueryParam("usernameSolicitante") String usernameSolicitante){
 		
-		VoluntarioEntity solicitante = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante);
+		VoluntarioEntity solicitante = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameSolicitante.toLowerCase());
 		if(solicitante == null){
 			return Utiles.retornarSalida(true, "El usuario no existe.");
 		} else {
@@ -639,7 +641,7 @@ public class VoluntarioWS {
 				//no ha iniciado sesion
 				return Utiles.retornarSalida(true, "No has iniciado sesión.");
 			} else {
-				VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+				VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 				if(voluntario == null){
 					return Utiles.retornarSalida(true, "El usuario no existe");
 				} else {
@@ -667,7 +669,7 @@ public class VoluntarioWS {
 	@Produces("text/html; charset=UTF-8")
 	public String getMyProfileDataToEdit(@PathParam("username") String username){
 		
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "El usuario no existe.");
 		} else {
@@ -695,7 +697,7 @@ public class VoluntarioWS {
 								@FormParam("password") String password, 
 								@FormParam("newPassword") String newPassword){
 		
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "El usuario no existe.");
 		} else {
@@ -732,7 +734,7 @@ public class VoluntarioWS {
 	@ResponseBody
 	public String getCampanhasActivas(@QueryParam("username") String username){
 		
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "El usuario no existe");
 		} else {
@@ -762,7 +764,7 @@ public class VoluntarioWS {
 		if(campanha == null){
 			return Utiles.retornarSalida(true, "La campanha no existe.");
 		} else {
-			VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+			VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 			if(voluntario == null){
 				return Utiles.retornarSalida(true, "El usuario no existe");
 			} else {
@@ -795,7 +797,7 @@ public class VoluntarioWS {
 		if(campanha == null){
 			return Utiles.retornarSalida(true, "La campanha no existe.");
 		} else {
-			VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+			VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 			if(voluntario == null){
 				return Utiles.retornarSalida(true, "El usuario no existe.");
 			} else {
@@ -823,11 +825,11 @@ public class VoluntarioWS {
 	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String eliminarContacto(@FormParam("username") String username, @FormParam("eliminar") String usernameAEliminar){
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "El usuario no existe.");
 		} else {
-			VoluntarioEntity vEliminar = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameAEliminar);
+			VoluntarioEntity vEliminar = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameAEliminar.toLowerCase());
 			if(vEliminar == null){
 				return Utiles.retornarSalida(true, "El usuario no existe.");
 			} else {
@@ -854,7 +856,7 @@ public class VoluntarioWS {
 	@ResponseBody
 	public String getNotificaciones(@PathParam("username") String username, @QueryParam("ultimaActualizacion") String ultimaActualizacionString){
 		
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "El usuario no existe.");
 		} else {
@@ -906,7 +908,7 @@ public class VoluntarioWS {
 	@ResponseBody
 	public String getStatusDetail(@PathParam("username") String username){
 		
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "El usuario no existe.");
 		} else {
@@ -955,7 +957,7 @@ public class VoluntarioWS {
 	@ResponseBody
 	public String getListOfPrincipalsOrFriendsOfFriends(@QueryParam("username") String username){
 		
-		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		if(voluntario != null){
 			JSONObject retorno = new JSONObject();
 			JSONArray arrayRetorno = new JSONArray();

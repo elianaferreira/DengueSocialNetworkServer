@@ -129,49 +129,6 @@ public class Utiles {
 	}
 	
 	
-	/**
-	 * Metodo que retorna un voluntario como String pero en formato JSON Object
-	 * Ej.: {
-			  "username": "username",
-			  "nombre": "nombre",
-			  "apellido": "apellido",
-			  "ci": "ci",
-			  "direccion": "direccion",
-			  "telefono": "telefono",
-			  "email": "email"
-			}
-	 * @param voluntario
-	 * @return
-	 */
-	public static String voluntarioToStringJsonStile(VoluntarioEntity voluntario){
-		JSONObject jsonObject = new JSONObject();
-		try {
-			jsonObject.put("error", false);
-			jsonObject.put("username", voluntario.getUserName());
-			jsonObject.put("nombre", voluntario.getNombreReal());
-			//TODO foto de perfil
-			//datos opcionales.
-			if(voluntario.getCi() != null){
-				jsonObject.put("ci", voluntario.getCi());
-			}
-			if(voluntario.getDireccion() != null){
-				jsonObject.put("direccion", voluntario.getDireccion());
-			}
-			if(voluntario.getTelefono() != null){
-				jsonObject.put("telefono", voluntario.getTelefono());
-			}
-			if(voluntario.getEmail() != null){
-				jsonObject.put("email", voluntario.getEmail());
-			}
-			return jsonObject.toString();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	
 	public static void savePhoto(InputStream file, String fileName){
 		try {
             OutputStream out = null;

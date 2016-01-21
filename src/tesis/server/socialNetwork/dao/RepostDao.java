@@ -86,7 +86,7 @@ public class RepostDao extends GenericDao<RepostEntity, Integer> {
 				+ "(select v.userName from VoluntarioEntity v where v.userName= :username))"
 				+ condicionActualizacion;
 		Query query = this.getSession().createQuery(consulta);
-		query.setParameter("username", username);
+		query.setParameter("username", username.toLowerCase());
 		query.setParameter("ultimaactualizacion", ultimaActualizacion);
 		//limitar la cantidad de registros
 		query.setMaxResults(5);
@@ -117,7 +117,7 @@ public class RepostDao extends GenericDao<RepostEntity, Integer> {
 		String consulta = "from RepostEntity rp where rp.autorRepost.userName = :username"
 				+ condicionActualizacion;
 		Query query = this.getSession().createQuery(consulta);
-		query.setParameter("username", username);
+		query.setParameter("username", username.toLowerCase());
 		query.setParameter("ultimaactualizacion", ultimaActualizacion);
 		//limitar la cantidad de registros
 		query.setMaxResults(3);
