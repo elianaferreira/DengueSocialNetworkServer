@@ -457,6 +457,8 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		return listaSimple;
 	}
 	
+	
+	
 		
 }
 

@@ -11,11 +11,13 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 
 import tesis.server.socialNetwork.entity.SolicitudAmistadEntity;
+import tesis.server.socialNetwork.entity.VoluntarioEntity;
 import tesis.server.socialNetwork.utils.Base64;
 
 
@@ -102,5 +104,33 @@ public class SolicitudAmistadDao extends GenericDao<SolicitudAmistadEntity, Inte
 		}
 		
 		return retorno.toString();
+	}
+	
+	public Boolean tienesSolicitudPendiente(VoluntarioEntity solicitante, VoluntarioEntity solicitado){
+		String consulta = "from SolicitudAmistadEntity s where s.usuarioSolicitante = :solicitante and s.usuarioSolicitado = :solicitado";
+		Query query = this.getSession().createQuery(consulta);
+		query.setEntity("solicitante", solicitante);
+		query.setEntity("solicitado", solicitado);
+		List lista = query.list();
+		if(lista.isEmpty()){
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	
+	public Boolean teHaSolicitadoAmistad(VoluntarioEntity solicitante, VoluntarioEntity solicitado){
+		String consulta = "from SolicitudAmistadEntity s where s.usuarioSolicitado = :solicitante and s.usuarioSolicitante = :solicitado";
+		Query query = this.getSession().createQuery(consulta);
+		query.setEntity("solicitante", solicitante);
+		query.setEntity("solicitado", solicitado);
+		List lista = query.list();
+		if(lista.isEmpty()){
+			return false;
+		} else {
+			return true;
+		}
+		
 	}
 }

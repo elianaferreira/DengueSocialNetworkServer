@@ -359,7 +359,12 @@ public class VoluntarioWS {
 					//verificamos que no sean ya amigos
 					if(voluntarioDao.yaEsContacto(voluntarioQueSolicita, contactoSolicitado)){
 						return Utiles.retornarSalida(true, "Ya son amigos.");
-					} else {
+					} else if(solicitudAmistadDao.tienesSolicitudPendiente(voluntarioQueSolicita, contactoSolicitado)){
+						return Utiles.retornarSalida(true, "Ya has enviado una solicitud anteriormente a este voluntario.");
+					} else if(solicitudAmistadDao.teHaSolicitadoAmistad(voluntarioQueSolicita, contactoSolicitado)){
+						return Utiles.retornarSalida(true, "Este voluntario te ha solicitado amistad anteriormente"); 
+					}
+					else {
 						try{
 							SolicitudAmistadEntity nuevaSolicitud = new SolicitudAmistadEntity();
 							nuevaSolicitud.setUsuarioSolicitante(voluntarioQueSolicita);
