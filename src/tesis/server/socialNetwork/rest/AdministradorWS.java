@@ -480,6 +480,7 @@ public class AdministradorWS {
 						cTemp.put("source", c.getContacto().getUserName());
 						cTemp.put("target", c.getVoluntario().getUserName());
 						cTemp.put("type", "arrow");
+						cTemp.put("size", 1);
 						arrayEdges.put(cTemp);
 					}
 					//agregamos el array de enlaces al json de retorno

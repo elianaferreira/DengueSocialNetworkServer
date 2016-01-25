@@ -95,12 +95,14 @@ $(document).ready(function(){
 
 					s = new sigma({ 
 				        graph: jsonData,
-				        container: document.getElementById('graph-container'),
+				        renderer : {
+				        	container: document.getElementById('graph-container'),
+					        type: 'canvas'
+					    },
 				        settings: {
 				            defaultNodeColor: '#ec5148',
-				            minEdgeSize: 5,
-				            maxEdgeSize: 5,
-				            minArrowSize: 5
+						    maxEdgeSize: 5,
+
 				        }
 					});
 
