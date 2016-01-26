@@ -471,7 +471,7 @@ public class AdministradorWS {
 				
 				List<ContactoEntity> listaTotalContactos = contactoDao.listarTodosLosContactos();
 				if(listaTotalContactos.size() == 0){
-					return Utiles.retornarSalida(true, "Aun no hay ninguna relacion de amistad formada dentro de la red.");
+					return Utiles.retornarSalida(true, "Aún no hay ninguna relación de amistad formada dentro de la red.");
 				} else {
 					JSONArray arrayEdges = new JSONArray();
 					for(ContactoEntity c: listaTotalContactos){
@@ -1050,4 +1050,107 @@ public class AdministradorWS {
 			}
 		}
 	}
+	
+	
+	
+	
+	@GET
+	@Path("/solucionados")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String getReportesSolucionados(@QueryParam("admin") String adminName,
+										 @QueryParam("accessToken") String accessToken,
+										 @QueryParam("ultimaActualizacion") String ultimaActualizacionString){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			Timestamp timestamp;
+			try{
+			    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+			    Date parsedDate = dateFormat.parse(ultimaActualizacionString);
+			    timestamp = new java.sql.Timestamp(parsedDate.getTime());
+			    
+			    List<PostEntity> listaRetorno = postDao.listaReportesSolucionados(timestamp);
+			    JSONArray retorno = new JSONArray();
+			    for(int j=0; j<listaRetorno.size(); j++){
+			    	retorno.put(postDao.getJSONFromPost("", listaRetorno.get(j)));
+			    }
+			    
+			    return Utiles.retornarSalida(false, retorno.toString());
+			    
+			}catch(Exception e){
+				e.printStackTrace();
+				return Utiles.retornarSalida(true, "Ha ocurrido un error.");
+			}
+		}
+	}
+	
+	@GET
+	@Path("/noSolucionados")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String getReportesNoSolucionados(@QueryParam("admin") String adminName,
+										 @QueryParam("accessToken") String accessToken,
+										 @QueryParam("ultimaActualizacion") String ultimaActualizacionString){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			Timestamp timestamp;
+			try{
+			    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+			    Date parsedDate = dateFormat.parse(ultimaActualizacionString);
+			    timestamp = new java.sql.Timestamp(parsedDate.getTime());
+			    
+			    List<PostEntity> listaRetorno = postDao.listaReportesNoSolucionados(timestamp);
+			    JSONArray retorno = new JSONArray();
+			    for(int j=0; j<listaRetorno.size(); j++){
+			    	retorno.put(postDao.getJSONFromPost("", listaRetorno.get(j)));
+			    }
+			    
+			    return Utiles.retornarSalida(false, retorno.toString());
+			    
+			}catch(Exception e){
+				e.printStackTrace();
+				return Utiles.retornarSalida(true, "Ha ocurrido un error.");
+			}
+		}
+	}
+	
+	@GET
+	@Path("/cerrados")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String getReportesCerrados(@QueryParam("admin") String adminName,
+										 @QueryParam("accessToken") String accessToken,
+										 @QueryParam("ultimaActualizacion") String ultimaActualizacionString){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			Timestamp timestamp;
+			try{
+			    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+			    Date parsedDate = dateFormat.parse(ultimaActualizacionString);
+			    timestamp = new java.sql.Timestamp(parsedDate.getTime());
+			    
+			    List<PostEntity> listaRetorno = postDao.listaReportesCerrados(timestamp);
+			    JSONArray retorno = new JSONArray();
+			    for(int j=0; j<listaRetorno.size(); j++){
+			    	retorno.put(postDao.getJSONFromPost("", listaRetorno.get(j)));
+			    }
+			    
+			    return Utiles.retornarSalida(false, retorno.toString());
+			    
+			}catch(Exception e){
+				e.printStackTrace();
+				return Utiles.retornarSalida(true, "Ha ocurrido un error.");
+			}
+		}
+	}
+	
 }

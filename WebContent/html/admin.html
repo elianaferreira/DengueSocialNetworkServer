@@ -24,7 +24,13 @@
 	                        </h1>
 	                        <ol class="breadcrumb">
 	                            <li class="active">
-	                                <i class="fa fa-pencil"></i> Reportes
+	                                <span id="listaReportesNoSolucionados" class="badge" style="background-color:#d9534f; cursor:pointer;">no solucionado</span>
+	                            </li>
+	                            <li class="active">
+	                                <span id="listaReportesSolucionados" class="badge" style="background-color:#5cb85c; cursor:pointer;">solucionado</span>
+	                            </li>
+	                            <li>
+	                            	<span id="listaReportesCerrados" class="badge" style="background-color:#337ab7; cursor:pointer;">cerrado</span>
 	                            </li>
 	                        </ol>
 	                    </div>
@@ -35,7 +41,7 @@
 	                 <div class="col-lg-6">
 	                        <div class="panel panel-default">
 	                            <div class="panel-heading">
-	                                <h3 class="panel-title"><i class="fa fa-pencil fa-fw"></i>Todos los Reportes</h3>
+	                                <h3 id="titulo" class="panel-title"><i class="fa fa-pencil fa-fw"></i>Todos los Reportes</h3>
 	                            </div>
                                 <div id="listaReportes" class="list-group">
                                 </div>

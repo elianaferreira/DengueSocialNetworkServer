@@ -422,4 +422,52 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		
 		return lista;
 	}
+	
+	
+	/**
+	 * Metodo que retorna la lista paginada de reportes solucionados
+	 * 
+	 * @param ultimaActualizacion
+	 * @return
+	 */
+	public List<PostEntity> listaReportesSolucionados(Timestamp ultimaActualizacion){
+		String consulta = "from PostEntity p where p.solucionado = true and p.fechaPost< :ultimaactualizacion order by p.fechaPost desc";
+		Query query = getSession().createQuery(consulta);
+		query.setParameter("ultimaactualizacion", ultimaActualizacion);
+		query.setMaxResults(3);
+		List<PostEntity> lista = query.list();
+		return lista;
+	}
+	
+	
+	/**
+	 * Metodo que retorna la lista paginada de reportes no solucionados
+	 * 
+	 * @param ultimaActualizacion
+	 * @return
+	 */
+	public List<PostEntity> listaReportesNoSolucionados(Timestamp ultimaActualizacion){
+		String consulta = "from PostEntity p where p.solucionado = false and p.fechaPost< :ultimaactualizacion order by p.fechaPost desc";
+		Query query = getSession().createQuery(consulta);
+		query.setParameter("ultimaactualizacion", ultimaActualizacion);
+		query.setMaxResults(3);
+		List<PostEntity> lista = query.list();
+		return lista;
+	}
+	
+	
+	/**
+	 * Metodo que retorna la lista paginada de reportes cerrados sin importar que administrador lo haya cerrado
+	 * 
+	 * @param ultimaActualizacion
+	 * @return
+	 */
+	public List<PostEntity> listaReportesCerrados(Timestamp ultimaActualizacion){
+		String consulta = "from PostEntity p where p.cerradoPorAdministrador = true and p.fechaPost< :ultimaactualizacion order by p.fechaPost desc";
+		Query query = getSession().createQuery(consulta);
+		query.setParameter("ultimaactualizacion", ultimaActualizacion);
+		query.setMaxResults(3);
+		List<PostEntity> lista = query.list();
+		return lista;
+	}
 }
