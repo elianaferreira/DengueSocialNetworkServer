@@ -1005,4 +1005,33 @@ public class VoluntarioWS {
 		//en teoria no deberia llegar aca
 		return Utiles.retornarSalida(true, "Error");
 	}
+	
+	
+	@POST
+	@Path("/notification/delete")
+	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String eliminarNotificacion(@FormParam("username") String username,
+										@FormParam("idNotificacion") Integer idNotificacion){
+		
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "El usuario no existe.");
+		} else {
+			NotificacionEntity notificacion = notificacionDao.findByClassAndID(NotificacionEntity.class, idNotificacion);
+			if(notificacion == null){
+				return Utiles.retornarSalida(true, "La notificación no existe.");
+			} else {
+				//eliminamos la notificacion
+				try{
+					notificacionDao.eliminar(notificacion);
+					return Utiles.retornarSalida(false, "Notificación eliminada.");
+				} catch(Exception e){
+					e.printStackTrace();
+					return Utiles.retornarSalida(true, "Ha ocurrido un error al elimina la notificación.");
+				}
+			}
+		}
+	}
 }
