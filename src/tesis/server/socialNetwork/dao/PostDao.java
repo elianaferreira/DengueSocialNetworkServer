@@ -441,13 +441,13 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 	
 	
 	/**
-	 * Metodo que retorna la lista paginada de reportes no solucionados
+	 * Metodo que retorna la lista paginada de reportes no solucionados sin contar los cerrados por el administrador
 	 * 
 	 * @param ultimaActualizacion
 	 * @return
 	 */
 	public List<PostEntity> listaReportesNoSolucionados(Timestamp ultimaActualizacion){
-		String consulta = "from PostEntity p where p.solucionado = false and p.fechaPost< :ultimaactualizacion order by p.fechaPost desc";
+		String consulta = "from PostEntity p where p.solucionado = false and p.cerradoPorAdministrador = false and p.fechaPost< :ultimaactualizacion order by p.fechaPost desc";
 		Query query = getSession().createQuery(consulta);
 		query.setParameter("ultimaactualizacion", ultimaActualizacion);
 		query.setMaxResults(3);

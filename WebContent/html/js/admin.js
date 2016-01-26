@@ -1,6 +1,13 @@
 
 var globalArrayReportes = [];
 
+var URL_TIMELINE = "/admin/timeline";
+var URL_SOLUCIONADOS = "/admin/solucionados";
+var URL_NO_SOLUCIONADOS = "/admin/noSolucionados";
+var URL_CERRADOS = "/admin/cerrados";
+
+var vistaActual = "timeline";
+
 $(document).ready(function(){
 	$('#wrapper').hide();
 	var paramValidate = {
@@ -25,6 +32,8 @@ $(document).ready(function(){
 				var responseJSON = JSON.parse(responseTimeline);
 				if(responseJSON.error == false){
 					var reportesArray = JSON.parse(responseJSON.msj);
+
+					vistaActual = "timeline";
 
 					for(var i = 0; i<reportesArray.length; i++){
 						var reporte = reportesArray[i];
@@ -94,7 +103,19 @@ $(document).ready(function(){
 					accessToken: getAccessToken(),
 					ultimaActualizacion: ultimoReporte.fecha
 				}
-				ajaxRequest("/admin/timeline", "GET", params, function(responseTimeline){
+
+				var urlRequets = "";
+				if(vistaActual == "noSolucionados"){
+					urlRequets = URL_NO_SOLUCIONADOS;
+				} else if(vistaActual == "solucionados"){
+					urlRequets = URL_SOLUCIONADOS;
+				} else if(vistaActual == "cerrados"){
+					urlRequets = URL_CERRADOS;
+				} else {
+					urlRequets = URL_TIMELINE;
+				}
+
+				ajaxRequest(urlRequets, "GET", params, function(responseTimeline){
 					var responseJSON = JSON.parse(responseTimeline);
 					if(responseJSON.error == false){
 						var reportesArray = JSON.parse(responseJSON.msj);
@@ -114,9 +135,8 @@ $(document).ready(function(){
 	$('#listaReportesNoSolucionados').click(function (event){
 		event.preventDefault();
 
-		//obtenemos el ultimo reporte de la lista
-		var ultimoReporte = {};
-		ultimoReporte = globalArrayReportes[globalArrayReportes.length-1];
+		globalArrayReportes = [];
+		vistaActual = "noSolucionados";
 
 		var params = {
 			admin: getAdminUser(),
@@ -143,9 +163,8 @@ $(document).ready(function(){
 	$('#listaReportesSolucionados').click(function (event){
 		event.preventDefault();
 
-		//obtenemos el ultimo reporte de la lista
-		var ultimoReporte = {};
-		ultimoReporte = globalArrayReportes[globalArrayReportes.length-1];
+		globalArrayReportes = [];
+		vistaActual = "solucionados";
 
 		var params = {
 			admin: getAdminUser(),
@@ -172,9 +191,8 @@ $(document).ready(function(){
 	$('#listaReportesCerrados').click(function (event){
 		event.preventDefault();
 
-		//obtenemos el ultimo reporte de la lista
-		var ultimoReporte = {};
-		ultimoReporte = globalArrayReportes[globalArrayReportes.length-1];
+		globalArrayReportes = [];
+		vistaActual = "cerrados";
 
 		var params = {
 			admin: getAdminUser(),
