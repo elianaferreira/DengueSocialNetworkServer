@@ -31,7 +31,7 @@ public class NotificacionDao extends GenericDao<NotificacionEntity, Integer> {
 	}
 	
 	
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void eliminar(NotificacionEntity entity){
 		this.delete(entity);
 	}

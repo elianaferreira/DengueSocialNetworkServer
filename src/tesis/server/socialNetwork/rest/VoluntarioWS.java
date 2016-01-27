@@ -465,7 +465,7 @@ public class VoluntarioWS {
 				} else if(rechazar == true){
 					//se elimina la solicitud de amistad cuando esta es rechazada
 					try{
-						solicitudAmistadDao.delete(solicitud);
+						solicitudAmistadDao.eliminar(solicitud);
 						//solicitud.setAceptada(false);
 						//solicitudAmistadDao.modificar(solicitud);
 						return Utiles.retornarSalida(false, "Se ha eliminado la solicitud de amistad");
@@ -745,7 +745,7 @@ public class VoluntarioWS {
 		} else {
 			try{
 				//buscamos todas las campanhas
-				List<CampanhaEntity> lista = campanhaDao.getAll();
+				List<CampanhaEntity> lista = campanhaDao.getCampanhasVigentes();
 				JSONArray retorno = new JSONArray();
 				for(int i=0; i<lista.size(); i++){
 					retorno.put(campanhaDao.getJSONFromCampanha(lista.get(i), username));
@@ -1025,6 +1025,14 @@ public class VoluntarioWS {
 			} else {
 				//eliminamos la notificacion
 				try{
+					//TODO elimina la solicitud de amistad correspondiente dependiendo del tipo de notificacion
+					if(notificacion.getTipoNotificacion().equals(Utiles.NOTIF_NUEVA_SOLICITUD_AMISTAD)){
+						SolicitudAmistadEntity solicitudAsociada = solicitudAmistadDao.getSolicitudFromVolunteers(notificacion.getVoluntarioCreadorNotificacion(),
+								notificacion.getVoluntarioTarget());
+						if(solicitudAsociada != null){
+							solicitudAmistadDao.eliminar(solicitudAsociada);
+						}
+					}
 					notificacionDao.eliminar(notificacion);
 					return Utiles.retornarSalida(false, "Notificación eliminada.");
 				} catch(Exception e){

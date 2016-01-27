@@ -38,6 +38,8 @@ public class CampanhaEntity {
 	private List<VoluntarioEntity> voluntariosInvitados;
 	private List<VoluntarioEntity> voluntariosAdheridos;
 	
+	private Date timestampGuardado;
+	
 	
 	//constructor
 	public CampanhaEntity() {
@@ -121,6 +123,17 @@ public class CampanhaEntity {
 	}
 	public void setVoluntariosAdheridos(List<VoluntarioEntity> voluntariosAdheridos) {
 		this.voluntariosAdheridos = voluntariosAdheridos;
+	}
+
+	@Column(name="FECHA_GUARDADO", nullable=true, columnDefinition="TIMESTAMP WITHOUT TIME ZONE")
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getTimestampGuardado() {
+		return timestampGuardado;
+	}
+
+
+	public void setTimestampGuardado(Date timestampGuardado) {
+		this.timestampGuardado = timestampGuardado;
 	}
 	
 }

@@ -44,7 +44,8 @@ $(document).ready(function(){
 			                            </div>\
 			                        </a>\
 								</div>\
-							</div>');
+							</div>\
+							<button id="btnCrearNuevaCampanha" type="button" class="btn btn-danger">crear</button>');
 
 					for(var i = 0; i<arrayCampanhas.length; i++){
 						var c = arrayCampanhas[i];
@@ -63,7 +64,7 @@ $(document).ready(function(){
 					var params = {
 						admin: getAdminUser(),
 						accessToken: getAccessToken(),
-						ultimaactualizacion: ultimaCampanha.fechaInicio
+						ultimaactualizacion: ultimaCampanha.timestamp
 					}
 				
 					ajaxRequest("/admin/listCampaigns", "GET", params, function(response){
@@ -79,6 +80,11 @@ $(document).ready(function(){
 							}
 						}
 					});
+			});
+
+			$(document).on('click', '#btnCrearNuevaCampanha', function (event){
+				event.preventDefault();
+				window.open("campanha.html", "_self");
 			});
 
 			$(document).on('click', '.campClass', function (event){

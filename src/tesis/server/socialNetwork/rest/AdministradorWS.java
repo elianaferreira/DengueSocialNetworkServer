@@ -641,7 +641,7 @@ public class AdministradorWS {
 							for(int i=0; i<arrayInvitados.length(); i++){
 								String username = arrayInvitados.getString(i);
 								//buscamos el username en la Base de Datos
-								VoluntarioEntity invitado = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username);
+								VoluntarioEntity invitado = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 								if(invitado == null || invitado.getActivo() == false){
 									retornoNoInvitados.put(username);
 								} else {

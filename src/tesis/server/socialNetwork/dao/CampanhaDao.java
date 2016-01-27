@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.hibernate.Query;
@@ -24,8 +26,12 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 		return CampanhaEntity.class;
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void guardar(CampanhaEntity entity){
 		entity.setActiva(true);
+		Date date = new Date();
+		Timestamp timestamp = new Timestamp(date.getTime());
+		entity.setTimestampGuardado(timestamp);
 		this.save(entity);
 	}
 	
@@ -63,6 +69,7 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 		jsonRetorno.put("fechaFin", c.getFechaFinalizacion());
 		jsonRetorno.put("cantAdheridos", c.getVoluntariosAdheridos().size());
 		jsonRetorno.put("cantInvitados", c.getVoluntariosInvitados().size());
+		jsonRetorno.put("timestamp", c.getTimestampGuardado());
 		
 		//verificamos si es un usuario el que lo solicita
 		if(username != ""){
@@ -109,9 +116,26 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 	public List<CampanhaEntity> listaCampanhas(Date ultimaFecha){
 		
 		//"from PostEntity p where p.quienDebeSolucionar = :ente and p.fechaPost < :ultimaActualizacion order by p.fechaPost desc
-		String consulta = "from CampanhaEntity c where c.fechaLanzamiento < :ultimaActualizacion order by c.fechaLanzamiento desc";
+		String consulta = "from CampanhaEntity c where c.timestampGuardado < ultimaActualizacion order by c.fechaLanzamiento desc";
 		Query query = this.getSession().createQuery(consulta);
 		query.setParameter("ultimaActualizacion", ultimaFecha);
+		query.setMaxResults(2);
+		List lista = query.list();
+		
+		return lista;
+	}
+	
+	
+	/**
+	 * Metodo que retorna la lista de campanhas que hasta la fecha aun siguen vigentes
+	 * 
+	 * @return
+	 */
+	public List<CampanhaEntity> getCampanhasVigentes(){
+		Date currentDate = new Date();
+		String consulta = "from CampanhaEntity c where c.fechaFinalizacion >= :currentDate order by c.fechaLanzamiento desc";
+		Query query = this.getSession().createQuery(consulta);
+		query.setParameter("currentDate", currentDate);
 		query.setMaxResults(2);
 		List lista = query.list();
 		

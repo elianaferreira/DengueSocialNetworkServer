@@ -299,6 +299,7 @@ $(document).ready(function(){
 													$('#fechaFin').val("");
 													$('#inputBuscar').val("");
 													$('#listaUsuarios').empty();
+													$('#listaUsuariosAdheridos').empty();
 												}
 											});
 										//}
@@ -364,5 +365,10 @@ $(document).ready(function(){
 				}
 			});
 		}
+	});
+
+	$('#btnListarEstadisticasLanzadas').click(function(event){
+		event.stopPropagation();
+		window.open("listaCampanhas.html", "_self");
 	});
 });

@@ -49,6 +49,11 @@ public class SolicitudAmistadDao extends GenericDao<SolicitudAmistadEntity, Inte
 	}
 	
 	
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void eliminar(SolicitudAmistadEntity entity){
+		this.delete(entity);
+	}
+	
 	/**
 	 * Metodo que trae la lista de solicitudes pendientes del voluntario solicitado
 	 * 
@@ -131,6 +136,22 @@ public class SolicitudAmistadDao extends GenericDao<SolicitudAmistadEntity, Inte
 		} else {
 			return true;
 		}
-		
+	}
+	
+	
+	/**
+	 * Metodo que retorna la solicitud en base al los usuarios solicitantes y solicitado
+	 * 
+	 * @param solicitante
+	 * @param solicitado
+	 * @return
+	 */
+	public SolicitudAmistadEntity getSolicitudFromVolunteers(VoluntarioEntity solicitante, VoluntarioEntity solicitado){
+		String consulta = "from SolicitudAmistadEntity s where s.usuarioSolicitado = :solicitado and s.usuarioSolicitante = :solicitante";
+		Query query = this.getSession().createQuery(consulta);
+		query.setEntity("solicitante", solicitante);
+		query.setEntity("solicitado", solicitado);
+		SolicitudAmistadEntity entity = (SolicitudAmistadEntity) query.uniqueResult();
+		return entity;
 	}
 }
