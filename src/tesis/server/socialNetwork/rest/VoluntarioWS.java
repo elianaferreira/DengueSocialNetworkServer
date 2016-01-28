@@ -569,7 +569,7 @@ public class VoluntarioWS {
 		//verificamos si existe un usuario con ese username
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameFoto.toLowerCase());
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "El usuario no existe");
+			return Utiles.retornarSalida(true, "El usuario no existe.");
 		} else {
 			//verificamos si tiene foto de perfil
 			if(voluntario.getFotoDePerfil() == null){
@@ -651,10 +651,9 @@ public class VoluntarioWS {
 					return Utiles.retornarSalida(true, "El usuario no existe");
 				} else {
 					JSONObject retorno = voluntarioDao.getJSONFromVoluntario(voluntario);
-					//retorno.put("password", voluntario.getPassword());
-					if(voluntario.getFotoDePerfil() != null){
+					/*if(voluntario.getFotoDePerfil() != null){
 						retorno.put("fotoPerfil", Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
-					}
+					}*/
 					//verificamos si son amigos
 					if(voluntarioDao.yaEsContacto(solicitante, voluntario)){
 						retorno.put("sonAmigos", true);
