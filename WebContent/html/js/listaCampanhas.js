@@ -18,8 +18,7 @@ $(document).ready(function(){
 			
 			var params = {
 				admin: getAdminUser(),
-				accessToken: getAccessToken(),
-				ultimaactualizacion: getCurrentTimestampWithFormat()
+				accessToken: getAccessToken()
 			}
 		
 			ajaxRequest("/admin/listCampaigns", "GET", params, function(response){
@@ -64,7 +63,7 @@ $(document).ready(function(){
 					var params = {
 						admin: getAdminUser(),
 						accessToken: getAccessToken(),
-						ultimaactualizacion: ultimaCampanha.timestamp
+						id: ultimaCampanha.id
 					}
 				
 					ajaxRequest("/admin/listCampaigns", "GET", params, function(response){

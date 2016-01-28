@@ -29,9 +29,6 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void guardar(CampanhaEntity entity){
 		entity.setActiva(true);
-		Date date = new Date();
-		Timestamp timestamp = new Timestamp(date.getTime());
-		entity.setTimestampGuardado(timestamp);
 		this.save(entity);
 	}
 	
@@ -69,7 +66,6 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 		jsonRetorno.put("fechaFin", c.getFechaFinalizacion());
 		jsonRetorno.put("cantAdheridos", c.getVoluntariosAdheridos().size());
 		jsonRetorno.put("cantInvitados", c.getVoluntariosInvitados().size());
-		jsonRetorno.put("timestamp", c.getTimestampGuardado());
 		
 		//verificamos si es un usuario el que lo solicita
 		if(username != ""){
@@ -119,6 +115,31 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 		String consulta = "from CampanhaEntity c where c.timestampGuardado < ultimaActualizacion order by c.fechaLanzamiento desc";
 		Query query = this.getSession().createQuery(consulta);
 		query.setParameter("ultimaActualizacion", ultimaFecha);
+		query.setMaxResults(2);
+		List lista = query.list();
+		
+		return lista;
+	}
+	
+	
+	/**
+	 * Metodo que retorna la lista de campanhas de forma paginada en base al ID
+	 * 
+	 * @param idUltima
+	 * @return
+	 */
+	public List<CampanhaEntity> listaCampanhas(Integer idUltima){
+		String consulta = "";
+		if(idUltima == null){
+			consulta = "from CampanhaEntity c order by c.idCampanha desc";
+		} else {
+			consulta = "from CampanhaEntity c where c.idCampanha < :id order by c.idCampanha desc";
+		}
+		Query query = this.getSession().createQuery(consulta);
+		if(idUltima != null){
+			query.setInteger("id", idUltima);
+		}
+		
 		query.setMaxResults(2);
 		List lista = query.list();
 		

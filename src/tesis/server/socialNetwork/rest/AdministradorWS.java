@@ -972,17 +972,18 @@ public class AdministradorWS {
 	@ResponseBody
 	public String listaCampanhas(@QueryParam("admin") String adminName, 
 								@QueryParam("accessToken") String accessToken,
-								@QueryParam("ultimaactualizacion") String ultimaActualizacionString){
+								@QueryParam("id") Integer idUltimo){
 		
 		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		if(admin == null){
 			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
 		} else {
 			try{
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			    Date parsedDate = dateFormat.parse(ultimaActualizacionString);
+				//SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			    //Date parsedDate = dateFormat.parse(ultimaActualizacionString);
 			    
-			    List<CampanhaEntity> lista = campanhaDao.listaCampanhas(parsedDate);
+			    //List<CampanhaEntity> lista = campanhaDao.listaCampanhas(parsedDate);
+				List<CampanhaEntity> lista = campanhaDao.listaCampanhas(idUltimo);
 			    JSONArray retorno = new JSONArray();
 			    for(int k=0; k<lista.size(); k++){
 			    	retorno.put(campanhaDao.getJSONFromCampanha(lista.get(k), ""));
