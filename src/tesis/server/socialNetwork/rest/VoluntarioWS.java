@@ -438,11 +438,11 @@ public class VoluntarioWS {
 		//buscamos la solicitud en la Base de Datos
 		SolicitudAmistadEntity solicitud = solicitudAmistadDao.findByClassAndID(SolicitudAmistadEntity.class, idSolicitud);
 		if(solicitud == null){
-			return Utiles.retornarSalida(true, "La solicitud no existe");
+			return Utiles.retornarSalida(true, "La solicitud no existe.");
 		} else {
 			//verificamos que el usuario solicitado haya iniciado sesion
 			if(!Utiles.haIniciadoSesion(solicitud.getUsuarioSolicitado())){
-				return Utiles.retornarSalida(true, "No has iniciado sesión");
+				return Utiles.retornarSalida(true, "No has iniciado sesión.");
 			} else {
 				//vemos si la solicitud es aceptada o rechazada
 				if(aceptar == true){
@@ -456,11 +456,15 @@ public class VoluntarioWS {
 						solicitud.setAceptada(true);
 						//la actualizamos
 						solicitudAmistadDao.modificar(solicitud);
-						//TODO enviar notificacion al solicitante de que se ha aceptado la solicitud de amistad
-						return Utiles.retornarSalida(false, "Solicitud de amistad aceptada");
+						//eliminar la notificacion correspondiente
+						NotificacionEntity notifCorrespondiente = notificacionDao.buscarPorVoluntarios(solicitud.getUsuarioSolicitante(), solicitud.getUsuarioSolicitado());
+						if(notifCorrespondiente != null){
+							notificacionDao.eliminar(notifCorrespondiente);
+						}
+						return Utiles.retornarSalida(false, "Solicitud de amistad aceptada.");
 					} catch(Exception ex){
 						ex.printStackTrace();
-						return Utiles.retornarSalida(true, "Error al aceptar la solicitud de amistad");
+						return Utiles.retornarSalida(true, "Error al aceptar la solicitud de amistad.");
 					}
 				} else if(rechazar == true){
 					//se elimina la solicitud de amistad cuando esta es rechazada
@@ -468,10 +472,14 @@ public class VoluntarioWS {
 						solicitudAmistadDao.eliminar(solicitud);
 						//solicitud.setAceptada(false);
 						//solicitudAmistadDao.modificar(solicitud);
-						return Utiles.retornarSalida(false, "Se ha eliminado la solicitud de amistad");
+						NotificacionEntity notifCorrespondiente = notificacionDao.buscarPorVoluntarios(solicitud.getUsuarioSolicitante(), solicitud.getUsuarioSolicitado());
+						if(notifCorrespondiente != null){
+							notificacionDao.eliminar(notifCorrespondiente);
+						}
+						return Utiles.retornarSalida(false, "Se ha eliminado la solicitud de amistad.");
 					}catch(Exception ex){
 						ex.printStackTrace();
-						return Utiles.retornarSalida(true, "Error al eliminar la solicitud de amistad");
+						return Utiles.retornarSalida(true, "Error al eliminar la solicitud de amistad.");
 					}
 				}
 			}
@@ -493,16 +501,16 @@ public class VoluntarioWS {
 		} else {
 			VoluntarioEntity voluntarioQueSolicita = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 			if(voluntarioQueSolicita == null){
-				return Utiles.retornarSalida(true, "El usuario no existe");
+				return Utiles.retornarSalida(true, "El usuario no existe.");
 			} else {
 				//verificamos que el usuario que solicita haya iniciado sesion
 				if(!Utiles.haIniciadoSesion(voluntarioQueSolicita)){
-					return Utiles.retornarSalida(true, "No has iniciado sesión");
+					return Utiles.retornarSalida(true, "No has iniciado sesión.");
 				} else {
 					//llamamos al dao que se encarga de la busqueda
 					List<VoluntarioEntity> listaResultado = voluntarioDao.buscarUsuarios(criterioBusqueda);
 					if(listaResultado == null){
-						return Utiles.retornarSalida(true, "No hay usuario con ese nombre");
+						return Utiles.retornarSalida(true, "No hay usuario con ese nombre.");
 					} else {
 						JSONArray retorno = new JSONArray();
 						//a cada usuario le agregamos la cantidad de amigos que tiene y un boolean de si son amigos
@@ -538,7 +546,7 @@ public class VoluntarioWS {
 		//verificaciones del usuario
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "No existe el usuario");
+			return Utiles.retornarSalida(true, "No existe el usuario.");
 		} else {
 				//obtenemos la lista de contactos
 				List<VoluntarioEntity> listaContactos = voluntarioDao.getListaContactos(voluntario);
@@ -740,7 +748,7 @@ public class VoluntarioWS {
 		
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		if(voluntario == null){
-			return Utiles.retornarSalida(true, "El usuario no existe");
+			return Utiles.retornarSalida(true, "El usuario no existe.");
 		} else {
 			try{
 				//buscamos todas las campanhas
@@ -811,6 +819,11 @@ public class VoluntarioWS {
 					try{
 						campanha.getVoluntariosAdheridos().add(voluntario);
 						campanhaDao.modificar(campanha);
+						//buscamos la notificacion correspondiente y la eliminamos
+						NotificacionEntity entity = notificacionDao.buscarPorCampanhaYvoluntario(voluntario, campanha);
+						if(entity != null){
+							notificacionDao.eliminar(entity);
+						}
 						return Utiles.retornarSalida(false, "Voluntario adherido.");
 					} catch(Exception e){
 						e.printStackTrace();
@@ -1024,7 +1037,6 @@ public class VoluntarioWS {
 			} else {
 				//eliminamos la notificacion
 				try{
-					//TODO elimina la solicitud de amistad correspondiente dependiendo del tipo de notificacion
 					if(notificacion.getTipoNotificacion().equals(Utiles.NOTIF_NUEVA_SOLICITUD_AMISTAD)){
 						SolicitudAmistadEntity solicitudAsociada = solicitudAmistadDao.getSolicitudFromVolunteers(notificacion.getVoluntarioCreadorNotificacion(),
 								notificacion.getVoluntarioTarget());

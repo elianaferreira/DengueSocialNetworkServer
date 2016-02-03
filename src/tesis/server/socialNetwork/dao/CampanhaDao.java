@@ -32,7 +32,7 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 		this.save(entity);
 	}
 	
-	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void modificar(CampanhaEntity entity){
 		this.update(entity);
 	}
