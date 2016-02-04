@@ -43,7 +43,7 @@ public class SolicitudAmistadDao extends GenericDao<SolicitudAmistadEntity, Inte
 	}
 	
 	
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void modificar(SolicitudAmistadEntity solicitudAmistadEntity){
 		this.update(solicitudAmistadEntity);
 	}

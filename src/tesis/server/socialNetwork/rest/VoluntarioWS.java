@@ -824,7 +824,7 @@ public class VoluntarioWS {
 						if(entity != null){
 							notificacionDao.eliminar(entity);
 						}
-						return Utiles.retornarSalida(false, "Voluntario adherido.");
+						return Utiles.retornarSalida(false, "Te has adherido a la campaña.");
 					} catch(Exception e){
 						e.printStackTrace();
 						return Utiles.retornarSalida(true, "Ha ocurrido un error al adherirse a la campaña.");
@@ -1049,6 +1049,68 @@ public class VoluntarioWS {
 				} catch(Exception e){
 					e.printStackTrace();
 					return Utiles.retornarSalida(true, "Ha ocurrido un error al elimina la notificación.");
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * Metodo que se encarga de aceptar una notificacion de amistad y acturar dependiendo del tipo de notificacion de que se trate
+	 * 
+	 * @param username
+	 * @param idNotificacion
+	 * @return
+	 */
+	
+	@POST
+	@Path("/notification/accept")
+	@Consumes("application/x-www-form-urlencoded")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String aceptarNotificacion(@FormParam("username") String username,
+			@FormParam("idNotificacion") Integer idNotificacion){
+		
+		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
+		if(voluntario == null){
+			return Utiles.retornarSalida(true, "El usuario no existe.");
+		} else {
+			NotificacionEntity notificacion = notificacionDao.findByClassAndID(NotificacionEntity.class, idNotificacion);
+			if(notificacion == null){
+				return Utiles.retornarSalida(true, "La notificación no existe.");
+			} else {
+				try{
+					
+					//adherirse a la campannha
+					if(notificacion.getTipoNotificacion().equals(Utiles.NOTIF_INVITADO_CAMPANHA)){
+						CampanhaEntity campanha = notificacion.getCampanha();
+						campanha.getVoluntariosAdheridos().add(voluntario);
+						campanhaDao.modificar(campanha);
+						notificacionDao.eliminar(notificacion);
+						return Utiles.retornarSalida(false, "Te has adherido a la campaña.");
+					} else {
+						//se hacen amigos
+						VoluntarioEntity voluntarioSolicitante = notificacion.getVoluntarioCreadorNotificacion();
+						ContactoEntity nuevoContacto = new ContactoEntity();
+						nuevoContacto.setVoluntario(voluntarioSolicitante);
+						nuevoContacto.setContacto(voluntario);
+						contactoDao.guardar(nuevoContacto);
+						//buscamos la solicitud correspondiente
+						SolicitudAmistadEntity solicitudAsociada = solicitudAmistadDao.getSolicitudFromVolunteers(voluntarioSolicitante, voluntario);
+						solicitudAsociada.setAceptada(true);
+						//la actualizamos
+						solicitudAmistadDao.modificar(solicitudAsociada);
+						notificacionDao.eliminar(notificacion);
+						return Utiles.retornarSalida(false, "Solicitud de amistad aceptada.");
+					}
+					
+				} catch(Exception e){
+					e.printStackTrace();
+					if(notificacion.getTipoNotificacion().equals(Utiles.NOTIF_INVITADO_CAMPANHA)){
+						return Utiles.retornarSalida(true, "Ha ocurrido un error al unirte a la campaña.");
+					} else {
+						return Utiles.retornarSalida(true, "Ha ocurrido un error al aceptar la solicitud de amistad.");
+					}
 				}
 			}
 		}
