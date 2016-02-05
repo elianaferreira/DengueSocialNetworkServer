@@ -162,4 +162,31 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 		
 		return lista;
 	}
+	
+	
+	/**
+	 * retorna las campanhas de forma paginada en base al ultimo ID consultado y dependiendo de si se solicitan
+	 * los mas recientes o los mas viejos
+	 * 
+	 * @param ultimoID
+	 * @param masRecientes
+	 * @return
+	 */
+	public List<CampanhaEntity> getCampanhasVigentesPaginado(Integer ultimoID, Boolean masRecientes){
+		Date currentDate = new Date();
+		String consulta = "";
+		if(masRecientes){
+			consulta = "from CampanhaEntity c where c.fechaFinalizacion >= :currentDate and c.idCampanha > :ultimoID c.order by c.fechaLanzamiento desc";
+		} else {
+			//mas antiguos
+			consulta = "from CampanhaEntity c where c.fechaFinalizacion >= :currentDate and c.idCampanha > :ultimoID c.order by c.fechaLanzamiento desc";
+		}
+		
+		Query query = this.getSession().createQuery(consulta);
+		query.setParameter("currentDate", currentDate);
+		query.setMaxResults(2);
+		List lista = query.list();
+		
+		return lista;
+	}
 }

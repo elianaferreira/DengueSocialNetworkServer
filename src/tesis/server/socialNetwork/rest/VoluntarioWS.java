@@ -744,20 +744,31 @@ public class VoluntarioWS {
 	@Path("/user/campaigns")
 	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
-	public String getCampanhasActivas(@QueryParam("username") String username){
+	public String getCampanhasActivas(@QueryParam("username") String username, 
+										@QueryParam("ultimoID") Integer ultimoIdD,
+										@QueryParam("top") Boolean MasRecientes){
 		
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		if(voluntario == null){
 			return Utiles.retornarSalida(true, "El usuario no existe.");
 		} else {
 			try{
-				//buscamos todas las campanhas
-				List<CampanhaEntity> lista = campanhaDao.getCampanhasVigentes();
-				JSONArray retorno = new JSONArray();
-				for(int i=0; i<lista.size(); i++){
-					retorno.put(campanhaDao.getJSONFromCampanha(lista.get(i), username));
+				if(ultimoIdD == null){
+					//buscamos todas las campanhas
+					List<CampanhaEntity> lista = campanhaDao.getCampanhasVigentes();
+					JSONArray retorno = new JSONArray();
+					for(int i=0; i<lista.size(); i++){
+						retorno.put(campanhaDao.getJSONFromCampanha(lista.get(i), username));
+					}
+					return Utiles.retornarSalida(false, retorno.toString());
+				} else {
+					List<CampanhaEntity> listaPaginada = campanhaDao.getCampanhasVigentesPaginado(ultimoIdD, MasRecientes);
+					JSONArray retorno = new JSONArray();
+					for(int i=0; i<listaPaginada.size(); i++){
+						retorno.put(campanhaDao.getJSONFromCampanha(listaPaginada.get(i), username));
+					}
+					return Utiles.retornarSalida(false, retorno.toString());
 				}
-				return Utiles.retornarSalida(false, retorno.toString());
 			} catch(Exception e){
 				e.printStackTrace();
 				return Utiles.retornarSalida(true, "Ha ocurrido un error al obtener las campañas lanzadas.");
