@@ -176,14 +176,15 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 		Date currentDate = new Date();
 		String consulta = "";
 		if(masRecientes){
-			consulta = "from CampanhaEntity c where c.fechaFinalizacion >= :currentDate and c.idCampanha > :ultimoID c.order by c.fechaLanzamiento desc";
+			consulta = "from CampanhaEntity c where c.fechaFinalizacion >= :currentDate and c.idCampanha > :ultimoID order by c.fechaLanzamiento asc";
 		} else {
 			//mas antiguos
-			consulta = "from CampanhaEntity c where c.fechaFinalizacion >= :currentDate and c.idCampanha > :ultimoID c.order by c.fechaLanzamiento desc";
+			consulta = "from CampanhaEntity c where c.fechaFinalizacion >= :currentDate and c.idCampanha > :ultimoID order by c.fechaLanzamiento desc";
 		}
 		
 		Query query = this.getSession().createQuery(consulta);
 		query.setParameter("currentDate", currentDate);
+		query.setParameter("ultimoID", ultimoID);
 		query.setMaxResults(2);
 		List lista = query.list();
 		
