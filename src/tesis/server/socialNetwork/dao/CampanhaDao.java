@@ -154,7 +154,7 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 	 */
 	public List<CampanhaEntity> getCampanhasVigentes(){
 		Date currentDate = new Date();
-		String consulta = "from CampanhaEntity c where c.fechaFinalizacion >= :currentDate order by c.fechaLanzamiento desc";
+		String consulta = "from CampanhaEntity c where c.fechaFinalizacion >= :currentDate order by c.idCampanha desc";
 		Query query = this.getSession().createQuery(consulta);
 		query.setParameter("currentDate", currentDate);
 		query.setMaxResults(2);
@@ -176,10 +176,10 @@ public class CampanhaDao extends GenericDao<CampanhaEntity, Integer> {
 		Date currentDate = new Date();
 		String consulta = "";
 		if(masRecientes){
-			consulta = "from CampanhaEntity c where c.fechaFinalizacion >= :currentDate and c.idCampanha > :ultimoID order by c.fechaLanzamiento asc";
+			consulta = "from CampanhaEntity c where c.fechaFinalizacion >= :currentDate and c.idCampanha > :ultimoID order by c.idCampanha asc";
 		} else {
 			//mas antiguos
-			consulta = "from CampanhaEntity c where c.fechaFinalizacion >= :currentDate and c.idCampanha > :ultimoID order by c.fechaLanzamiento desc";
+			consulta = "from CampanhaEntity c where c.fechaFinalizacion >= :currentDate and c.idCampanha < :ultimoID order by c.idCampanha desc";
 		}
 		
 		Query query = this.getSession().createQuery(consulta);

@@ -273,6 +273,7 @@ $(document).ready(function(){
 												if(response.error == true){
 													mostrarAlerta("Error", response.msj);
 												} else {
+													arrayUsuariosInvitados = [];
 													//mostramos los voluntarios no invitados
 													var arrayNoInvitados = JSON.parse(response.msj);
 													if(arrayNoInvitados.length == 0){

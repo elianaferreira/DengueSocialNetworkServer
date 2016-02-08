@@ -35,11 +35,11 @@ $(document).ready(function(){
 	            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->\
 	            <div class="collapse navbar-collapse navbar-ex1-collapse">\
 	                <ul class="nav navbar-nav side-nav">\
+	                <li class="opcion" id="charts" data-url="estadisticas.html">\
+	                        <a href=""><i class="fa fa-fw fa-bar-chart-o"></i> Estad&iacute;sticas</a>\
+	                    </li>\
 	                    <li class="opcion" id="dashboard" data-url="admin.html">\
 	                        <a href=""><i class="fa fa-fw fa-pencil"></i> Reportes</a>\
-	                    </li>\
-	                    <li class="opcion" id="charts" data-url="estadisticas.html">\
-	                        <a href=""><i class="fa fa-fw fa-bar-chart-o"></i> Estad&iacute;sticas</a>\
 	                    </li>\
 	                    <li class="opcion" id="voluntarios" data-url="voluntarios.html">\
 	                        <a href=""><i class="fa fa-fw fa-user"></i> Voluntarios</a>\
