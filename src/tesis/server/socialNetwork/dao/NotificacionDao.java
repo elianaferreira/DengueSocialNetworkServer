@@ -47,17 +47,20 @@ public class NotificacionDao extends GenericDao<NotificacionEntity, Integer> {
 	 */
 	
 	//TODO verificar que no este enviando solicitudes de amistad ya aceptadas
-	public List<NotificacionEntity> getListaNotificacion(String username, Timestamp ultimaActualizacion){
-		String consulta = "from NotificacionEntity n where n.voluntarioTarget.userName= :username";
-		if(ultimaActualizacion != null){
-			consulta += " and n.fechaCreacionNotificacion > :ultimaActualizacion";
+	public List<NotificacionEntity> getListaNotificacion(String username, Integer ultimoID){
+		String consulta = "";
+		if(ultimoID == null){
+			consulta = "from NotificacionEntity n where n.voluntarioTarget.userName= :username order by n.idNotificacion desc";
+		} else {
+			consulta = "from NotificacionEntity n where n.voluntarioTarget.userName= :username and n.idNotificacion > :ultimoID order by n.idNotificacion asc";
 		}
+		
 		Query query = this.getSession().createQuery(consulta);
 		query.setParameter("username", username.toLowerCase());
-		if(ultimaActualizacion != null){
-			query.setParameter("ultimaActualizacion", ultimaActualizacion);
+		if(ultimoID != null){
+			query.setParameter("ultimoID", ultimoID);
 		}
-		query.setMaxResults(70);
+		//query.setMaxResults(70);
 		List<NotificacionEntity> lista = query.list();
 			
 		return lista;

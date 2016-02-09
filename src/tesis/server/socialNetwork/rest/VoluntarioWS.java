@@ -882,7 +882,7 @@ public class VoluntarioWS {
 	@Path("/user/notifications/{username}")
 	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
-	public String getNotificaciones(@PathParam("username") String username, @QueryParam("ultimaActualizacion") String ultimaActualizacionString){
+	public String getNotificaciones(@PathParam("username") String username, @QueryParam("ultimoID") Integer ultimoID){
 		
 		VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, username.toLowerCase());
 		if(voluntario == null){
@@ -892,39 +892,34 @@ public class VoluntarioWS {
 				return Utiles.retornarSalida(true, "No has iniciado sesión.");
 			} else {
 				List<NotificacionEntity> lista = new ArrayList<NotificacionEntity>();
-				if(ultimaActualizacionString != null && !ultimaActualizacionString.equals("")){
-					Timestamp timestamp;
-					try{
-					    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
-					    Date parsedDate = dateFormat.parse(ultimaActualizacionString);
-					    timestamp = new java.sql.Timestamp(parsedDate.getTime());
-						lista = notificacionDao.getListaNotificacion(username, timestamp);
-					}catch(Exception e){
-						e.printStackTrace();
+				try{
+					if(ultimoID != null){
+						lista = notificacionDao.getListaNotificacion(username, ultimoID);
+					} else {
 						lista = notificacionDao.getListaNotificacion(username, null);
 					}
-				} else {
-					lista = notificacionDao.getListaNotificacion(username, null);
-				}
-				
-				//pasamos cada notificacion a JSON
-				JSONArray retorno = new JSONArray();
-				for(int k=0; k<lista.size(); k++){
-					JSONObject temp = new JSONObject();
-					temp.put("id", lista.get(k).getIdNotificacion());
-					temp.put("tipo", lista.get(k).getTipoNotificacion());
-					temp.put("mensaje", lista.get(k).getMensaje());
-					temp.put("fecha", lista.get(k).getFechaCreacionNotificacion());
-					if(lista.get(k).getCampanha() != null){
-						temp.put("campanha", campanhaDao.getJSONFromCampanha(lista.get(k).getCampanha(), username));
+					
+					//pasamos cada notificacion a JSON
+					JSONArray retorno = new JSONArray();
+					for(int k=0; k<lista.size(); k++){
+						JSONObject temp = new JSONObject();
+						temp.put("id", lista.get(k).getIdNotificacion());
+						temp.put("tipo", lista.get(k).getTipoNotificacion());
+						temp.put("mensaje", lista.get(k).getMensaje());
+						temp.put("fecha", lista.get(k).getFechaCreacionNotificacion());
+						if(lista.get(k).getCampanha() != null){
+							temp.put("campanha", campanhaDao.getJSONFromCampanha(lista.get(k).getCampanha(), username));
+						}
+						if(lista.get(k).getVoluntarioCreadorNotificacion() != null){
+							temp.put("creador", voluntarioDao.getJSONFromVoluntario(lista.get(k).getVoluntarioCreadorNotificacion()));
+						}
+						retorno.put(temp);
 					}
-					if(lista.get(k).getVoluntarioCreadorNotificacion() != null){
-						//TODO se puede pasar solo el usernameString y el nombre?
-						temp.put("creador", voluntarioDao.getJSONFromVoluntario(lista.get(k).getVoluntarioCreadorNotificacion()));
-					}
-					retorno.put(temp);
+					return Utiles.retornarSalida(false, retorno.toString());
+				} catch(Exception e){
+					e.printStackTrace();
+					return Utiles.retornarSalida(true, "Hubo un error al obtener las notificaciones.");
 				}
-				return Utiles.retornarSalida(false, retorno.toString());
 			}
 		}
 	}
