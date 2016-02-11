@@ -456,10 +456,11 @@ public class VoluntarioWS {
 						solicitud.setAceptada(true);
 						//la actualizamos
 						solicitudAmistadDao.modificar(solicitud);
-						//eliminar la notificacion correspondiente
 						NotificacionEntity notifCorrespondiente = notificacionDao.buscarPorVoluntarios(solicitud.getUsuarioSolicitante(), solicitud.getUsuarioSolicitado());
 						if(notifCorrespondiente != null){
-							notificacionDao.eliminar(notifCorrespondiente);
+							notifCorrespondiente.setAceptada(true);
+							notifCorrespondiente.setRechazada(false);
+							notificacionDao.modificar(notifCorrespondiente);
 						}
 						return Utiles.retornarSalida(false, "Solicitud de amistad aceptada.");
 					} catch(Exception ex){
@@ -474,7 +475,9 @@ public class VoluntarioWS {
 						//solicitudAmistadDao.modificar(solicitud);
 						NotificacionEntity notifCorrespondiente = notificacionDao.buscarPorVoluntarios(solicitud.getUsuarioSolicitante(), solicitud.getUsuarioSolicitado());
 						if(notifCorrespondiente != null){
-							notificacionDao.eliminar(notifCorrespondiente);
+							notifCorrespondiente.setAceptada(false);
+							notifCorrespondiente.setRechazada(true);
+							notificacionDao.modificar(notifCorrespondiente);
 						}
 						return Utiles.retornarSalida(false, "Se ha eliminado la solicitud de amistad.");
 					}catch(Exception ex){
@@ -833,7 +836,9 @@ public class VoluntarioWS {
 						//buscamos la notificacion correspondiente y la eliminamos
 						NotificacionEntity entity = notificacionDao.buscarPorCampanhaYvoluntario(voluntario, campanha);
 						if(entity != null){
-							notificacionDao.eliminar(entity);
+							entity.setAceptada(true);
+							entity.setRechazada(false);
+							notificacionDao.modificar(entity);
 						}
 						return Utiles.retornarSalida(false, "Te has adherido a la campaña.");
 					} catch(Exception e){
@@ -1050,7 +1055,9 @@ public class VoluntarioWS {
 							solicitudAmistadDao.eliminar(solicitudAsociada);
 						}
 					}
-					notificacionDao.eliminar(notificacion);
+					notificacion.setAceptada(false);
+					notificacion.setRechazada(true);
+					notificacionDao.modificar(notificacion);
 					return Utiles.retornarSalida(false, "Notificación eliminada.");
 				} catch(Exception e){
 					e.printStackTrace();
@@ -1086,13 +1093,14 @@ public class VoluntarioWS {
 				return Utiles.retornarSalida(true, "La notificación no existe.");
 			} else {
 				try{
-					
 					//adherirse a la campannha
 					if(notificacion.getTipoNotificacion().equals(Utiles.NOTIF_INVITADO_CAMPANHA)){
 						CampanhaEntity campanha = notificacion.getCampanha();
 						campanha.getVoluntariosAdheridos().add(voluntario);
 						campanhaDao.modificar(campanha);
-						notificacionDao.eliminar(notificacion);
+						notificacion.setAceptada(true);
+						notificacion.setRechazada(false);
+						notificacionDao.modificar(notificacion);
 						return Utiles.retornarSalida(false, "Te has adherido a la campaña.");
 					} else {
 						//se hacen amigos
@@ -1106,7 +1114,9 @@ public class VoluntarioWS {
 						solicitudAsociada.setAceptada(true);
 						//la actualizamos
 						solicitudAmistadDao.modificar(solicitudAsociada);
-						notificacionDao.eliminar(notificacion);
+						notificacion.setAceptada(true);
+						notificacion.setRechazada(false);
+						notificacionDao.modificar(notificacion);
 						return Utiles.retornarSalida(false, "Solicitud de amistad aceptada.");
 					}
 					

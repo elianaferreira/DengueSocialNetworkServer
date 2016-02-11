@@ -27,7 +27,8 @@ public class NotificacionDao extends GenericDao<NotificacionEntity, Integer> {
 		Date date = new Date();
 		Timestamp timestamp = new Timestamp(date.getTime());
 		entity.setFechaCreacionNotificacion(timestamp);
-		
+		entity.setAceptada(false);
+		entity.setRechazada(false);
 		this.save(entity);
 	}
 	
@@ -35,6 +36,15 @@ public class NotificacionDao extends GenericDao<NotificacionEntity, Integer> {
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void eliminar(NotificacionEntity entity){
 		this.delete(entity);
+	}
+	
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void modificar(NotificacionEntity entity){
+		Date date = new Date();
+		Timestamp timestamp = new Timestamp(date.getTime());
+		entity.setFechaVisualizacion(timestamp);
+		this.update(entity);
 	}
 	
 	
@@ -50,9 +60,9 @@ public class NotificacionDao extends GenericDao<NotificacionEntity, Integer> {
 	public List<NotificacionEntity> getListaNotificacion(String username, Integer ultimoID){
 		String consulta = "";
 		if(ultimoID == null){
-			consulta = "from NotificacionEntity n where n.voluntarioTarget.userName= :username order by n.idNotificacion desc";
+			consulta = "from NotificacionEntity n where n.voluntarioTarget.userName= :username and n.aceptada != true and n.rechazada != true order by n.idNotificacion desc";
 		} else {
-			consulta = "from NotificacionEntity n where n.voluntarioTarget.userName= :username and n.idNotificacion > :ultimoID order by n.idNotificacion asc";
+			consulta = "from NotificacionEntity n where n.voluntarioTarget.userName= :username and n.aceptada != true and n.rechazada != true and n.idNotificacion > :ultimoID order by n.idNotificacion asc";
 		}
 		
 		Query query = this.getSession().createQuery(consulta);

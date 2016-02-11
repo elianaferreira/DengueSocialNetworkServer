@@ -35,6 +35,8 @@ public class NotificacionEntity {
 	private String mensaje;
 	private Date fechaCreacionNotificacion;
 	private Date fechaVisualizacion;
+	private Boolean aceptada;
+	private Boolean rechazada;
 	
 	
 	//getters y setters
@@ -109,6 +111,22 @@ public class NotificacionEntity {
 	}
 	public void setFechaVisualizacion(Date fechaVisualizacion) {
 		this.fechaVisualizacion = fechaVisualizacion;
+	}
+	
+	@Column(name="ACEPTADA", nullable=true)
+	public Boolean getAceptada() {
+		return aceptada;
+	}
+	public void setAceptada(Boolean aceptada) {
+		this.aceptada = aceptada;
+	}
+	
+	@Column(name="RECHAZADA", nullable=true)
+	public Boolean getRechazada() {
+		return rechazada;
+	}
+	public void setRechazada(Boolean rechazada) {
+		this.rechazada = rechazada;
 	}
 	
 
