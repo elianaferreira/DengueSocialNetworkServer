@@ -1,18 +1,17 @@
 package tesis.server.socialNetwork.dao;
 
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.hibernate.Query;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
-
-import com.sun.xml.ws.api.tx.at.Transactional;
 
 import tesis.server.socialNetwork.entity.AdminAccessTokenEntity;
 import tesis.server.socialNetwork.entity.AdminEntity;
@@ -28,6 +27,15 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 	
 	@Inject
 	AdminAccessTokenDao adminAccessTokenDao;
+	
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void guardar(AdminEntity entity){
+		entity.setFechaIns(new Date());
+		entity.setLogged(false);
+		this.save(entity);
+		
+	}
 	
 
 	
@@ -160,5 +168,44 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 		//retorno.put("password", admin.getPassword());
 		
 		return retorno;	
+	}
+	
+	
+	/**
+	 * Metodo que verifica si un nombre de administrador ya existe
+	 * 
+	 * @param adminName
+	 * @return
+	 */
+	public Boolean yaExisteAdministrador(String adminName){
+		String consulta = "from AdminEntity a where a.adminName = :adminName";
+		Query query = this.getSession().createQuery(consulta);
+		query.setParameter("adminName", adminName);
+		AdminEntity entity = (AdminEntity) query.uniqueResult();
+		if(entity == null){
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	
+	/**
+	 * Metodo que retorna todos los datos del administrador que pueden ser modificados
+	 * 
+	 * @param admin
+	 * @return
+	 */
+	public JSONObject getAllDataForEdit(AdminEntity admin){
+		JSONObject retorno = new JSONObject();
+		retorno.put("admin", admin.getAdminName());
+		retorno.put("name", admin.getNombre());
+		retorno.put("lastname", admin.getApellido());
+		retorno.put("password", admin.getPassword());
+		retorno.put("ci", admin.getCi());
+		retorno.put("phone", admin.getTelefono());
+		retorno.put("email", admin.getEmail());
+		retorno.put("address", admin.getDireccion());
+		return retorno;
 	}
 }

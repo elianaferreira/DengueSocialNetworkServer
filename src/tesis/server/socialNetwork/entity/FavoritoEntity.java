@@ -1,9 +1,7 @@
 package tesis.server.socialNetwork.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,7 +27,7 @@ public class FavoritoEntity {
 	
 	//no se puede marcar como fav un comentario, al estilo Instagram
 	private PostEntity post;
-	private CampanhaEntity campanha;
+	//private CampanhaEntity campanha;
 	
 
 	
@@ -54,8 +52,8 @@ public class FavoritoEntity {
 		this.autor = autor;
 	}
 	
-	@ManyToOne()
-	@JoinColumn(name="POST", nullable=true)
+	@ManyToOne(optional=false)
+	@JoinColumn(name="POST")
 	public PostEntity getPost() {
 		return post;
 	}
@@ -63,14 +61,14 @@ public class FavoritoEntity {
 		this.post = post;
 	}
 	
-	@ManyToOne()
+	/*@ManyToOne(optional=true)
 	@JoinColumn(name="CAMPANHA", nullable=true)
 	public CampanhaEntity getCampanha() {
 		return campanha;
 	}
 	public void setCampanha(CampanhaEntity campanha) {
 		this.campanha = campanha;
-	}
+	}*/
 
 		
 }

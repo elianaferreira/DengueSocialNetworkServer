@@ -16,7 +16,8 @@ $(document).ready(function(){
                     <strong>Error!</strong> Se necesita su contrase&ntilde;a.\
                 </div>');
 		} else {
-			ajaxRequest("/admin/auth", "POST", {name: username, password: password}, function(response){
+			var md5Pass = CryptoJS.MD5(password).toString();
+			ajaxRequest("/admin/auth", "POST", {name: username, password: md5Pass}, function(response){
 				var jsonResponse = JSON.parse(response);
 				if(jsonResponse.error == true){
 					mostrarAlerta('Error', jsonResponse.msj);
@@ -26,7 +27,7 @@ $(document).ready(function(){
 					localStorage.setItem("adminUser", adminJson["adminname"]);
 					localStorage.setItem("adminNombre", adminJson["nombre"]);
 					localStorage.setItem("adminApellido", adminJson["apellido"]);
-					window.open("admin.html", "_self");
+					window.open("estadisticas.html", "_self");
 				}
 			});
 		}

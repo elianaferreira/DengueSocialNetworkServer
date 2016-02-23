@@ -497,7 +497,7 @@ public class AdministradorWS {
 	@GET
 	@Path("/subtotalesReportes")
 	@ResponseBody
-	public String getSubtotalesReportes(@QueryParam("adminName") String adminName, @QueryParam("accessToken") String accessToken){
+	public String getSubtotalesReportes(@QueryParam("admin") String adminName, @QueryParam("accessToken") String accessToken){
 		
 		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		JSONObject retorno = new JSONObject();
@@ -537,7 +537,7 @@ public class AdministradorWS {
 	@GET
 	@Path("/usuariosPorMes")
 	@ResponseBody
-	public String getCantUsuariosPorMes(@QueryParam("adminName") String adminName, @QueryParam("accessToken") String accessToken){
+	public String getCantUsuariosPorMes(@QueryParam("admin") String adminName, @QueryParam("accessToken") String accessToken){
 		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
 		JSONObject retorno = new JSONObject();
 		if(admin == null){
@@ -1153,5 +1153,106 @@ public class AdministradorWS {
 			}
 		}
 	}
+	
+	
+	//creamos un metodo auxiliar que permitira crear un administrador para el inicio
+	@POST
+	@Path("/createFirstAdmin")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String createFirstAdmin(){
+		try{
+		AdminEntity primerAdmin = new AdminEntity();
+		primerAdmin.setAdminName("administrador");
+		primerAdmin.setNombre("Eliana");
+		primerAdmin.setApellido("Ferreira");
+		primerAdmin.setPassword(Utiles.getMD5("administrador"));
+		primerAdmin.setCi(4278950);
+		primerAdmin.setDireccion("Luque");
+		primerAdmin.setEmail("elianaef817@gmail.com");
+		primerAdmin.setTelefono("0971877088");
+		
+		administradorDao.guardar(primerAdmin);
+		return Utiles.retornarSalida(false, "Administrador agregado.");
+		}catch(Exception e){
+			e.printStackTrace();
+			return Utiles.retornarSalida(true, "Ha ocurrido un error al agregar el administrador.");
+		}
+	}
+	
+	
+	
+	@POST
+	@Path("/newAdmin")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String addAdminAccount(@FormParam("adminName") String adminNane,
+									@FormParam("password") String password,
+									@FormParam("nombre") String nombre,
+									@FormParam("apellido") String apellido,
+									@FormParam("ci") Integer ci,
+									@FormParam("direccion") String direccion,
+									@FormParam("email") String email,
+									@FormParam("telefono") String telefono){
+		
+		//verificar campos obligatorios
+		if(adminNane.trim().equals("")){
+			return Utiles.retornarSalida(true, "El nombre de usuario del Administrador no puede estar vacío.");
+		} else {
+			Boolean yaExiste = administradorDao.yaExisteAdministrador(adminNane);
+			if(yaExiste){
+				return Utiles.retornarSalida(true, "Ya existe un Administrador con ese nombre.");
+			} else {
+				if(password.trim().equals("")){
+					return Utiles.retornarSalida(true, "La contraseña no puede ser vacía.");
+				} else if(nombre.trim().equals("") || apellido.trim().equals("")){
+					return Utiles.retornarSalida(true, "El Administrador debe contar con nombre y apellido.");
+				} else {
+					//los demas ya no son obligatorios
+					try{
+						AdminEntity administrador = new AdminEntity();
+						administrador.setAdminName(adminNane);
+						administrador.setNombre(nombre);
+						administrador.setPassword(password);
+						administrador.setApellido(apellido);
+						administrador.setCi(ci);
+						administrador.setDireccion(direccion);
+						administrador.setTelefono(telefono);
+						administrador.setEmail(email);
+						administradorDao.guardar(administrador);
+						return Utiles.retornarSalida(false, "Datos del Administrador guardados correctamente.");
+					} catch(Exception e){
+						e.printStackTrace();
+						return Utiles.retornarSalida(true, "Ha ocurrido un error al guardar los datos del Administrador.");
+					}
+				}
+			}
+		}
+	}
+	
+	
+	@GET
+	@Path("/getInfo")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String getAdminInfo(@QueryParam("admin") String adminName,
+								@QueryParam("accessToken") String accessToken){
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			try {
+				JSONObject retorno = administradorDao.getAllDataForEdit(admin);
+				return Utiles.retornarSalida(false, retorno.toString());
+				
+			} catch(Exception e){
+				e.printStackTrace();
+				return Utiles.retornarSalida(true, "Ha ocurrido un error al obtener los datos del Administrador.");
+			}
+		}
+	}
+	
+	
+	
 	
 }
