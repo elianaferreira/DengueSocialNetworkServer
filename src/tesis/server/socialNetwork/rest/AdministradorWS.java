@@ -1183,7 +1183,7 @@ public class AdministradorWS {
 	
 	
 	@POST
-	@Path("/newAdmin")
+	@Path("/newFirstAdmin")
 	@Produces("text/html; charset=UTF-8")
 	@ResponseBody
 	public String addAdminAccount(@FormParam("adminName") String adminNane,
@@ -1251,6 +1251,57 @@ public class AdministradorWS {
 			}
 		}
 	}
+	
+	
+	@POST
+	@Path("/newAdmin")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String addNewAdmin(@FormParam("admin") String admin,
+							  @FormParam("name") String name,
+							  @FormParam("lastname") String lastname,
+							  @FormParam("password") String password,
+							  @FormParam("passConfirm") String passConfirm,
+							  @FormParam("email") String email,
+							  @FormParam("ci") Integer ci,
+							  @FormParam("phone") String phone,
+							  @FormParam("address") String address){
+		
+		if(admin.equals("")){
+			return Utiles.retornarSalida(true, "El Administrador debe tener un nombre de identificación.");
+		} else {
+			if(administradorDao.yaExisteAdministrador(admin)){
+				return Utiles.retornarSalida(true, "Ya existe un Administrador con ese nombre de usuario.");
+			} else {
+				if(name.equals("") || lastname.equals("")){
+					return Utiles.retornarSalida(true, "El Administrador debe contar con nombre y apellido.");
+				} else if(password.equals("")){
+					return Utiles.retornarSalida(true, "Se necesita una contrasenha para el Administrador.");
+				} else if(passConfirm.equals("") || !passConfirm.equals(password)){
+					return Utiles.retornarSalida(true, "Las contrasenhas no coinciden.");
+				} else {
+					try{
+						AdminEntity entity = new AdminEntity();
+						entity.setAdminName(admin);
+						entity.setNombre(name);
+						entity.setApellido(lastname);
+						entity.setPassword(password);
+						entity.setCi(ci);
+						entity.setDireccion(address);
+						entity.setTelefono(phone);
+						entity.setEmail(email);
+						
+						administradorDao.guardar(entity);
+						return Utiles.retornarSalida(false, "Administrador guardado.");						
+					} catch(Exception e){
+						e.printStackTrace();
+						return Utiles.retornarSalida(true, "Ha ocurrido un error al guardar los datos del Administrador.");
+					}
+				}
+			}
+		}
+	}
+	
 	
 	
 	

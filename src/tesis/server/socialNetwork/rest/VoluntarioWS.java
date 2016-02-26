@@ -3,8 +3,10 @@ package tesis.server.socialNetwork.rest;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
 import org.hibernate.Criteria;
 import org.hibernate.annotations.Generated;
@@ -35,8 +38,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
 import com.sun.el.parser.ParseException;
+import com.sun.jersey.core.header.ContentDisposition;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.json.impl.writer.JsonEncoder;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataMultiPart;
 import com.sun.jersey.multipart.FormDataParam;
 import com.sun.xml.rpc.processor.modeler.j2ee.xml.exceptionMappingType;
 
@@ -1130,5 +1136,44 @@ public class VoluntarioWS {
 				}
 			}
 		}
+	}
+	
+	
+	@POST
+	@Path("/upload")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public String uploadPhotoAndText(FormDataMultiPart form){
+		
+		FormDataBodyPart filePart = form.getField("file");
+		ContentDisposition headerOfFilePart = filePart.getContentDisposition();
+		InputStream fileInputString = filePart.getValueAs(InputStream.class);
+		FormDataBodyPart descPart = form.getField("username");
+		System.out.println(descPart.getValueAs(String.class));
+		
+		try {
+			String serverLocation = Utiles.PHOTOS_FOLDER + "pruebaFotoMultipart2.png";
+			OutputStream outpuStream = new FileOutputStream(new File(serverLocation));
+			int read = 0;
+			byte[] bytes = new byte[5000];
+
+			outpuStream = new FileOutputStream(new File(serverLocation));
+			while ((read = fileInputString.read(bytes)) != -1) {
+				outpuStream.write(bytes, 0, read);
+			}
+
+			outpuStream.flush();
+			outpuStream.close();
+
+			fileInputString.close();
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+		
+		/*byte[] aByteArray = Base64.decode(fileInputString, Base64.DEFAULT);
+		BufferedImage img = ImageIO.read(new ByteArrayInputStream(aByteArray));
+
+		ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + String.valueOf(idGen) + "antes_image.png"));*/
+		return "";
 	}
 }
