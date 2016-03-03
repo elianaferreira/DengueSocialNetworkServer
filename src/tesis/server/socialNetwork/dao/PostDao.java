@@ -166,6 +166,14 @@ public class PostDao extends GenericDao<PostEntity, Integer> {
 		
 		retorno.put("cerrado", postEntity.getCerradoPorAdministrador());
 		
+		//agregamos los links de las fotos
+		if(postEntity.getFotoAntesLink() != null){
+			retorno.put("fotoAntesLink", postEntity.getFotoAntesLink());
+		}
+		if(postEntity.getFotoDespuesLink() != null){
+			retorno.put("fotoDespuesLink", postEntity.getFotoDespuesLink());
+		}
+		
 		return retorno;
 	}
 	
