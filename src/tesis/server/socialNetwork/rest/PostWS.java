@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,10 +24,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.sun.jersey.core.header.ContentDisposition;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataMultiPart;
 
 import tesis.server.socialNetwork.dao.ComentarioDao;
 import tesis.server.socialNetwork.dao.FavoritoDao;
@@ -151,6 +157,107 @@ public class PostWS {
 		}
 	}
 	
+	
+	@POST
+	@Path("/newReport")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String newReportMultipart(FormDataMultiPart form){
+		try{
+			FormDataBodyPart fotoAntesFilePart = form.getField("fotoantes");
+			FormDataBodyPart fotoDespuesFilePart = form.getField("fotodespues");
+			if(fotoAntesFilePart == null){
+				return Utiles.retornarSalida(true, "Se necesita la imagen inicial del reporte.");
+			}
+			ContentDisposition headerOfFilePart = fotoAntesFilePart.getContentDisposition();
+			InputStream fileInputStringAntes = fotoAntesFilePart.getValueAs(InputStream.class);
+			FormDataBodyPart descPart = form.getField("datadesc");
+			//System.out.println(descPart.getValueAs(String.class));
+			String dataString = descPart.getValueAs(String.class);
+			
+			
+			JSONObject dataJson = new JSONObject(dataString);
+			PostEntity reporte = new PostEntity();
+			if(!dataJson.has("username")){
+				return Utiles.retornarSalida(true, "Se necesita el nombre del voluntario.");
+			}
+			VoluntarioEntity voluntarioEntity = voluntarioDao.findByClassAndID(VoluntarioEntity.class, dataJson.getString("username").toLowerCase());
+			//verificamos que el usuario exista
+			if(voluntarioEntity == null){
+				return Utiles.retornarSalida(true, "El usuario no existe.");
+			} else {
+				//verificamos que haya iniciado sesion
+				if(!Utiles.haIniciadoSesion(voluntarioEntity)){
+					return Utiles.retornarSalida(true, "No has iniciado sesión.");
+				} else {
+					reporte.setVoluntario(voluntarioEntity);
+					if(!dataJson.has("mensaje")){
+						return Utiles.retornarSalida(true, "Se necesita el mensaje del reporte.");
+					}
+					reporte.setPost(dataJson.getString("mensaje"));
+					
+					if(!dataJson.has("latitud") || !dataJson.has("longitud")){
+						return Utiles.retornarSalida(true, "Se necesita la geolocalización del reporte.");
+					}
+					reporte.setLatitud(dataJson.getDouble("latitud"));
+					reporte.setLongitud(dataJson.getDouble("longitud"));
+					
+					if(!dataJson.has("ranking")){
+						return Utiles.retornarSalida(true, "Se necesita el nivel de riesgo el reporte.");
+					}
+					reporte.setRankingEstado(dataJson.getInt("ranking"));
+					
+					if(dataJson.has("quienDebeSolucionar")){
+						reporte.setQuienDebeSolucionar(dataJson.getString("quienDebeSolucionar"));
+					}
+					
+					if(!dataJson.has("solucionado")){
+						return Utiles.retornarSalida(true, "Se necesita saber si el reporte está solucionado o no.");
+					}
+					reporte.setSolucionado(dataJson.getBoolean("solucionado"));
+					
+					if(dataJson.getBoolean("solucionado")){
+						if(fotoDespuesFilePart == null){
+							return Utiles.retornarSalida(true, "No puede ser un reporte solucionado sin fotografía que lo pruebe.");
+						}
+					}
+					
+					//enviamos las imagenes y obtenemos las URLs de descarga del response para guardar el reporte en la BD
+					BufferedImage imgAntes = ImageIO.read(fileInputStringAntes);
+					String linkFotoAntes = Utiles.uploadToImgur(imgAntes);
+					if(linkFotoAntes == null){
+						return Utiles.retornarSalida(true, "Ha ocurrido un error al guardar el reporte. Inténtalo más tarde.");
+					} else {
+						reporte.setFotoAntesLink(linkFotoAntes);
+					}
+					
+					if(reporte.getSolucionado() && fotoDespuesFilePart != null){
+						InputStream fileInputStringDespues = fotoDespuesFilePart.getValueAs(InputStream.class);
+						BufferedImage imgDespues = ImageIO.read(fileInputStringDespues);
+						String linkFotoDespues = Utiles.uploadToImgur(imgDespues);
+						if(linkFotoDespues == null){
+							return Utiles.retornarSalida(true, "Ha ocurrido un error al guardar el reporte. Inténtalo más tarde.");
+						} else {
+							reporte.setFotoDespuesLink(linkFotoDespues);
+						}
+					}
+					
+					postDao.guardar(reporte);
+					return Utiles.retornarSalida(false, "Guardada.");
+				}
+			}
+					
+			
+		} catch (IOException e) {
+	
+			e.printStackTrace();
+			return Utiles.retornarSalida(true, "Ha ocurrido un error.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Utiles.retornarSalida(true, "Ha ocurrido un error.");
+		}
+	}
 	
 	/**
 	 * Para editar un post este no debe tener imagen de 'despues'

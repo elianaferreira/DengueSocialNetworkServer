@@ -2,6 +2,7 @@ package tesis.server.socialNetwork.rest;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +29,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.hibernate.Criteria;
 import org.hibernate.annotations.Generated;
@@ -1142,16 +1145,27 @@ public class VoluntarioWS {
 	@POST
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
 	public String uploadPhotoAndText(FormDataMultiPart form){
 		
 		FormDataBodyPart filePart = form.getField("file");
 		ContentDisposition headerOfFilePart = filePart.getContentDisposition();
 		InputStream fileInputString = filePart.getValueAs(InputStream.class);
 		FormDataBodyPart descPart = form.getField("username");
-		System.out.println(descPart.getValueAs(String.class));
+		//System.out.println(descPart.getValueAs(String.class));
+		String dataString = descPart.getValueAs(String.class);
 		
 		try {
-			String serverLocation = Utiles.PHOTOS_FOLDER + "pruebaFotoMultipart2.png";
+			Calendar c = Calendar.getInstance();
+			/*
+			 * byte[] aByteArray = Base64.decode(fotoPerfil, Base64.DEFAULT);
+					voluntario.setFotoDePerfil(aByteArray);
+					/*BufferedImage img = ImageIO.read(new ByteArrayInputStream(aByteArray));
+			 */
+			
+			
+			/*String serverLocation = Utiles.PHOTOS_FOLDER + "pruebaFotoMultipart2" + String.valueOf(c.getTimeInMillis()) + ".png";
 			OutputStream outpuStream = new FileOutputStream(new File(serverLocation));
 			int read = 0;
 			byte[] bytes = new byte[5000];
@@ -1164,16 +1178,51 @@ public class VoluntarioWS {
 			outpuStream.flush();
 			outpuStream.close();
 
-			fileInputString.close();
+			fileInputString.close();*/
+			
+			//JSONObject dataJson = new JSONObject(dataString);
+			
+			
+			
+			BufferedImage img = ImageIO.read(fileInputString);
+			Utiles.uploadToImgur(img);
+			
+			return Utiles.retornarSalida(false, "Guardada.");
 		} catch (IOException e) {
 
 			e.printStackTrace();
+			return Utiles.retornarSalida(true, "Ha ocurrido un error.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Utiles.retornarSalida(true, "Ha ocurrido un error.");
+		}
+	}
+	
+	
+	/*@GET
+	@Path("/getUploadedImage")
+	@Produces({"image/png", "image/jpg", "image/gif"})
+	public Response getFile(){
+		BufferedImage img = null;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] imageInByte = null;
+		
+		try {
+			img = ImageIO.read(new File(Utiles.PHOTOS_FOLDER + "1251antes_image.png"));
+			ImageIO.write(img, "png", baos);
+			baos.flush();
+			imageInByte = baos.toByteArray();
+			baos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			img = null;
 		}
 		
-		/*byte[] aByteArray = Base64.decode(fileInputString, Base64.DEFAULT);
-		BufferedImage img = ImageIO.read(new ByteArrayInputStream(aByteArray));
-
-		ImageIO.write(img, "png", new File(Utiles.PHOTOS_FOLDER + String.valueOf(idGen) + "antes_image.png"));*/
-		return "";
-	}
+		return Response.ok(img, MediaType.APPLICATION_OCTET_STREAM)
+				.header("Content-Disposition", "attachment; filename=\"" + "1251antes_image" + "\"" ) //optional
+			      .build();
+	}*/
+	
+	
+	
 }

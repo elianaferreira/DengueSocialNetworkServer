@@ -1,13 +1,23 @@
 package tesis.server.socialNetwork.utils;
 
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.math.BigInteger;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import javax.imageio.ImageIO;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -222,6 +232,72 @@ public class Utiles {
             throw new RuntimeException(e);
         }
     }
+	
+	
+	/**
+	 * Metodo que envia la image a Imgur y retorna el link para la descarga
+	 * 
+	 * @param image
+	 * @return
+	 * @throws Exception
+	 */
+	public static String uploadToImgur(BufferedImage image) throws Exception {
+	    //String IMGUR_POST_URI = "http://api.imgur.com/2/upload.xml";
+		String IMGUR_POST_URI = "https://api.imgur.com/3/upload.xml";
+	    String IMGUR_API_KEY = "c81b8b35ccf6ec5";
+
+	    String linkString =  null;
+	    
+	    try {
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        System.out.println("Writing image...");
+	        ImageIO.write(image, "jpeg", baos);
+	        URL url = new URL(IMGUR_POST_URI);
+	        System.out.println("Encoding...");
+
+	        //String data = URLEncoder.encode("image", "UTF-8") + "=" + URLEncoder.encode(Base64.encodeBase64String(baos.toByteArray()).toString(), "UTF-8");
+	        String data = URLEncoder.encode("image", "UTF-8") + "=" + URLEncoder.encode(Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT), "UTF-8");
+	        data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(IMGUR_API_KEY, "UTF-8");
+	        System.out.println("Connecting...");
+
+	        URLConnection conn = url.openConnection();
+	        conn.setDoOutput(true);
+	        conn.setRequestProperty("Authorization", "Client-ID " + IMGUR_API_KEY);
+	        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+	        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+	        System.out.println("Sending data...");
+	        /*wr.write(data);
+	        wr.flush();
+	        System.out.println("Finished.");*/
+	        wr.write(data);
+	        wr.close();
+
+	        BufferedReader in = new BufferedReader(
+	                                    new InputStreamReader(
+	                                    conn.getInputStream()));
+	        String decodedString;
+	        while ((decodedString = in.readLine()) != null) {
+	            System.out.println(decodedString);
+	            //obtenemos el link
+	            //TODO el indexOf lanza error
+	            /*
+	             * <?xml version="1.0" encoding="utf-8"?> es el primer valor de decodedString 
+	             * mejorar esta impl para que solo en el segundo valor que si tiene link tome esto
+	             */
+	            if(decodedString.indexOf("<link>") > -1){
+			        linkString = decodedString.substring(decodedString.indexOf("<link>")+6, decodedString.indexOf("</link>"));
+			        System.out.print("LINK para descarga: " + linkString);
+	            }
+	        }
+	        in.close();
+	        
+	        
+	        return linkString;
+	    } catch(Exception e){
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
 	
 	
 	
