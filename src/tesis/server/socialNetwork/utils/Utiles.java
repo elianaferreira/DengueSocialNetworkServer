@@ -243,7 +243,8 @@ public class Utiles {
 	 */
 	public static String uploadToImgur(BufferedImage image) throws Exception {
 	    //String IMGUR_POST_URI = "http://api.imgur.com/2/upload.xml";
-		String IMGUR_POST_URI = "https://api.imgur.com/3/upload.xml";
+		String IMGUR_POST_URI = "https://api.imgur.com/3/upload.xml";	//aparentemente este es para alzar anonimamente
+		//String IMGUR_POST_URI = "https://api.imgur.com/3/image";
 	    String IMGUR_API_KEY = "c81b8b35ccf6ec5";
 
 	    String linkString =  null;

@@ -53,7 +53,7 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 	}
 	
 	
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void modificar(VoluntarioEntity voluntarioEntity){
 		//el username lo ponemos a minuscula
 		voluntarioEntity.setUserName(voluntarioEntity.getUserName().toLowerCase());
@@ -148,6 +148,9 @@ public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 		retorno.put("reputacion", voluntarioEntity.getReputacion());
 		retorno.put("cantReportes", this.cantidadPosts(voluntarioEntity));
 		retorno.put("activo", voluntarioEntity.getActivo());
+		if(voluntarioEntity.getFotoPerfilLink() != null){
+			retorno.put("fotoPerfilLink", voluntarioEntity.getFotoPerfilLink());
+		}
 		
 		return retorno;
 	}

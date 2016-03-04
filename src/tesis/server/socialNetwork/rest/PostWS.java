@@ -312,6 +312,77 @@ public class PostWS {
 		}
 	}
 	
+	
+	@Path("/updateAndResolveReport")
+	@POST
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String editReportMultipart(FormDataMultiPart form){
+		try{
+			FormDataBodyPart fotoDespuesFilePart = form.getField("fotodespues");
+			FormDataBodyPart descPart = form.getField("datadesc");
+			String dataString = descPart.getValueAs(String.class);
+			
+			JSONObject dataJSON = new JSONObject(dataString);
+			/*
+			 * id") Integer idPost,
+						   @FormParam("username") String usernameEditor,
+						   @FormParam("nuevoMensaje") String nuevoMensaje,
+						   @FormParam("fotoDespues"
+			 */
+			if(!dataJSON.has("id")){
+				return Utiles.retornarSalida(true, "El reporte no existe.");
+			} else {
+				Integer idPost = dataJSON.getInt("id");
+				PostEntity postEntity = postDao.findByClassAndID(PostEntity.class, idPost);
+				if(postEntity == null){
+					return Utiles.retornarSalida(true, "El reporte no existe.");
+				} else {
+					if(!dataJSON.has("username")){
+						return Utiles.retornarSalida(true, "No existe un voluntario con ese nombre de usuario.");
+					} else {
+						String usernameString = dataJSON.getString("username").toString();
+						VoluntarioEntity voluntarioQueResuelve = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameString);
+						if(voluntarioQueResuelve == null){
+							return Utiles.retornarSalida(true, "No existe un voluntario con ese nombre de usuario.");
+						} else {
+							//verificamos si ha iniciado sesion
+							if(voluntarioQueResuelve.getLogged() == false){
+								return Utiles.retornarSalida(true, "No has iniciado sesión.");
+							} else {
+								postEntity.setVoluntarioQueSoluciona(voluntarioQueResuelve);
+								postEntity.setSolucionado(true);
+								if(!dataJSON.has("mensaje")){
+									return Utiles.retornarSalida(true, "Se necesita el mensaje del reporte.");
+								}
+								postEntity.setPost(dataJSON.getString("mensaje"));
+								if(fotoDespuesFilePart == null){
+									return Utiles.retornarSalida(true, "Se necesita la foto que pruebe que el reporte está solucionado");
+								}
+								ContentDisposition headerOfFilePart = fotoDespuesFilePart.getContentDisposition();
+								InputStream fileInputString = fotoDespuesFilePart.getValueAs(InputStream.class);
+								BufferedImage img = ImageIO.read(fileInputString);
+								String linkFoto = Utiles.uploadToImgur(img);
+								if(linkFoto == null){
+									return Utiles.retornarSalida(true, "Ha ocurrido un error al guardar el reporte. Inténtalo más tarde.");
+								} else {
+									postEntity.setFotoDespuesLink(linkFoto);
+									postDao.modificar(postEntity);
+									voluntarioDao.updateReputation(voluntarioQueResuelve, false, true, false,false, false, false, false);
+									return Utiles.retornarSalida(false, "Reporte solucionado.");
+								}
+							}
+						}
+					}
+				}
+			}			
+		} catch(Exception e){
+			e.printStackTrace();
+			return Utiles.retornarSalida(true, "Ha ocurrido un error al actualizar el reporte.");
+		}
+	}
+	
 	/**
 	 * Servicio que retorna una actualizacion del timeline principal del usuario
 	 * (posts de sus amigos y de el)
@@ -812,10 +883,10 @@ public class PostWS {
 			//retornamos la foto de perfil
 			VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameProfile.toLowerCase());
 			if(voluntario != null){
-				if(voluntario.getFotoDePerfil() != null){
+				/*if(voluntario.getFotoDePerfil() != null){
 					System.out.println("FOTO DE PERFIL DE " + usernameProfile);
 					return Utiles.retornarImagen(false, Base64.encodeToString(voluntario.getFotoDePerfil(), Base64.DEFAULT));
-				}
+				}*/
 			}
 		} else if(idPost != null){
 			String antesDespues = "antes_image.png";
