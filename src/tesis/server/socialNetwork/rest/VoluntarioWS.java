@@ -326,7 +326,83 @@ public class VoluntarioWS {
 			} else{
 				return Utiles.retornarSalida(true, "No has iniciado sesión");
 			}
+		}
+	}
+	
+	
+	@POST
+	@Path("/updateMyAccount")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String updateMyAccount(FormDataMultiPart form){
+		FormDataBodyPart fotoPerfilPart = form.getField("fotoperfil");
+		FormDataBodyPart datosPart = form.getField("datospersonales");
+		String dataString = datosPart.getValueAs(String.class);
+		try{
+			JSONObject datosJSON = new JSONObject(dataString);
+			if(!datosJSON.has("username")){
+				return Utiles.retornarSalida(true, "Se necesita un nombre de usuario.");
+			}
+			String usernameLower = datosJSON.getString("username").toLowerCase();
+			VoluntarioEntity voluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, usernameLower);
+			if(voluntario == null){
+				return Utiles.retornarSalida(true, "El usuario no existe");
+			} else {
+				//verificamos que el usuario haya iniciado sesion
+				if(Utiles.haIniciadoSesion(voluntario)){
+					//cargamos los cambios que envio el usuario
+					//verificamos que newUsername sea distinto de nulo y solo si es distinto del actual se valida
+					if(datosJSON.has("newUsername")){
+						//verificamos que no exista ya lguien con ese nombre de usuario
+						VoluntarioEntity otroVoluntario = voluntarioDao.findByClassAndID(VoluntarioEntity.class, datosJSON.getString("newUsername").toLowerCase());
+						if(otroVoluntario != null){
+							//verificamos si soy yo mismo
+							if(!otroVoluntario.getUserName().equals(voluntario.getUserName())){
+								return Utiles.retornarSalida(true, "Este nombre de usuario ya está registrado.");
+							}
+							
+						}
+						//cambiamos el ID del usuario, que anteriormente se verifico que no exista ya
+						voluntario.setUserName(datosJSON.getString("newUsername").toLowerCase());
+						voluntario.setUsernameString(datosJSON.getString("newUsername"));
+					}
+					if(datosJSON.has("nombre")){
+						voluntario.setNombreReal(datosJSON.getString("nombre"));
+					}
+					if(datosJSON.has("ci")){
+						voluntario.setCi(datosJSON.getInt("ci"));
+					}
+					if(datosJSON.has("direccion")){
+						voluntario.setDireccion(datosJSON.getString("direccion"));
+					}
+					if(datosJSON.has("telefono")){
+						voluntario.setTelefono(datosJSON.getString("telefono"));
+					}
+					if(datosJSON.has("email")){
+						voluntario.setEmail(datosJSON.getString("email"));
+					}
+					if(fotoPerfilPart != null){
+						ContentDisposition headerOfFilePart = fotoPerfilPart.getContentDisposition();
+						InputStream fileInputString = fotoPerfilPart.getValueAs(InputStream.class);
+						BufferedImage img = ImageIO.read(fileInputString);
+						String linkFoto = Utiles.uploadToImgur(img);
+						voluntario.setFotoPerfilLink(linkFoto);
+					}
+					try{
+						voluntarioDao.modificar(voluntario);
+						return Utiles.retornarSalida(false, "Datos actualizados con éxito.");
+					}catch(Exception ex){
+						return Utiles.retornarSalida(true, "Error al actualizar los datos del voluntario.");
+					}
+				} else{
+					return Utiles.retornarSalida(true, "No has iniciado sesión.");
+				}
+			}
 			
+		} catch(Exception e){
+			e.printStackTrace();
+			return Utiles.retornarSalida(true, "Ha ocurrido un error al actualizar loa datos. Inténtalo más tarde.");
 		}
 	}
 	
