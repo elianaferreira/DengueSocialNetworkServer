@@ -89,16 +89,22 @@ $(document).ready(function(){
 					alertActivateInvalidate = "Est&aacute; seguro que desea activar la cuenta del voluntario?";
 				}
 
+				var fotoPerfilHTML = "";
+				if(usuarioJSON.hasOwnProperty("fotoPerfilLink")){
+					fotoPerfilHTML = '<img id="fotoReal_'+usuarioJSON.username+'" style="width:80px; height:80px; border-radius:50%;" \
+							src="'+usuarioJSON.fotoPerfilLink+'"/>';
+				} else {
+					fotoPerfilHTML = '<i id="iFotoPerfil_'+usuarioJSON.username+'" class="fa fa-user fa-fw fa-5x"></i>';
+				}
 				$('#perfiles').append('\
 						<div class="col-lg-4">\
 			                <div class="panel panel-default">\
 			                	<a class="activateInvalidate" data-username="'+usuarioJSON.username+'" style="cursor:pointer; padding-left:16px; font-weight: bold;">'+msjActivateInvalidate+'</a>\
 			                	<a class="sendAlert" data-username="'+usuarioJSON.username+'" style="cursor:pointer; padding-left:16px; margin-left:25px; font-weight: bold;">enviar alerta</a>\
 			                	<div data-username="'+usuarioJSON.username+'" class="perfil panel-heading">\
-			                		<h3 style="cursor:pointer" class="panel-title">\
-			                			<i id="iFotoPerfil_'+usuarioJSON.username+'" class="fa fa-user fa-fw fa-5x"></i>\
-			                			<img id="fotoReal_'+usuarioJSON.username+'" style="display: none; width:80px; height:80px; border-radius:50%;"/>\
-			                			<span style="vertical-align: bottom">'+ usuarioJSON.nombre + '</span>\
+			                		<h3 style="cursor:pointer" class="panel-title">'+
+			                			fotoPerfilHTML+			                			
+			                			'<span style="vertical-align: bottom">'+ usuarioJSON.nombre + '</span>\
 			                		</h3>\
 			                	</div>\
 			                	<div class="panel panel-body">\
@@ -129,7 +135,7 @@ $(document).ready(function(){
 			                </div>\
 			            </div>');
 
-					//llamado para ver la foto de perfil del usuario
+					/*/llamado para ver la foto de perfil del usuario
 			    	ajaxRequest("/users/user/profilePhoto/"+usuarioJSON.username, "GET", {}, function(responseProfile){
 			    		var rpp = JSON.parse(responseProfile);
 			    		if(rpp.error == false){
@@ -138,7 +144,7 @@ $(document).ready(function(){
 			    			document.getElementById('fotoReal_'+usuarioJSON.username).setAttribute( 'src', 'data:image/png;base64,'+rpp.msj);
 			    			$('#fotoReal_'+usuarioJSON.username).show();
 			    		}
-			    	});
+			    	});*/
 			}
 
 

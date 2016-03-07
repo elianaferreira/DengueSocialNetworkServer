@@ -67,7 +67,7 @@ $(document).ready(function(){
 
 					var jsonTemp = {}
 					jsonTemp["username"] = username;
-					jsonTemp["password"] = password;
+					jsonTemp["password"] = var md5Pass = CryptoJS.MD5(password).toString();;
 					jsonTemp["nombre"] = nombre;
 					jsonTemp["ci"] = ci;
 					jsonTemp["email"] = email;

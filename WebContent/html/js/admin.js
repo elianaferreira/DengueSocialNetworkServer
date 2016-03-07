@@ -84,8 +84,8 @@ $(document).ready(function(){
 		                                </div>\
 		                            </div>\
 								</a>');
-						loadPhoto(reporte.id, true);
-						loadPhoto(reporte.id, false);
+						//loadPhoto(reporte.id, true);
+						//loadPhoto(reporte.id, false);
 					}
 				}
 			});
@@ -220,7 +220,7 @@ $(document).ready(function(){
 });
 
 
-function loadPhoto(idPostInt, antesBoolean){
+/*function loadPhoto(idPostInt, antesBoolean){
 	var photoParams = {
 		idPost: idPostInt,
 		antes: antesBoolean
@@ -240,7 +240,7 @@ function loadPhoto(idPostInt, antesBoolean){
 			document.getElementById(idPostInt+stringFlagAntes).setAttribute( 'src', 'data:image/png;base64,'+responseJSON.msj);
 		}
 	});
-}
+}*/
 
 
 function appendRow(reporte){
@@ -252,17 +252,28 @@ function appendRow(reporte){
 		badge = '<span class="badge" style="background-color:#337ab7;">'+reporte.fecha+'</span>';
 	}
 
+	var imgFotoAntes = "";
+    if(reporte.hasOwnProperty("fotoAntesLink")){
+        imgFotoAntes = '<img style="border-radius: 0.5rem;" src="'+reporte.fotoAntesLink+'"/>';
+    }
+    var imgFotoDespues = "";
+    if(reporte.hasOwnProperty("fotoDespuesLink")){
+        imgFotoDespues = '<img style="border-radius: 0.5rem;" src="'+reporte.fotoDespuesLink+'"/>';
+    }
+
 	$('#listaReportes').append('\
 			<a id="'+reporte.id+'" class="list-group-item">'+
 				badge+'\
 				<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
 				<div class="row">\
-	                <div id="div_antes'+reporte.id+'" class="col-lg-4">\
-	                </div>\
-	                <div id="div_despues'+reporte.id+'" class="col-lg-4">\
-	                </div>\
+	                <div class="col-lg-4">'+
+	                	imgFotoAntes+
+	                '</div>\
+	                <div id="div_despues'+reporte.id+'" class="col-lg-4">'+
+	                	imgFotoDespues+
+	                '</div>\
 	            </div>\
 			</a>');
-	loadPhoto(reporte.id, true);
-	loadPhoto(reporte.id, false);
+	//loadPhoto(reporte.id, true);
+	//loadPhoto(reporte.id, false);
 }

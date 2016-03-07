@@ -30,16 +30,29 @@ $(document).ready(function(){
             		} else {
             			panelColor = 'panel-red';
             		}
+                    var imgFotoPerfil = '<i id="iFotoPerfil" class="fa fa-user fa-5x"></i>';
+                    if(post.voluntario.hasOwnProperty("fotoPerfilLink")){
+                        imgFotoPerfil = '<img  style="width:80px; height:80px; border-radius:50%;" src="'+post.voluntario.fotoPerfilLink+'"/>'
+                    }
+                    
+                    var imgFotoAntes = "";
+                    if(post.hasOwnProperty("fotoAntesLink")){
+                        imgFotoAntes = '<img style="border-radius: 0.5rem;" src="'+post.fotoAntesLink+'"/>';
+                    }
+                    var imgFotoDespues = "";
+                    if(post.hasOwnProperty("fotoDespuesLink")){
+                        imgFotoDespues = '<img style="border-radius: 0.5rem;" src="'+post.fotoDespuesLink+'"/>';
+                    }
+
         	    	$('.container-fluid').append('\
                         <div class="row">\
             	    		<div class="col-sm-5">\
                                 <div class="panel '+panelColor+'">\
                                     <div class="panel-heading">\
                                         <div class="row">\
-                                            <div class="col-xs-3">\
-                                                <i id="iFotoPerfil" class="fa fa-user fa-5x"></i>\
-                                                <img id="fotoReal" style="display: none;"/>\
-                                            </div>\
+                                            <div class="col-xs-3">'+
+                                                imgFotoPerfil+
+                                            '</div>\
                                             <div class="col-xs-9 text-right">\
                                                 <div class="huge">'+post.voluntario.nombre+'</div>\
                                                 <div>'+post.voluntario.usernamestring+'</div>\
@@ -51,10 +64,18 @@ $(document).ready(function(){
                                     '</div>\
                                 </div>\
                             </div>\
+                        </div>\
+                        <div class="row">\
+                            <div class="col-lg-4">'+
+                                    imgFotoAntes+
+                            '</div>\
+                            <div class="col-lg-4">'+
+                                imgFotoDespues+
+                            '</div>\
                         </div>');
 
 
-        	    	//llamado para ver la foto de perfil del usuario
+        	    	/*/llamado para ver la foto de perfil del usuario
         	    	ajaxRequest("/users/user/profilePhoto/"+post.voluntario.username, "GET", {}, function(responseProfile){
         	    		var rpp = JSON.parse(responseProfile);
         	    		if(rpp.error == false){
@@ -63,10 +84,10 @@ $(document).ready(function(){
         	    			document.getElementById('fotoReal').setAttribute( 'src', 'data:image/png;base64'+responseProfile.msj);
         	    			$('#fotoReal').show();
         	    		}
-        	    	});
+        	    	});*/
 
 
-                    ajaxRequest("/admin/photos", "GET", params, function(responseFotos){
+                    /*ajaxRequest("/admin/photos", "GET", params, function(responseFotos){
                         responseFotos = JSON.parse(responseFotos);
                         if(responseFotos.error == false){
                             var fotos = JSON.parse(responseFotos.msj);
@@ -92,7 +113,7 @@ $(document).ready(function(){
                                 document.getElementById('fotoDespues').setAttribute( 'src', 'data:image/png;base64,'+fotos.despues);
                             }
                         }
-                    });
+                    });*/
             	}
             });
         }

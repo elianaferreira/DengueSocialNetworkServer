@@ -47,8 +47,9 @@ $(document).ready(function(){
 						var reporte = reportesArray[i];
 						globalArrayReportes.push(reporte);
 
+						appendRowReport(reporte);
 						//post
-						if(reporte.hasOwnProperty("id")){
+						/*if(reporte.hasOwnProperty("id")){
 							$('#lista-reportes').append('\
 								<a id="'+reporte.id+'" class="list-group-item">\
 									<span class="badge">'+reporte.fecha+'</span>\
@@ -60,8 +61,8 @@ $(document).ready(function(){
 		                                </div>\
 		                            </div>\
 								</a>');
-							loadPhoto(reporte.id, true);
-							loadPhoto(reporte.id, false);
+							//loadPhoto(reporte.id, true);
+							//loadPhoto(reporte.id, false);
 						} else if(reporte.hasOwnProperty("idRepost")){
 							//respost
 							var post = reporte.post;
@@ -78,9 +79,9 @@ $(document).ready(function(){
 		                                </div>\
 		                            </div>\
 								</a>');
-							loadPhoto(post.id, true);
-							loadPhoto(post.id, false);
-						}
+							//loadPhoto(post.id, true);
+							//loadPhoto(post.id, false);
+						}*/
 					}
 				}
 			});
@@ -130,9 +131,9 @@ $(document).ready(function(){
 						for(var i = 0; i<reportesArray.length; i++){
 							var reporte = reportesArray[i];
 							globalArrayReportes.push(reporte);
-
+							appendRowReport(reporte);
 							//post
-							if(reporte.hasOwnProperty("id")){
+							/*if(reporte.hasOwnProperty("id")){
 								$('#lista-reportes').append('\
 									<a id="'+reporte.id+'" class="list-group-item">\
 										<span class="badge">'+reporte.fecha+'</span>\
@@ -144,8 +145,8 @@ $(document).ready(function(){
 			                                </div>\
 			                            </div>\
 									</a>');
-								loadPhoto(reporte.id, true);
-								loadPhoto(reporte.id, false);
+								//loadPhoto(reporte.id, true);
+								//loadPhoto(reporte.id, false);
 							} else if(reporte.hasOwnProperty("idRepost")){
 								//respost
 								var post = reporte.post;
@@ -162,9 +163,9 @@ $(document).ready(function(){
 			                                </div>\
 			                            </div>\
 									</a>');
-								loadPhoto(post.id, true);
-								loadPhoto(post.id, false);
-							}
+								//loadPhoto(post.id, true);
+								//loadPhoto(post.id, false);
+							}*/
 						}
 					}
 				});
@@ -173,7 +174,7 @@ $(document).ready(function(){
 	});
 });
 
-function loadPhoto(idPostInt, antesBoolean){
+/*function loadPhoto(idPostInt, antesBoolean){
 	return;
 	var photoParams = {
 		idPost: idPostInt,
@@ -194,4 +195,58 @@ function loadPhoto(idPostInt, antesBoolean){
 			document.getElementById(idPostInt+stringFlagAntes).setAttribute( 'src', 'data:image/png;base64,'+responseJSON.msj);
 		}
 	});
+}*/
+
+
+
+function appendRowReport(reporte){
+	if(reporte.hasOwnProperty("id")){
+		var imgFotoAntes = "";
+		if(reporte.hasOwnProperty("fotoAntesLink")){
+			imgFotoAntes = '<img style="border-radius: 0.5rem;" src="'+reporte.fotoAntesLink+'"/>';
+		}
+		var imgFotoDespues = "";
+		if(reporte.hasOwnProperty("fotoDespuesLink")){
+			imgFotoDespues = '<img style="border-radius: 0.5rem;" src="'+reporte.fotoDespuesLink+'"/>';
+		}
+		$('#lista-reportes').append('\
+			<a id="'+reporte.id+'" class="list-group-item">\
+				<span class="badge">'+reporte.fecha+'</span>\
+				<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
+				<div class="row">\
+                    <div id="div_antes'+reporte.id+'" class="col-lg-4">'+
+                    	imgFotoAntes+
+                    '</div>\
+                    <div id="div_despues'+reporte.id+'" class="col-lg-4">'+
+                    	imgFotoDespues+
+                    '</div>\
+                </div>\
+			</a>');
+	} else if(reporte.hasOwnProperty("idRepost")){
+		//respost
+		var post = reporte.post;
+		var imgFotoAntes = "";
+		if(post.hasOwnProperty("fotoAntesLink")){
+			imgFotoAntes = '<img style="border-radius: 0.5rem;" src="'+post.fotoAntesLink+'"/>';
+		}
+		var imgFotoDespues = "";
+		if(post.hasOwnProperty("fotoDespuesLink")){
+			imgFotoDespues = '<img style="border-radius: 0.5rem;" src="'+post.fotoDespuesLink+'"/>';
+		}
+		$('#lista-reportes').append('\
+			<a id="'+post.id+'" class="list-group-item">\
+			<span style="font-size:12px">reposte&oacute; de <span style="font-weight:bold;">'+post.voluntario.nombre+'</span></span>\
+				<br>\
+				<span class="badge">'+reporte.fecha+'</span>\
+				<i class="fa fa-fw fa-mobile-phone"></i> '+post.mensaje+'\
+				<div class="row">\
+                    <div id="div_antes'+post.id+'" class="col-lg-4">'+
+                    	imgFotoAntes+
+                    '</div>\
+                    <div id="div_despues'+post.id+'" class="col-lg-4">'+
+                    	imgFotoDespues+
+                    '</div>\
+                </div>\
+			</a>');
+	}
 }

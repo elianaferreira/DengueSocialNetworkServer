@@ -113,7 +113,7 @@ $(document).ready(function(){
 	});
 });
 
-function loadPhoto(idPostInt, antesBoolean){
+/*function loadPhoto(idPostInt, antesBoolean){
 	var photoParams = {
 		idPost: idPostInt,
 		antes: antesBoolean
@@ -133,17 +133,23 @@ function loadPhoto(idPostInt, antesBoolean){
 			document.getElementById(idPostInt+stringFlagAntes).setAttribute( 'src', 'data:image/png;base64,'+responseJSON.msj);
 		}
 	});
-}
+}*/
 
 function appendRow(reporte){
+	var imgFotoAntes = "";
+	if(reporte.hasOwnProperty("fotoAntesLink")){
+		imgFotoAntes = '<img style="border-radius: 0.5rem;" src="'+reporte.fotoAntesLink+'"/>';
+	}
+	//en teoria no deberia tener foto de despues asi que no se busca
 	$('#lista-reportes').append('\
 			<div style="display: table;">\
 				<div id="'+reporte.id+'" class="postClass" style="display: table-cell; width:75%">\
 					<a class="list-group-item">\
 						<i class="fa fa-fw fa-mobile-phone"></i> '+reporte.mensaje+'\
 						<div class="row">\
-	                        <div id="div_antes'+reporte.id+'" class="col-lg-4">\
-	                        </div>\
+	                        <div id="div_antes'+reporte.id+'" class="col-lg-4">'+
+	                        	imgFotoAntes+
+	                        '</div>\
 	                        <div id="div_despues'+reporte.id+'" class="col-lg-4">\
 	                        </div>\
 	                    </div>\
@@ -166,6 +172,6 @@ function appendRow(reporte){
 		$('#cerrado'+reporte.id).hide();
 	}
 
-	loadPhoto(reporte.id, true);
-	loadPhoto(reporte.id, false);
+	//loadPhoto(reporte.id, true);
+	//loadPhoto(reporte.id, false);
 }
