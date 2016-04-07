@@ -27,7 +27,7 @@ import tesis.server.socialNetwork.utils.SortedByDate;
 import tesis.server.socialNetwork.utils.Utiles;
 
 
-@Controller
+//@Controller
 @LocalBean
 public class VoluntarioDao extends GenericDao<VoluntarioEntity, String> {
 

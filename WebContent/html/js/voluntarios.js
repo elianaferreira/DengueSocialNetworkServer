@@ -65,9 +65,10 @@ $(document).ready(function(){
 						return;
 					}
 
+					var md5Pass = CryptoJS.MD5(password).toString();
 					var jsonTemp = {}
 					jsonTemp["username"] = username;
-					jsonTemp["password"] = var md5Pass = CryptoJS.MD5(password).toString();;
+					jsonTemp["password"] = md5Pass;
 					jsonTemp["nombre"] = nombre;
 					jsonTemp["ci"] = ci;
 					jsonTemp["email"] = email;

@@ -1297,38 +1297,12 @@ public class VoluntarioWS {
 		FormDataBodyPart filePart = form.getField("file");
 		ContentDisposition headerOfFilePart = filePart.getContentDisposition();
 		InputStream fileInputString = filePart.getValueAs(InputStream.class);
-		FormDataBodyPart descPart = form.getField("username");
+		//FormDataBodyPart descPart = form.getField("username");
 		//System.out.println(descPart.getValueAs(String.class));
-		String dataString = descPart.getValueAs(String.class);
+		//String dataString = descPart.getValueAs(String.class);
 		
 		try {
-			Calendar c = Calendar.getInstance();
-			/*
-			 * byte[] aByteArray = Base64.decode(fotoPerfil, Base64.DEFAULT);
-					voluntario.setFotoDePerfil(aByteArray);
-					/*BufferedImage img = ImageIO.read(new ByteArrayInputStream(aByteArray));
-			 */
-			
-			
-			/*String serverLocation = Utiles.PHOTOS_FOLDER + "pruebaFotoMultipart2" + String.valueOf(c.getTimeInMillis()) + ".png";
-			OutputStream outpuStream = new FileOutputStream(new File(serverLocation));
-			int read = 0;
-			byte[] bytes = new byte[5000];
 
-			outpuStream = new FileOutputStream(new File(serverLocation));
-			while ((read = fileInputString.read(bytes)) != -1) {
-				outpuStream.write(bytes, 0, read);
-			}
-
-			outpuStream.flush();
-			outpuStream.close();
-
-			fileInputString.close();*/
-			
-			//JSONObject dataJson = new JSONObject(dataString);
-			
-			
-			
 			BufferedImage img = ImageIO.read(fileInputString);
 			Utiles.uploadToImgur(img);
 			

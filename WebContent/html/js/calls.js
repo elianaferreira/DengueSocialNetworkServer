@@ -1,4 +1,5 @@
-var URL_BASE = "http://localhost:8080/RestServerSNGlass/rest";
+//var URL_BASE = "http://localhost:8080/RestServerSNGlass/rest";
+var URL_BASE = "http://jbossas-eferreiran.rhcloud.com/api/ws";
 
 
 function ajaxRequest(pUrl, pType, pData, pSuccessCallback){

@@ -139,7 +139,7 @@ public class Utiles {
 	}
 	
 	
-	public static void savePhoto(InputStream file, String fileName){
+	/*public static void savePhoto(InputStream file, String fileName){
 		try {
             OutputStream out = null;
             int read = 0;
@@ -155,7 +155,7 @@ public class Utiles {
  
             e.printStackTrace();
         }
-	}
+	}*/
 	
 	
 	/**
@@ -261,15 +261,12 @@ public class Utiles {
 	        data += "&" + URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(IMGUR_API_KEY, "UTF-8");
 	        System.out.println("Connecting...");
 
-	        URLConnection conn = url.openConnection();
+	        /*URLConnection conn = url.openConnection();
 	        conn.setDoOutput(true);
 	        conn.setRequestProperty("Authorization", "Client-ID " + IMGUR_API_KEY);
 	        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 	        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 	        System.out.println("Sending data...");
-	        /*wr.write(data);
-	        wr.flush();
-	        System.out.println("Finished.");*/
 	        wr.write(data);
 	        wr.close();
 
@@ -280,19 +277,14 @@ public class Utiles {
 	        while ((decodedString = in.readLine()) != null) {
 	            System.out.println(decodedString);
 	            //obtenemos el link
-	            //TODO el indexOf lanza error
-	            /*
-	             * <?xml version="1.0" encoding="utf-8"?> es el primer valor de decodedString 
-	             * mejorar esta impl para que solo en el segundo valor que si tiene link tome esto
-	             */
 	            if(decodedString.indexOf("<link>") > -1){
 			        linkString = decodedString.substring(decodedString.indexOf("<link>")+6, decodedString.indexOf("</link>"));
 			        System.out.print("LINK para descarga: " + linkString);
 	            }
 	        }
-	        in.close();
+	        in.close();*/
 	        
-	        
+	        linkString = "link";
 	        return linkString;
 	    } catch(Exception e){
 	        e.printStackTrace();

@@ -33,8 +33,16 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 	public void guardar(AdminEntity entity){
 		entity.setFechaIns(new Date());
 		entity.setLogged(false);
+		entity.setEliminado(false);
 		this.save(entity);
 		
+	}
+	
+	
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void modificar(AdminEntity entity){
+		this.update(entity);
 	}
 	
 
@@ -67,6 +75,9 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 			return null;
 		} else{
 			AdminEntity admin = lista.get(0);
+			if(admin.getEliminado()){
+				return null;
+			}
 			//verificamos el accessToken
 			AdminAccessTokenEntity accessTokenEntity = adminAccessTokenDao.findByClassAndID(AdminAccessTokenEntity.class, accessToken);
 			if(accessTokenEntity == null){
@@ -107,6 +118,11 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 				retorno.put("error", "La contrasena no coincide.");
 				return retorno;
 			} else {
+				if(admin.getEliminado()){
+					retorno = new JSONObject();
+					retorno.put("error", "Usted ha sido eliminado de la lista de Administradores.");
+					return retorno;
+				}
 				//cambiamos el estado del atributo logged a TRUE
 				admin.setLogged(true);
 				//hacemos el update
@@ -186,6 +202,19 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 			return false;
 		} else {
 			return true;
+		}
+	}
+	
+	
+	public AdminEntity yaExisteAministrador(String adminName){
+		String consulta = "from AdminEntity a where a.adminName = :adminName";
+		Query query = this.getSession().createQuery(consulta);
+		query.setParameter("adminName", adminName);
+		AdminEntity entity = (AdminEntity) query.uniqueResult();
+		if(entity == null){
+			return null;
+		} else {
+			return entity;
 		}
 	}
 	

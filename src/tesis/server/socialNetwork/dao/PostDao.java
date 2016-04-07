@@ -23,7 +23,7 @@ import tesis.server.socialNetwork.entity.VoluntarioEntity;
 import tesis.server.socialNetwork.utils.Utiles;
 
 
-@Controller
+//@Controller
 @LocalBean
 public class PostDao extends GenericDao<PostEntity, Integer> {
 
