@@ -1,5 +1,7 @@
 var RANDOM_MINIMO = -10;
 var RANDOM_MAXIMO = 10;
+var EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$/i;	//"/i" es para que sea incasesensitive
+var USERNAME_REGEX = /^[a-zA-Z0-9]*$/i;
 
 
 /**
@@ -134,4 +136,32 @@ function getCurrentTimestampWithFormat(){
 	var mes = d.getMonth()+1;
 	var dateString = d.getFullYear()+'-'+mes+'-'+d.getDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds()+'.'+d.getTimezoneOffset();
 	return dateString;
+}
+
+
+function isValidEmailFormat(email){
+	var patt = new RegExp(/^[A-Z0-9._%+-]+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/i);
+    var res = patt.test(email);
+
+	return res;
+}
+
+
+function isValidUsername(username){
+	var patt = new RegExp(USERNAME_REGEX);
+    var res = patt.test(username);
+
+	return res;
+}
+
+
+function appendErrorDiv(inputId, msj){
+	var elem = document.getElementById(inputId);
+	if(elem != null){
+		$('#'+inputId).parent().append('\
+				<div class="alert alert-danger">\
+                    <strong>Error!</strong> '+msj+'\
+                </div>');
+	}
+
 }

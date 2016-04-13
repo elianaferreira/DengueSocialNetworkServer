@@ -179,9 +179,12 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 	public JSONObject getJsonFromAdmin(AdminEntity admin){
 		JSONObject retorno = new JSONObject();
 		retorno.put("adminname", admin.getAdminName());
-		retorno.put("nombre", admin.getNombre());
-		retorno.put("apellido", admin.getApellido());
-		//retorno.put("password", admin.getPassword());
+		retorno.put("name", admin.getNombre());
+		retorno.put("lastname", admin.getApellido());
+		retorno.put("ci", admin.getCi());
+		retorno.put("phone", admin.getTelefono());
+		retorno.put("email", admin.getEmail());
+		retorno.put("address", admin.getDireccion());
 		
 		return retorno;	
 	}
@@ -236,5 +239,17 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 		retorno.put("email", admin.getEmail());
 		retorno.put("address", admin.getDireccion());
 		return retorno;
+	}
+	
+	
+	/**
+	 * Metodo que retorna la lista completa de Administradores activos dentro del sistema
+	 * @return
+	 */
+	public List<AdminEntity> getListaActivos(){
+		String consulta = "from AdminEntity a where a.eliminado = false";
+		Query query = this.getSession().createQuery(consulta);
+		List lista = query.list();
+		return lista;
 	}
 }

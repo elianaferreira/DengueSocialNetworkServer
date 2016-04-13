@@ -1339,10 +1339,22 @@ public class AdministradorWS {
 				if(lastname != null && !lastname.equals("")){
 					admin.setApellido(lastname);
 				}
-				if(password != null && !password.equals("") && passConfirm != null && passConfirm.equals(password)){
+				
+				/*if(password != null && !password.equals("") && passConfirm != null && passConfirm.equals(password)){
 					admin.setPassword(password);
 				} else if((password != null && passConfirm == null) || !passConfirm.equals(password)){
 					return Utiles.retornarSalida(true, "Las contrasenhas deben coincidir");
+				}*/
+				if(password != null && !password.equals("")){
+					if(passConfirm == null || passConfirm.equals("")){
+						return Utiles.retornarSalida(true, "Las contrasenhas deben coincidir");
+					} else {
+						if(!password.equals(passConfirm)){
+							return Utiles.retornarSalida(true, "Las contrasenhas deben coincidir");
+						} else {
+							admin.setPassword(password);
+						}
+					}
 				}
 				
 				if(email != null && !email.equals("")){
@@ -1387,7 +1399,7 @@ public class AdministradorWS {
 		} else {
 			try{
 				//buscamos el administrador a ser eliminado
-				AdminEntity adminBaja = administradorDao.yaExisteAministrador(adminName.toLowerCase());
+				AdminEntity adminBaja = administradorDao.yaExisteAministrador(adminToDelete.toLowerCase());
 				if(adminBaja == null){
 					return Utiles.retornarSalida(true, "El administrador a ser dado de baja no existe.");
 				}
@@ -1400,6 +1412,38 @@ public class AdministradorWS {
 			} catch(Exception e){
 				e.printStackTrace();
 				return Utiles.retornarSalida(true, "Ha ocurrido un error al dar de baja al administrador.");
+			}
+		}
+	}
+	
+	
+	
+	@GET
+	@Path("/getAllActivedAdmin")
+	@Produces("text/html; charset=UTF-8")
+	@ResponseBody
+	public String getAllActivedAdmins(@QueryParam("admin") String adminName,
+										@QueryParam("accessToken") String accessToken){
+		
+		AdminEntity admin = administradorDao.verificarAdministrador(adminName, accessToken);
+		if(admin == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		} else {
+			try {
+				List<AdminEntity> listaActivos = administradorDao.getListaActivos();
+				//de esta lista excluimos al que solicito
+				JSONArray retorno = new JSONArray();
+				//siempre va a haber al menos un administrador activo, SIEMPRE
+				for(int k=0; k<listaActivos.size(); k++){
+					if(!listaActivos.get(k).getAdminName().equals(adminName)){
+						JSONObject obj = administradorDao.getJsonFromAdmin(listaActivos.get(k));
+						retorno.put(obj);
+					}
+				}
+				return Utiles.retornarSalida(false, retorno.toString());
+			} catch(Exception e){
+				e.printStackTrace();
+				return Utiles.retornarSalida(true, "Ha ocurrido un error al retornar la lista de administradores activos.");
 			}
 		}
 	}

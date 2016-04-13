@@ -57,7 +57,7 @@ $(document).ready(function(){
                                 <a href="profile.html">Modificar</a>\
                             </li>\
                             <li>\
-                                <a href="#">Eliminar</a>\
+                                <a href="eliminarAdministrador.html">Eliminar</a>\
                             </li>\
                         </ul>\
                     </li>\
