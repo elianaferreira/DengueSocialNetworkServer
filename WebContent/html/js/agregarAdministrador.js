@@ -127,7 +127,8 @@ $(document).ready(function(){
 							mostrarAlerta("Error", response.msj);
 						} else {
 							//borramos la lista y todos los datos
-							$('input').empty();
+							mostrarAlerta("Error", response.msj);
+							$('input').val("");
 						}
 					});
 				}

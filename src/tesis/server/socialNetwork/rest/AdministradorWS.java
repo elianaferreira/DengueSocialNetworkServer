@@ -1413,7 +1413,7 @@ public class AdministradorWS {
 				adminBaja.setEliminado(true);
 				administradorDao.modificar(adminBaja);
 				System.out.println("El administrador " + adminToDelete + " ha sido dado de baja por " + adminName + ".");
-				return Utiles.retornarSalida(true, "El administrador ha sido dado de baja.");
+				return Utiles.retornarSalida(false, "El administrador ha sido dado de baja.");
 				
 			} catch(Exception e){
 				e.printStackTrace();

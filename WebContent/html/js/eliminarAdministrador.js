@@ -29,33 +29,49 @@ $(document).ready(function(){
 					for(var i=0; i<arrayAdministradoresActivos.length; i++){
 						var fila = '';
 						fila += '<tr>\
+										<td><button type="button" class="close" data-dismiss="alert" aria-hidden="true" data-admin="'+arrayAdministradoresActivos[i].adminname+'">borrar</button></tad>\
                                         <td>'+arrayAdministradoresActivos[i].adminname+'</td>\
                                         <td>'+arrayAdministradoresActivos[i].name+'</td>\
-                                        <td>'+arrayAdministradoresActivos[i].lastname+'</td>';
+                                        <td>'+arrayAdministradoresActivos[i].lastname+'</td>\
+                                        <td>'+arrayAdministradoresActivos[i].ci+'</td>';
                         if(arrayAdministradoresActivos[i].hasOwnProperty('email')){
                         	fila += '<td>'+arrayAdministradoresActivos[i].ci+'</td>';
                         } else {
-                        	'<td></td>';
+                        	fila += '<td></td>';
                         }
                         if(arrayAdministradoresActivos[i].hasOwnProperty('address')){
                         	fila += '<td>'+arrayAdministradoresActivos[i].address+'</td>';
                         } else {
-                        	'<td></td>';
+                        	fila += '<td></td>';
                         }
                         if(arrayAdministradoresActivos[i].hasOwnProperty('phone')){
                         	fila += '<td>'+arrayAdministradoresActivos[i].phone+'</td>';
                         } else {
-                        	'<td></td>';
+                        	fila += '<td></td>';
                         }
-                        if(arrayAdministradoresActivos[i].hasOwnProperty('ci')){
-                        	fila += '<td>'+arrayAdministradoresActivos[i].ci+'</td>';
-                        } else {
-                        	'<td></td>';
-                        }
-
+                       
                         fila += '</tr>';
                         $('#listaActivos').append(fila);
 					}
+
+					$('.close').click(function (event){
+						event.stopPropagation();
+						var adminToDelete = $(this).data("admin");
+						mostrarAlertaConfirmacion("Atenci&oacute;n", "Est&aacute; seguro que desea dar de baja a este administrador?", "S&iacute;", function (e){
+							e.preventDefault();
+							borrarVestigiosModal();
+							
+							ajaxRequest("/admin/delete/"+adminToDelete, "POST", params, function(response){
+								response = JSON.parse(response);
+								if(response.error == true){
+									mostrarAlerta("Error", response.msj);
+								} else {
+									//hacemos un reload
+									location.reload();
+								}
+							});
+						});
+					});
 				}
 			});
 			
