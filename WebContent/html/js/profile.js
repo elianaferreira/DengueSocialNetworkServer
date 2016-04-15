@@ -13,6 +13,8 @@ $(document).ready(function(){
 		} else {
 			$('#wrapper').show();
 
+			$('#adminSection').addClass("active");
+
 			$('#confirmPassDiv').hide();
 
 			var params = {
@@ -61,7 +63,7 @@ $(document).ready(function(){
 				    if (!container.is(e.target) // if the target of the click isn't the container...
 				        && container.has(e.target).length === 0) // ... nor a descendant of the container
 				    {
-				        container.hide();
+				        container.remove();
 				    }
 				});
 
@@ -149,6 +151,8 @@ $(document).ready(function(){
 										mostrarAlerta("Error", response.msj);
 									} else {
 										//recargamos la pagina para que traiga los nuevos valores
+										$('fieldset').attr('disabled', true);
+										$('#btnConfirmar').attr('disabled', true);
 										location.reload();
 									}
 								});

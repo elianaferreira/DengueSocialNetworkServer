@@ -1153,7 +1153,7 @@ public class AdministradorWS {
 	//creamos un metodo auxiliar que permitira crear un administrador para el inicio
 	@POST
 	@Path("/createFirstAdmin")
-	@Produces("text/html; charset=UTF-8")
+	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String createFirstAdmin(){
 		try{
@@ -1179,7 +1179,7 @@ public class AdministradorWS {
 	
 	@POST
 	@Path("/newFirstAdmin")
-	@Produces("text/html; charset=UTF-8")
+	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String addAdminAccount(@FormParam("adminName") String adminNane,
 									@FormParam("password") String password,
@@ -1249,35 +1249,42 @@ public class AdministradorWS {
 	
 	
 	@POST
-	@Path("/newAdmin")
-	@Produces("text/html; charset=UTF-8")
+	@Path("/new")
+	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String addNewAdmin(@FormParam("admin") String admin,
+							  @FormParam("accessToken") String accessToken,
+							  @FormParam("adminName") String adminName,
 							  @FormParam("name") String name,
 							  @FormParam("lastname") String lastname,
 							  @FormParam("password") String password,
-							  @FormParam("passConfirm") String passConfirm,
 							  @FormParam("email") String email,
 							  @FormParam("ci") Integer ci,
 							  @FormParam("phone") String phone,
 							  @FormParam("address") String address){
 		
-		if(admin == null || admin.equals("")){
+		
+		AdminEntity adminEntity = administradorDao.verificarAdministrador(admin, accessToken);
+		if(adminEntity == null){
+			return Utiles.retornarSalida(true, "El nombre o la contrasenha son invalidos.");
+		}
+		
+		if(adminName == null || adminName.equals("")){
 			return Utiles.retornarSalida(true, "El Administrador debe tener un nombre de identificación.");
 		} else {
-			if(administradorDao.yaExisteAdministrador(admin)){
+			if(administradorDao.yaExisteAdministrador(adminName)){
 				return Utiles.retornarSalida(true, "Ya existe un Administrador con ese nombre de usuario.");
 			} else {
 				if(name == null || name.equals("") ||  lastname == null || lastname.equals("")){
 					return Utiles.retornarSalida(true, "El Administrador debe contar con nombre y apellido.");
 				} else if(password == null || password.equals("")){
 					return Utiles.retornarSalida(true, "Se necesita una contrasenha para el Administrador.");
-				} else if(passConfirm == null || passConfirm.equals("") || !passConfirm.equals(password)){
-					return Utiles.retornarSalida(true, "Las contrasenhas no coinciden.");
+				} else if(ci == null){
+					return Utiles.retornarSalida(true, "La Cedula de Identidad no puede estar vacia.");
 				} else {
 					try{
 						AdminEntity entity = new AdminEntity();
-						entity.setAdminName(admin.toLowerCase());
+						entity.setAdminName(adminName.toLowerCase());
 						entity.setNombre(name);
 						entity.setApellido(lastname);
 						entity.setPassword(password);
@@ -1297,11 +1304,10 @@ public class AdministradorWS {
 		}
 	}
 	
-	//TODO revisar esto de arriba
 	
 	@POST
 	@Path("/update/{admin}")
-	@Produces("text/html; charset=UTF-8")
+	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String updateAdminInfo(@PathParam("admin") String adminName,
 							  @FormParam("newAdmin") String newAdminName,
@@ -1387,7 +1393,7 @@ public class AdministradorWS {
 	
 	@POST
 	@Path("/delete/{adminToDelete}")
-	@Produces("text/html; charset=UTF-8")
+	@Consumes("application/x-www-form-urlencoded")
 	@ResponseBody
 	public String updateAdminInfo(@PathParam("adminToDelete") String adminToDelete,
 							  @FormParam("admin") String adminName,

@@ -2,6 +2,7 @@ var RANDOM_MINIMO = -10;
 var RANDOM_MAXIMO = 10;
 var EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$/i;	//"/i" es para que sea incasesensitive
 var USERNAME_REGEX = /^[a-zA-Z0-9]*$/i;
+var NUMERIC_REGEX = /^[0-9]+$/;
 
 
 /**
@@ -150,6 +151,13 @@ function isValidEmailFormat(email){
 function isValidUsername(username){
 	var patt = new RegExp(USERNAME_REGEX);
     var res = patt.test(username);
+
+	return res;
+}
+
+function isValidNumericInput(input){
+	var patt = new RegExp(NUMERIC_REGEX);
+	var res = patt.test(input);
 
 	return res;
 }

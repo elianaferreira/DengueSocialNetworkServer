@@ -41,7 +41,7 @@ $(document).ready(function(){
 				var mensajeErrorForm = [];
 
 				var listaVoluntarios = [];
-
+				
 				$('.rowNuevoVoluntario').each(function() {
 					var username = $(this).find("td").children('input.input-nuevo-usuario').val();
 					var nombre = $(this).find("td").children('input.input-nuevo-nombre').val();
@@ -52,15 +52,15 @@ $(document).ready(function(){
 					var telefono = $(this).find("td").children('input.input-nuevo-telefono').val();
 
 					if(username.trim() == ""){
-						mensajeErrorForm.push('El nombre de usuario no puede estar vacio');
+						mensajeErrorForm.push('El nombre de usuario no puede estar vac&iacute;o');
 						errorForm = true;
 						return;
 					} else if(nombre.trim() == ""){
-						mensajeErrorForm.push('El nombre no puede estar vacio');
+						mensajeErrorForm.push('El nombre no puede estar  vac&iacute;o');
 						errorForm = true;
 						return;
 					} else if(password.trim() == ""){
-						mensajeErrorForm.push('La contraseña no puede estar vacia');
+						mensajeErrorForm.push('La contrase&ntilde;a no puede estar  vac&iacute;a');
 						errorForm = true;
 						return;
 					}
@@ -75,7 +75,6 @@ $(document).ready(function(){
 					jsonTemp["direccion"] = direccion;
 					jsonTemp["telefono"] = telefono;
 
-					listaVoluntarios.push(jsonTemp);
 				 });
 				//console.log(JSON.stringify(listaVoluntarios));
 				var params = {
@@ -95,7 +94,7 @@ $(document).ready(function(){
 							//msj es un JSONArray
 							var noGuardadosArray = JSON.parse(respuestaJson.msj);
 							if(noGuardadosArray.length > 0){
-								mostrarAlerta('Alerta', 'Los siguientes usuarios no han sido agregado, verifique que no tengan el mismo nombre de usuario.');
+								mostrarAlerta('Alerta', 'Los siguientes usuarios no han sido agregados, verifique que no tengan el mismo nombre de usuario.');
 								//eliminamos todas las filas y agregamos por cada elemento del array
 								$('#bodyNuevoVoluntario').empty();
 								for(var j=0; j<noGuardadosArray.length; j++){

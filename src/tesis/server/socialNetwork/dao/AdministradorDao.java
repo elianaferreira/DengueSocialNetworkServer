@@ -31,6 +31,8 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 	
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void guardar(AdminEntity entity){
+		//ponemos a minuscula el username del admin
+		entity.setAdminName(entity.getAdminName().toLowerCase());
 		entity.setFechaIns(new Date());
 		entity.setLogged(false);
 		entity.setEliminado(false);
