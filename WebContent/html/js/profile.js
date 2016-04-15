@@ -15,7 +15,9 @@ $(document).ready(function(){
 
 			$('#adminSection').addClass("active");
 
-			$('#confirmPassDiv').hide();
+			$('#confirmPassDiv').css('display', 'block');
+			$('#confirmPassDiv').css('visibility', 'hidden');
+
 
 			var params = {
 				admin: getAdminUser(),
@@ -75,7 +77,7 @@ $(document).ready(function(){
 					e.preventDefault();
 					$('fieldset').removeAttr('disabled');
 					$('#btnConfirmar').removeAttr('disabled');
-					$('#confirmPassDiv').show();
+					$('#confirmPassDiv').css('visibility', 'visible');
 				});
 
 
@@ -85,12 +87,12 @@ $(document).ready(function(){
 						if(formHasChanged){
 							mostrarAlertaConfirmacion("Atenci&oacute;n", "Est&aacute; seguro que desea guardar los cambios?", "Guardar cambios", function(e){
 								e.preventDefault();
-
+								borrarVestigiosModal();
 								//validamos todos los campos que han sido cambiados
 								for(key in datosCambiados){
 									if(key == "newAdmin"){
 										if(!isValidUsername(datosCambiados[key])){
-											appendErrorDiv("usernameInput", "El nombre de usuario debe tener un formato v&aacute;lido.");
+											appendErrorDiv("usernameInput", "El Nombre de Usuario debe tener un formato v&aacute;lido.");
 											return;
 										}
 									}
@@ -99,28 +101,36 @@ $(document).ready(function(){
 									if(key == "password"){
 										//verificamos que conste de 6 caracteres como minimo
 										if(datosCambiados[key].length < 6){
-											appendErrorDiv("passInput", "La contrase&ntilde; debe contar con al menos 6 caracteres.");
+											appendErrorDiv("passInput", "La Contrase&ntilde;a debe contar con al menos 6 caracteres.");
 											return;
 										}
 
 										//verificamos el contenido del input, el password pudo ser editado pero ser el mismos que el anterior
 										var confirm = $('passConfirmInput').val();
 										if(datosCambiados[key] != confirm){
-											appendErrorDiv("passConfirmInput", "La confirmaci&oacute;n no coincide.");
+											appendErrorDiv("passConfirmInput", "La Confirmaci&oacute;n no coincide.");
 											return;
 										}
 									}
 
 									if(key == "name"){
 										if(!isValidUsername(datosCambiados[key].replace(/\s+/g,""))){
-											appendErrorDiv("nombreInput", "El nombre debe tener un formato v&aacute;lido.");
+											appendErrorDiv("nombreInput", "El Nombre debe tener un formato v&aacute;lido.");
 											return;
 										}
 									}
 
 									if(key == "lastname"){
+										//validamos sin los espacios en blanco
 										if(!isValidUsername(datosCambiados[key].replace(/\s+/g,""))){
-											appendErrorDiv("apellidoInput", "EL apellido debe tener un formato v&aacute;lido.");
+											appendErrorDiv("apellidoInput", "EL Apellido debe tener un formato v&aacute;lido.");
+											return;
+										}
+									}
+
+									if(key == "ci"){
+										if(!isValidNumericInput(datosCambiados[key])){
+											appendErrorDiv("ciInput", "La C&eacute;dula de Identidad debe tener un formato v&aacute;lido.");
 											return;
 										}
 									}
@@ -163,7 +173,8 @@ $(document).ready(function(){
 							});
 						} else {
 							mostrarAlerta("Atenci&oacute;n", "Nada que guardar");
-							$('#confirmPassDiv').hide();
+							$('#confirmPassDiv').css('display', 'block');
+							$('#confirmPassDiv').css('visibility', 'hidden');
 							$('fieldset').attr('disabled', true);
 							$('#btnConfirmar').attr('disabled', true);
 							formHasChanged = false;

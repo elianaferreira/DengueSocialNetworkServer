@@ -15,6 +15,14 @@
 			.form-group {
 				padding-bottom: 15px;
 			}
+			.reserva-right {
+				padding-right: 15px!important;
+    			padding-left: 0px!important;
+			}
+			.reserva-left {
+				padding-right: 0x!important;
+    			padding-left: 15px!important;
+			}
 		</style>
 	</head>
 	<body>
@@ -40,27 +48,35 @@
 	                </div>
 		            <form role="form">	
 		                <fieldset disabled="">
-		                    <div class="form-group">
+		                    <div class="form-group reserva-right">
 		                        <label>Username</label>
 		                        <input class="form-control" id="usernameInput" type="text" placeholder="" >
 		                    </div>
-		                    <div class="form-group" >
-		                        <label>Contrase&ntilde;a</label>
-		                        <input class="form-control" style="-webkit-text-security:disc;" id="passInput" type="text" placeholder="">
-		                    </div>
-		                    <div id="confirmPassDiv" class="form-group" >
-		                        <label>Confirmar contrase&ntilde;a</label>
-		                        <input class="form-control" style="-webkit-text-security:disc;" id="passConfirmInput" type="text" placeholder="">
-		                    </div>
-		                    <div class="form-group" >
-		                        <label>Nombres</label>
-		                        <input class="form-control" id="nombreInput" type="text" placeholder="">
-		                    </div>
-		                    <div class="form-group" >
-		                        <label>Apellidos</label>
-		                        <input class="form-control" id="apellidoInput" type="text" placeholder="">
+		                    <div class="col-lg-6 reserva-right">
+			                    <div class="form-group" >
+			                        <label>Contrase&ntilde;a</label>
+			                        <input class="form-control" style="-webkit-text-security:disc;" id="passInput" type="text" placeholder="">
+			                    </div>
 		                    </div>
 		                    <div class="col-lg-6">
+			                    <div id="confirmPassDiv" class="form-group" >
+			                        <label>Confirmar contrase&ntilde;a</label>
+			                        <input class="form-control" style="-webkit-text-security:disc;" id="passConfirmInput" type="text" placeholder="">
+			                    </div>
+		                    </div>
+		                    <div class="col-lg-6 reserva-right">
+			                    <div class="form-group" >
+			                        <label>Nombres</label>
+			                        <input class="form-control" id="nombreInput" type="text" placeholder="">
+			                    </div>
+		                    </div>
+		                    <div class="col-lg-6">
+			                    <div class="form-group" >
+			                        <label>Apellidos</label>
+			                        <input class="form-control" id="apellidoInput" type="text" placeholder="">
+			                    </div>
+		                    </div>
+		                    <div class="col-lg-6 reserva-right">
 			                    <div class="form-group" >
 			                        <label>CI</label>
 			                        <input class="form-control" id="ciInput" type="text" placeholder="">
@@ -72,13 +88,17 @@
 			                        <input class="form-control" id="phoneInput" type="text" placeholder="">
 			                    </div>
 			                </div>
-		                    <div class="form-group" >
-		                        <label>Direcci&oacute;n</label>
-		                        <input class="form-control" id="addressInput" type="text" placeholder="">
+			                <div class="col-lg-6 reserva-right">
+			                    <div class="form-group" >
+			                        <label>Direcci&oacute;n</label>
+			                        <input class="form-control" id="addressInput" type="text" placeholder="">
+			                    </div>
 		                    </div>
-		                    <div class="form-group" >
-		                        <label>Email</label>
-		                        <input class="form-control" id="emailInput" type="text" placeholder="">
+		                    <div class="col-lg-6">
+			                    <div class="form-group" >
+			                        <label>Email</label>
+			                        <input class="form-control" id="emailInput" type="text" placeholder="">
+			                    </div>
 		                    </div>
 		                </fieldset>
 		            </form>
