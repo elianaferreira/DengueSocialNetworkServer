@@ -55,8 +55,9 @@ $(document).ready(function(){
 						mensajeErrorForm.push('El nombre de usuario no puede estar vac&iacute;o');
 						errorForm = true;
 						return;
-					} else if(nombre.trim() == ""){
-						mensajeErrorForm.push('El nombre no puede estar  vac&iacute;o');
+					} else if(!isValidUsername(username))
+					else if(nombre.trim() == ""){
+						mensajeErrorForm.push('El nombre no puede estar vac&iacute;o');
 						errorForm = true;
 						return;
 					} else if(password.trim() == ""){

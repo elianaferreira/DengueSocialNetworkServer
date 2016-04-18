@@ -59,6 +59,9 @@ $(document).ready(function(){
                             <li>\
                                 <a href="eliminarAdministrador.html">Eliminar</a>\
                             </li>\
+                            <li>\
+                                <a href="altaAdministrador.html">Dar de alta</a>\
+                            </li>\
                         </ul>\
                     </li>\
 	                </ul>\

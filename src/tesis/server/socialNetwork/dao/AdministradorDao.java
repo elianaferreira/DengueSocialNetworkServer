@@ -254,4 +254,16 @@ public class AdministradorDao extends GenericDao<AdminEntity, Integer> {
 		List lista = query.list();
 		return lista;
 	}
+	
+	
+	/**
+	 * Meoto que retorna la lista completa de Administradores que han sido dados de baja
+	 * @return
+	 */
+	public List<AdminEntity> getListaInactivos(){
+		String consulta = "from AdminEntity a where a.eliminado = true";
+		Query query = this.getSession().createQuery(consulta);
+		List lista = query.list();
+		return lista;
+	}
 }
